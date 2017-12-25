@@ -5,14 +5,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="111.0" prefWidth="480.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111">
+<AnchorPane prefHeight="111.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <Button layoutX="26.0" layoutY="24.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="140.0" text="Select File" />
-      <Button layoutX="320.0" layoutY="24.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="140.0" text="Start" />
-      <Button layoutX="320.0" layoutY="66.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="140.0" text="Settings" />
-      <TextField layoutX="171.0" layoutY="25.0" prefHeight="25.0" prefWidth="140.0" />
-      <TextField layoutX="66.0" layoutY="67.0" prefHeight="25.0" prefWidth="243.0" />
+      <Button layoutX="26.0" layoutY="24.0" mnemonicParsing="false" onAction="#selectFileBtnAction" prefHeight="27.0" prefWidth="140.0" text="Select File" />
+      <Button layoutX="320.0" layoutY="24.0" mnemonicParsing="false" onAction="#startBtnAction" prefHeight="27.0" prefWidth="140.0" text="Start" />
+      <Button layoutX="320.0" layoutY="66.0" mnemonicParsing="false" onAction="#settingBtnAction" prefHeight="27.0" prefWidth="140.0" text="Settings" />
+      <TextField fx:id="textNumber" layoutX="171.0" layoutY="25.0" prefHeight="25.0" prefWidth="140.0" />
+      <TextField fx:id="textFileName" layoutX="66.0" layoutY="67.0" prefHeight="25.0" prefWidth="243.0" promptText="File Name" />
       <Label layoutX="26.0" layoutY="67.0" prefHeight="25.0" text="File : " />
    </children>
 </AnchorPane>
