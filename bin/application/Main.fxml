@@ -11,7 +11,7 @@
       <Button layoutX="320.0" layoutY="24.0" mnemonicParsing="false" onAction="#startBtnAction" prefHeight="27.0" prefWidth="140.0" text="Start" />
       <Button layoutX="320.0" layoutY="66.0" mnemonicParsing="false" onAction="#settingBtnAction" prefHeight="27.0" prefWidth="140.0" text="Settings" />
       <TextField fx:id="textNumber" layoutX="171.0" layoutY="25.0" prefHeight="25.0" prefWidth="140.0" />
-      <TextField fx:id="textFileName" layoutX="66.0" layoutY="67.0" prefHeight="25.0" prefWidth="243.0" promptText="File Name" />
+      <TextField fx:id="textFileName" editable="false" layoutX="66.0" layoutY="67.0" prefHeight="25.0" prefWidth="243.0" promptText="File Name" />
       <Label layoutX="26.0" layoutY="67.0" prefHeight="25.0" text="File : " />
    </children>
 </AnchorPane>
