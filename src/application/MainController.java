@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import webhandler.ChromeOperator;
 
 public class MainController implements Initializable {
 	@FXML
@@ -47,6 +48,11 @@ public class MainController implements Initializable {
 	public void startBtnAction(ActionEvent event) {
 		// System.out.println("Start Button : " +
 		// textNumber.getText().toString());
+
+		ChromeOperator chromeOperator = new ChromeOperator();
+		chromeOperator.openChromewithSelenium();
+		// chromeOperator.loginLinkedinAccount();
+		chromeOperator.takeLink();
 
 		System.out.println(list.get(0).getLink());
 	}

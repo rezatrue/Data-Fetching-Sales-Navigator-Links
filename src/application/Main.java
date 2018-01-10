@@ -1,4 +1,10 @@
 package application;
+/*
+ *
+ * Main objective here to take Linkedin profile public link
+ * using sales navigator links 
+ * 
+ */
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
