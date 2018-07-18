@@ -1,8 +1,7 @@
 package application;
 /*
  *
- * Main objective here to take Linkedin profile public link
- * using sales navigator links 
+ * Main objective here to improve old version  
  * 
  */
 
@@ -20,14 +19,14 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Linkedin Sales Navigator Llink Data Fetcher : 1.00");
-			// Start on 25 Dec 2017 -
+			primaryStage.setTitle("Linkedin list Fetcher : 2.00");
 			primaryStage.setResizable(false);
 			primaryStage.show();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public static void main(String[] args) {
