@@ -50,11 +50,6 @@ public class MainController implements Initializable {
 	@FXML
 	private TextField textListSize;
 
-	@FXML
-	private TextField textFileName;
-	@FXML
-	private TextField textNumber;
-
 	private Preferences prefs = null;
 
 	// private LinkedList<Info> list = null;
@@ -63,43 +58,8 @@ public class MainController implements Initializable {
 	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile" };
 	private LinkedinListMain linkedinListMain;
 	private DBHandler dBHandler;
-	@FXML
-	private Button selectFileBtn;
-
-	@FXML
-	public void selectFileBtnAction(ActionEvent event) {
-		// activate convertBtn when btn clicked
-		// convertBtn.setDisable(true);
-		// System.out.println("Selcted Button");
-		// textFileName.setText("FILE NAME");
-
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Resource File");
-		File file = fileChooser.showOpenDialog(new Stage());
-		String filePath = file.getAbsolutePath();
-		textFileName.setText(filePath);
-		String msg = linkedinListMain.scanCSV(filePath);
-		if (msg.contains("listsize")) {
-			convertBtn.setDisable(false);
-			textNumber.setText("0");
-		}
-		textMessage.setText(msg);
-	}
-
-	@FXML
-	private Button convertBtn;
-
-	@FXML
-	public void convertBtnAction(ActionEvent event) {
-		int count = Integer.parseInt(textNumber.getText());
-		System.out.println(" : " + count);
-		if (count > 0) {
-			textMessage.setText(linkedinListMain.getPublicLink(count));
-			convertBtn.setDisable(true);
-		} else
-			textMessage.setText("Please enter how many links you want to convert");
-	}
-
+	
+	
 	@FXML
 	private Button settingBtn;
 
@@ -140,25 +100,21 @@ public class MainController implements Initializable {
 					int endPage;
 					currentPage = linkedinListMain.currentpage();
 					do {
-						System.out.println("-----11-----");
 						autoSelected = auto.isSelected();
 						textCurrentPage.setText(currentPage + "");
 						endPage = Integer.parseInt(textEndPage.getText());
 						if (currentPage <= endPage) {
-							System.out.println("-----12-----");
 							int newadded = linkedinListMain.takeList();
 							String sizeText = textListSize.getText();
 							textListSize.setText(Integer.parseInt(sizeText) + newadded + "");
 							textMessage.setText("Processing page " + currentPage);
 							if (autoSelected && currentPage < endPage) {
 								currentPage = linkedinListMain.openNextPage();
-								System.out.println("-----13-----");
 							} else {
 								run = false;
 							}
 
 						}
-						System.out.println("-----14-----");
 					} while (autoSelected && startBtn.getText().contains("Pause") && run);
 					startBtn.setText("Start");
 					textMessage.setText("Process stopped at page " + currentPage);
@@ -192,7 +148,6 @@ public class MainController implements Initializable {
 
 			enterBtn.setDisable(false);
 			startBtn.setDisable(false);
-			selectFileBtn.setDisable(false);
 			printListBtn.setDisable(false);
 			resetBtn.setDisable(false);
 			choiceBox.setDisable(false);
@@ -327,8 +282,6 @@ public class MainController implements Initializable {
 		prefs = Preferences.userRoot().node("db");
 		enterBtn.setDisable(true);
 		startBtn.setDisable(true);
-		selectFileBtn.setDisable(true);
-		convertBtn.setDisable(true);
 		printListBtn.setDisable(true);
 		resetBtn.setDisable(true);
 		openBrowserBtn.setDisable(true);
