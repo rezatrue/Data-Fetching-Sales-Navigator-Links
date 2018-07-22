@@ -326,7 +326,7 @@ public class MainController implements Initializable {
 
 		// Create the custom dialog.
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dialog.setTitle("Login Dialog");
+		dialog.setTitle("LLF Login");
 		dialog.setHeaderText("Look, a Custom Login Dialog");
 
 		
