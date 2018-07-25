@@ -8,7 +8,7 @@ import db.DBHandler;
 import webhandler.FireFoxOperator;
 
 public class LinkedinListMain {
-	private LinkedList<Info> list = null;
+	public static LinkedList<Info> list = null;
 	FireFoxOperator fireFoxOperator = new FireFoxOperator();
 	// old private BrowserHandler browser = null ;
 	private Parser parser = null;
@@ -140,7 +140,8 @@ public class LinkedinListMain {
 
 	public int printList(String keyword) {
 		CsvGenerator csv = new CsvGenerator();
-		csv.listtoCsv(list, keyword);
+		//csv.listtoCsv(list, keyword);
+		csv.listtoCsv(keyword);
 		return list.size();
 	}
 
@@ -164,7 +165,7 @@ public class LinkedinListMain {
 		// null file / no data
 	}
 
-	public String getPublicLink(int count) {
+	/*public String getPublicLink(int count) {
 		Iterator<Info> it = upLoadedList.iterator();
 		int newCount = 0;
 		while (it.hasNext()) {
@@ -185,6 +186,6 @@ public class LinkedinListMain {
 		String msg = (feetback.toLowerCase().contains("error")) ? "Unable to create new file"
 				: "New CSV file is created, it has " + (newCount - 1) + " public links";
 		return msg;
-	}
+	}*/
 
 }

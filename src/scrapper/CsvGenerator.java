@@ -13,7 +13,10 @@ public class CsvGenerator {
 	public CsvGenerator() {
 	}
 
-	public String listtoCsv(LinkedList<Info> list, String keyword) {
+	public String listtoCsv(String keyword) {
+		
+		LinkedList<Info> list = LinkedinListMain.list;
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Calendar cal = Calendar.getInstance();
 		String fileName = dateFormat.format(cal.getTime());
@@ -44,32 +47,46 @@ public class CsvGenerator {
 			writer.append(",");
 			writer.append("\n");
 
-			Iterator it = list.iterator();
+			System.out.println(" -- out size-- "+ list.size());
+			if(list.size() > 0) {
+				Iterator<Info> it = list.iterator();
+	
+				while (it.hasNext()) {
+					Info info = (Info) it.next();
+					System.out.println(" --data -- "+ 
+							info.getLink() + " getLink " + 
+							info.getFirstName() + " getFirstName " + 
+							info.getSecondName() + " getSecondName " + 
+							info.getEmail() + " getEmail " + 
+							info.getPhone() + " getPhone " + 
+							info.getLocation() + " getLocation " + 
+							info.getIndustry() + " getIndustry " + 
+							info.getCurrentJobTitle() + " getCurrentJobTitle " + 
+							info.getCurrentCompany() + " getCurrentCompany " + 
+							info.getCompanySize() + " getCompanySize " );
 
-			while (it.hasNext()) {
-				Info info = (Info) it.next();
-				writer.append(commaSkiping(info.getLink()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getFirstName()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getSecondName()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getEmail()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getPhone()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getLocation()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getIndustry()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getCurrentJobTitle()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getCurrentCompany()));
-				writer.append(",");
-				writer.append(commaSkiping(info.getCompanySize()));
-				writer.append("\n");
+					writer.append(commaSkiping(info.getLink()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getFirstName()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getSecondName()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getEmail()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getPhone()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getLocation()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getIndustry()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getCurrentJobTitle()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getCurrentCompany()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getCompanySize()));
+					writer.append("\n");
+				}
 			}
-
 			writer.flush();
 			writer.close();
 			return "Done";
