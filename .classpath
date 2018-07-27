@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/selenium-server-standalone-3.5.3.jar"/>
 	<classpathentry kind="lib" path="lib/client-combined-3.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.6.jar"/>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.23.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
