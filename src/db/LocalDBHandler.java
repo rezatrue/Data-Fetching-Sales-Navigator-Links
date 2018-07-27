@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class LocalDBHandler {
+	
+	
 
 	public static void main(String[] args) {
 		connect();

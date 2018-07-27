@@ -2,6 +2,7 @@ package scrapper;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ public class CsvGenerator {
 	}
 
 	public String listtoCsv(String keyword) {
+		String re_msg = "Done";
 		
 		LinkedList<Info> list = LinkedinListMain.list;
 		
@@ -87,16 +89,19 @@ public class CsvGenerator {
 					writer.append("\n");
 				}
 			}
-			writer.flush();
-			writer.close();
-			return "Done";
 
 		} catch (IOException e) {
-			// e.printStackTrace();
-			return "Error" + e.getMessage();
-		}
-
-	}
+			re_msg = "Error" + e.getMessage();
+		}finally {
+			try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+		return re_msg;
+	} 
 
 	protected String commaSkiping(String text) {
 		String newText = text;
