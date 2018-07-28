@@ -5,17 +5,22 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import db.DBHandler;
+import db.LocalDBHandler;
 import webhandler.FireFoxOperator;
 
 public class LinkedinListMain {
-	public static LinkedList<Info> list = null;
+	public LinkedList<Info> list = null;
+	LocalDBHandler localDb;
 	FireFoxOperator fireFoxOperator = new FireFoxOperator();
 	// old private BrowserHandler browser = null ;
 	private Parser parser = null;
 	private DBHandler dbHandler = null;
+	int listSize = 0;
 
 	public LinkedinListMain() {
-		list = new LinkedList<Info>();
+		//list = new LinkedList<Info>();
+		localDb = new LocalDBHandler();
+		listSize = 0;
 		// browser = new BrowserHandler(); // create issue as resource location
 		// is not same in different PC
 		parser = new NewHtmlParser(); // default selected
@@ -87,22 +92,37 @@ public class LinkedinListMain {
 	}
 
 	public int getTotalSize() {
-		return list.size();
+		return listSize;
 	}
 
-	// modified 11 mar 2018
+	// modified 28 July 2018
 	public int takeList() {
 		LinkedList<Info> currentlist = parser.parse(fireFoxOperator.getSourseCode());
+		
+		return addToDb(currentlist);
+		/*
 		LinkedList<Info> uniquelist = removeDuplicate(currentlist);
-
 		if (uniquelist.size() > 0) {
 			list.addAll(uniquelist);
 			return uniquelist.size();
 		} else {
 			return 0;
 		}
+		*/
 	}
 
+	public int addToDb(LinkedList<Info> parsedlist) {
+		int count = 0;
+		ListIterator<Info> it = parsedlist.listIterator();
+		while(it.hasNext()) {
+			Info info = (Info) it.next();
+			if(localDb.insert(info)) count++;
+		}
+		listSize += count; 
+		return count;
+	}
+	
+	/*
 	// comparing links only, this might make the process slow
 	public LinkedList<Info> removeDuplicate(LinkedList<Info> parsedlist) {
 		LinkedList<Info> uniquelist = new LinkedList<Info>();
@@ -128,21 +148,25 @@ public class LinkedinListMain {
 
 		return uniquelist;
 	}
+	*/
 
 	public int clearList() {
-		list.removeAll(list);
-		if (list.size() == 0) {
-			return list.size();
+		if (localDb.dropTable()) {
+			listSize = 0;
+			return 0;
 		} else {
 			return -1;
 		}
 	}
 
 	public int printList(String keyword) {
+		//if(list.size() > 0)  list = null;
+		list = new LinkedList<>();
+		list = localDb.selectAll();
 		CsvGenerator csv = new CsvGenerator();
 		//csv.listtoCsv(list, keyword);
-		csv.listtoCsv(keyword);
-		return list.size();
+		String msg = csv.listtoCsv(keyword, list);
+		return 0;
 	}
 
 	public String userAuthCheck(String user, String password) {

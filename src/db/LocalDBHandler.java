@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 
 import scrapper.Info;
 
@@ -45,10 +46,37 @@ public class LocalDBHandler {
             }
 	}
 	
+	public boolean dropTable() {
+		boolean status = true;
+		// Drop table if previous information exist
+		String sqlTDrop = "drop table IF EXISTS " + TABLE_NAME;
+        
+        if(conn==null)
+        	connect();
+        
+        Statement stmt = null;
+        
+        try {
+			if(conn!=null) {
+				stmt = conn.createStatement();
+			    stmt.execute(sqlTDrop);
+			}
+		} catch (SQLException e) {
+			status = false;
+			System.out.println("1"+e.getMessage());
+		}finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				System.out.println("2"+e.getMessage());
+			}
+		}
+        return status;
+	}
 	
 	private void createNewTable() {
 		// Drop table if previous information exist
-		String sqlTDrop = "drop table IF EXISTS " + TABLE_NAME;
+		dropTable();
         // SQL statement for creating a new table
         String sqlTCreate = "CREATE TABLE IF NOT EXISTS "+ TABLE_NAME + " ("
                 + "	Linkedin_Profile_URL text PRIMARY KEY,"
@@ -71,7 +99,6 @@ public class LocalDBHandler {
         try {
 			if(conn!=null) {
 				stmt = conn.createStatement();
-			    stmt.execute(sqlTDrop);
 			    stmt.execute(sqlTCreate);
 			}
 		} catch (SQLException e) {
@@ -85,7 +112,9 @@ public class LocalDBHandler {
 		}
     }
 	
-	public void selectAll(){
+	public LinkedList<Info> selectAll(){
+		LinkedList<Info> list  = new LinkedList<>();
+		
         String sql = "SELECT * FROM " + TABLE_NAME;
         if(conn == null)
         	connect();
@@ -99,6 +128,20 @@ public class LocalDBHandler {
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
+					Info info = new Info(
+				                       rs.getString("Linkedin_Profile_URL"),
+				                       rs.getString("First_Name"), 
+				                       rs.getString("Last_Name"),
+				                       rs.getString("Email_ID"), 
+				                       rs.getString("Contact_Number"),
+				                       rs.getString("Location"), 
+				                       rs.getString("Industry"),
+				                       rs.getString("Designation"),
+				                       rs.getString("Company_Name"),
+				                       rs.getString("Company_Size")
+							);
+					list.add(info);
+					
 				    System.out.println( 
 				                       rs.getString("Linkedin_Profile_URL") + "\t" +
 				                       rs.getString("First_Name") +  "\t" + 
@@ -124,34 +167,10 @@ public class LocalDBHandler {
 			}
 			
         }
+        return list;
 	}
 
-	public void insert(String link, String fname, String lname, String company) {
-        String sql = "INSERT INTO "+ TABLE_NAME + " (Linkedin_Profile_URL, First_Name, Last_Name, Company_Name) VALUES(?,?,?,?)";
-        PreparedStatement pstmt = null;
-        if(conn == null)
-        	connect();
-        if(conn != null) {
-	        try {
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, link);
-				pstmt.setString(2, fname);
-				pstmt.setString(3, lname);
-				pstmt.setString(4, company);
-				pstmt.executeUpdate();
-			} catch (SQLException e) {
-				System.out.println("3"+e.getMessage());
-			}finally {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					System.out.println("4"+e.getMessage());
-				}
-			}
-        }  
-    }
-
-	public void insert(Info info) {
+	public boolean insert(Info info) {
 		String sql = "INSERT INTO " 
 					+ TABLE_NAME 
 					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
@@ -177,6 +196,7 @@ public class LocalDBHandler {
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
+				return false;
 			}finally {
 				try {
 					pstmt.close();
@@ -185,6 +205,7 @@ public class LocalDBHandler {
 				}
 			}
         }
+        return true;
 	}
 	
 }

@@ -9,15 +9,17 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import db.LocalDBHandler;
+
 public class CsvGenerator {
 
 	public CsvGenerator() {
 	}
 
-	public String listtoCsv(String keyword) {
+	public String listtoCsv(String keyword, LinkedList<Info> list) {
+		
 		String re_msg = "Done";
 		
-		LinkedList<Info> list = LinkedinListMain.list;
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Calendar cal = Calendar.getInstance();
