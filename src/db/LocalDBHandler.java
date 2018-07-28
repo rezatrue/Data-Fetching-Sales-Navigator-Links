@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import scrapper.Info;
+
 public class LocalDBHandler {
 	
 	private final String DB_NAME = "llf.db";
@@ -18,6 +20,7 @@ public class LocalDBHandler {
 	private Connection conn = null;
 
 	public LocalDBHandler() {
+		createNewTable();
 	}
 		
 	public void connect() {
@@ -42,14 +45,12 @@ public class LocalDBHandler {
             }
 	}
 	
-	public void dropTable() {
-		
-	}
 	
-	public void createNewTable() {
-        
+	private void createNewTable() {
+		// Drop table if previous information exist
+		String sqlTDrop = "drop table IF EXISTS " + TABLE_NAME;
         // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS "+ TABLE_NAME + " ("
+        String sqlTCreate = "CREATE TABLE IF NOT EXISTS "+ TABLE_NAME + " ("
                 + "	Linkedin_Profile_URL text PRIMARY KEY,"
                 + "	First_Name text,"
                 + "	Last_Name text,"
@@ -70,7 +71,8 @@ public class LocalDBHandler {
         try {
 			if(conn!=null) {
 				stmt = conn.createStatement();
-			    stmt.execute(sql);
+			    stmt.execute(sqlTDrop);
+			    stmt.execute(sqlTCreate);
 			}
 		} catch (SQLException e) {
 			System.out.println("1"+e.getMessage());
@@ -148,5 +150,41 @@ public class LocalDBHandler {
 			}
         }  
     }
+
+	public void insert(Info info) {
+		String sql = "INSERT INTO " 
+					+ TABLE_NAME 
+					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
+					+ " Location, Industry, Designation, Company_Name, Company_Size) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?)";
+		
+		PreparedStatement pstmt = null;
+        if(conn == null)
+        	connect();
+        if(conn != null) {
+	        try {
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, info.getLink());
+				pstmt.setString(2, info.getFirstName());
+				pstmt.setString(3, info.getSecondName());
+				pstmt.setString(4, info.getEmail());
+				pstmt.setString(5, info.getPhone());
+				pstmt.setString(6, info.getLocation());
+				pstmt.setString(7, info.getIndustry());
+				pstmt.setString(8, info.getCurrentJobTitle());
+				pstmt.setString(9, info.getCurrentCompany());
+				pstmt.setString(10, info.getCompanySize());
+				pstmt.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("3"+e.getMessage());
+			}finally {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					System.out.println("4"+e.getMessage());
+				}
+			}
+        }
+	}
 	
 }
