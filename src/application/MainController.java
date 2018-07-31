@@ -26,6 +26,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -133,6 +134,25 @@ public class MainController implements Initializable {
 
 	@FXML
 	public void openBrowserBtnAction(ActionEvent event) {
+		
+
+		 System.out.println("Open Browser Button");
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/application/LoadingProgressBar.fxml"));
+			Stage stage = new Stage();
+			stage.setTitle("Settings");
+			stage.setScene(new Scene(parent));
+			stage.setResizable(false);
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	
+		
+		
+		
+		/*
+		
 		String buttonText = openBrowserBtn.getText();
 
 		System.out.println(buttonText);
@@ -165,7 +185,7 @@ public class MainController implements Initializable {
 			choiceBox.setDisable(true);
 			textMessage.setText("Browser is Closed");
 		}
-
+		*/
 	}
 
 	@FXML
@@ -286,7 +306,7 @@ public class MainController implements Initializable {
 		startBtn.setDisable(true);
 		printListBtn.setDisable(true);
 		resetBtn.setDisable(true);
-		openBrowserBtn.setDisable(true);
+		openBrowserBtn.setDisable(false); // testing 
 
 		choiceBox.getItems().addAll(choiceBoxItems);
 		choiceBox.setValue(choiceBoxItems[0]);
@@ -306,16 +326,17 @@ public class MainController implements Initializable {
 		 * stage.show(); } catch (Exception e) { e.printStackTrace(); }
 		 */
 
-		String msg = loginDialoag();
-
-		textMessage.setText(msg);
-		if (msg.toLowerCase().contains("welcome"))
-			openBrowserBtn.setDisable(false);
-		else
-			openBrowserBtn.setDisable(true);
+//		String msg = loginDialoag();
+//
+//		textMessage.setText(msg);
+//		if (msg.toLowerCase().contains("welcome"))
+//			openBrowserBtn.setDisable(false);
+//		else
+//			openBrowserBtn.setDisable(true);
 
 	}
 
+	
 	// source http://code.makery.ch/blog/javafx-dialogs-official/
 	// just copy pest
 
