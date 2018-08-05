@@ -8,7 +8,11 @@ import java.util.prefs.Preferences;
 
 import db.DBHandler;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -37,7 +41,7 @@ import javafx.util.Pair;
 import scrapper.LinkedinListMain;
 import webhandler.FireFoxOperator;
 
-public class MainController implements Initializable {
+public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private TextField textMessage;
 	@FXML
@@ -143,22 +147,24 @@ public class MainController implements Initializable {
 
 		System.out.println(buttonText);
 
+		ShowProgressBar showProgress = new ShowProgressBar();
+		
 		if (buttonText.toLowerCase().contains("open")) {
 			openBrowserBtn.setText("Close");
 
-			ShowProgressBar showProgress = new ShowProgressBar();
-			
-			new Thread(new Runnable() {
+			this.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				
 				@Override
-				public void run() {
-
-//					if(linkedinListMain.launcherBrowser()){ 
-//						showProgress.close();
-//						textMessage.setText("New Browser is Opened");}
+				public void handle(WorkerStateEvent event) {
+					String status = event.getSource().getValue().toString();
+					System.out.println(status);
+					if(status == "Done") {
+						showProgress.close();
+						textMessage.setText("New Browser is Opened");
+					}
 				}
-			}).start();
-			
+			});	
+			this.start();
 			
 			enterBtn.setDisable(false);
 			startBtn.setDisable(false);
@@ -301,7 +307,7 @@ public class MainController implements Initializable {
 		startBtn.setDisable(true);
 		printListBtn.setDisable(true);
 		resetBtn.setDisable(true);
-		openBrowserBtn.setDisable(false); // testing 
+		openBrowserBtn.setDisable(true);
 
 		choiceBox.getItems().addAll(choiceBoxItems);
 		choiceBox.setValue(choiceBoxItems[0]);
@@ -321,13 +327,13 @@ public class MainController implements Initializable {
 		 * stage.show(); } catch (Exception e) { e.printStackTrace(); }
 		 */
 
-//		String msg = loginDialoag();
-//
-//		textMessage.setText(msg);
-//		if (msg.toLowerCase().contains("welcome"))
-//			openBrowserBtn.setDisable(false);
-//		else
-//			openBrowserBtn.setDisable(true);
+		String msg = loginDialoag();
+
+		textMessage.setText(msg);
+		if (msg.toLowerCase().contains("welcome"))
+			openBrowserBtn.setDisable(false);
+		else
+			openBrowserBtn.setDisable(true);
 
 	}
 
@@ -425,9 +431,23 @@ public class MainController implements Initializable {
 		return null;
 	}
 
-	protected void reset() {
+	public void reset() {
 		previousPageBtn.setDisable(true);
 		nextPageBtn.setDisable(true);
+	}
+
+	@Override
+	protected Task<String> createTask() {
+		return new Task<String>() {
+			
+			@Override
+			protected String call() throws Exception {
+				linkedinListMain.launcherBrowser();
+				return "Done";
+			}
+			
+		};
+		
 	}
 
 }
