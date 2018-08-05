@@ -53,6 +53,8 @@ public class MainController implements Initializable {
 	@FXML
 	private TextField textListSize;
 
+	static boolean status = false;
+	
 	private Preferences prefs = null;
 
 	// private LinkedList<Info> list = null;
@@ -137,22 +139,6 @@ public class MainController implements Initializable {
 		
 
 		 System.out.println("Open Browser Button");
-		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("/application/LoadingProgressBar.fxml"));
-			Stage stage = new Stage();
-			stage.setTitle("Settings");
-			stage.setScene(new Scene(parent));
-			stage.setResizable(false);
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	
-		
-		
-		
-		/*
-		
 		String buttonText = openBrowserBtn.getText();
 
 		System.out.println(buttonText);
@@ -160,14 +146,20 @@ public class MainController implements Initializable {
 		if (buttonText.toLowerCase().contains("open")) {
 			openBrowserBtn.setText("Close");
 
+			ShowProgressBar showProgress = new ShowProgressBar();
+			
 			new Thread(new Runnable() {
+				
 				@Override
 				public void run() {
-					linkedinListMain.launcherBrowser();
-					textMessage.setText("New Browser is Opened");
+
+//					if(linkedinListMain.launcherBrowser()){ 
+//						showProgress.close();
+//						textMessage.setText("New Browser is Opened");}
 				}
 			}).start();
-
+			
+			
 			enterBtn.setDisable(false);
 			startBtn.setDisable(false);
 			printListBtn.setDisable(false);
@@ -176,7 +168,6 @@ public class MainController implements Initializable {
 
 		} else {
 			// show an alert message here
-
 			linkedinListMain.signedOut();
 			linkedinListMain.closeBrowser();
 			openBrowserBtn.setText("Open");
@@ -185,7 +176,10 @@ public class MainController implements Initializable {
 			choiceBox.setDisable(true);
 			textMessage.setText("Browser is Closed");
 		}
-		*/
+		
+		
+		
+		
 	}
 
 	@FXML
@@ -301,6 +295,7 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
+
 		prefs = Preferences.userRoot().node("db");
 		enterBtn.setDisable(true);
 		startBtn.setDisable(true);
