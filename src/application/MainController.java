@@ -142,15 +142,17 @@ public class MainController  extends Service<String> implements Initializable {
 	public void openBrowserBtnAction(ActionEvent event) {
 		
 
-		 System.out.println("Open Browser Button");
+		System.out.println("Open Browser Button");
 		String buttonText = openBrowserBtn.getText();
 
 		System.out.println(buttonText);
 
-		ShowProgressBar showProgress = new ShowProgressBar();
 		
 		if (buttonText.toLowerCase().contains("open")) {
 			openBrowserBtn.setText("Close");
+			openBrowserBtn.setDisable(true);
+
+			ShowProgressBar showProgress = new ShowProgressBar();
 
 			this.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				
@@ -161,17 +163,33 @@ public class MainController  extends Service<String> implements Initializable {
 					if(status == "Done") {
 						showProgress.close();
 						textMessage.setText("New Browser is Opened");
+						openBrowserBtn.setDisable(false);
+						enterBtn.setDisable(false);
+						startBtn.setDisable(false);
+						printListBtn.setDisable(false);
+						resetBtn.setDisable(false);
+						choiceBox.setDisable(false);
 					}
 				}
 			});	
-			this.start();
 			
-			enterBtn.setDisable(false);
-			startBtn.setDisable(false);
-			printListBtn.setDisable(false);
-			resetBtn.setDisable(false);
-			choiceBox.setDisable(false);
-
+			// calling service start / restart based on getState() 
+			System.out.println(this.getState().toString());
+			
+			switch(this.getState().toString()) {
+			case "READY":
+				this.start();
+				break;
+			case "CANCELLED":
+				this.scheduled();
+				this.restart();
+				break;
+			case "SUCCEEDED":
+				this.scheduled();
+				this.restart();
+				break;
+			}
+			
 		} else {
 			// show an alert message here
 			linkedinListMain.signedOut();

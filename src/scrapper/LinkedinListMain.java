@@ -18,7 +18,7 @@ public class LinkedinListMain {
 	int listSize = 0;
 
 	public LinkedinListMain() {
-		//list = new LinkedList<Info>();
+		list = new LinkedList<Info>();
 		localDb = new LocalDBHandler();
 		listSize = 0;
 		// browser = new BrowserHandler(); // create issue as resource location
@@ -160,13 +160,10 @@ public class LinkedinListMain {
 	}
 
 	public int printList(String keyword) {
-		//if(list.size() > 0)  list = null;
-		list = new LinkedList<>();
 		list = localDb.selectAll();
 		CsvGenerator csv = new CsvGenerator();
-		//csv.listtoCsv(list, keyword);
-		String msg = csv.listtoCsv(keyword, list);
-		return 0;
+		int number = csv.listtoCsv(keyword, list);
+		return number;
 	}
 
 	public String userAuthCheck(String user, String password) {
@@ -189,27 +186,5 @@ public class LinkedinListMain {
 		// null file / no data
 	}
 
-	/*public String getPublicLink(int count) {
-		Iterator<Info> it = upLoadedList.iterator();
-		int newCount = 0;
-		while (it.hasNext()) {
-			String link = it.next().getLink();
-			if (link.contains("linkedin.com/sales")) {
-				upLoadedList.get(newCount).setLink(fireFoxOperator.getPublicLink(link));
-				System.out.println(upLoadedList.get(newCount).getLink());
-			} else {
-				count++;
-			}
-			newCount++;
-			if (newCount > count)
-				break;
-		}
-
-		CsvGenerator csv = new CsvGenerator();
-		String feetback = csv.listtoCsv(upLoadedList, "(" + count + ")-Public-links");
-		String msg = (feetback.toLowerCase().contains("error")) ? "Unable to create new file"
-				: "New CSV file is created, it has " + (newCount - 1) + " public links";
-		return msg;
-	}*/
 
 }

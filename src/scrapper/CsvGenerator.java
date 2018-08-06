@@ -16,10 +16,11 @@ public class CsvGenerator {
 	public CsvGenerator() {
 	}
 
-	public String listtoCsv(String keyword, LinkedList<Info> list) {
+	public int listtoCsv(String keyword, LinkedList<Info> list) {
 		
-		String re_msg = "Done";
+		int count = 0;
 		
+		System.out.println("list size 1: " + list);
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Calendar cal = Calendar.getInstance();
@@ -89,11 +90,12 @@ public class CsvGenerator {
 					writer.append(",");
 					writer.append(commaSkiping(info.getCompanySize()));
 					writer.append("\n");
+					count++;
 				}
 			}
 
 		} catch (IOException e) {
-			re_msg = "Error" + e.getMessage();
+			System.out.println(" csv g Error : " + e.getMessage());
 		}finally {
 			try {
 				writer.flush();
@@ -102,7 +104,7 @@ public class CsvGenerator {
 				e.printStackTrace();
 			}
         }
-		return re_msg;
+		return count;
 	} 
 
 	protected String commaSkiping(String text) {
