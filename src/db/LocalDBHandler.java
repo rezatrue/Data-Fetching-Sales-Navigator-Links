@@ -21,7 +21,6 @@ public class LocalDBHandler {
 	private Connection conn = null;
 
 	public LocalDBHandler() {
-		createNewTable();
 	}
 		
 	public void connect() {
@@ -46,7 +45,7 @@ public class LocalDBHandler {
             }
 	}
 	
-	public boolean dropTable() {
+	private boolean dropTable() {
 		boolean status = true;
 		// Drop table if previous information exist
 		String sqlTDrop = "drop table IF EXISTS " + TABLE_NAME;
@@ -71,12 +70,14 @@ public class LocalDBHandler {
 				System.out.println("2"+e.getMessage());
 			}
 		}
+        System.out.println(" drop : " + status );
         return status;
 	}
 	
-	private void createNewTable() {
+	public boolean createNewTable() {
 		// Drop table if previous information exist
-		dropTable();
+		if(!dropTable())
+			return false;
         // SQL statement for creating a new table
         String sqlTCreate = "CREATE TABLE IF NOT EXISTS "+ TABLE_NAME + " ("
                 + "	Linkedin_Profile_URL text PRIMARY KEY,"
@@ -110,7 +111,36 @@ public class LocalDBHandler {
 				System.out.println("2"+e.getMessage());
 			}
 		}
+        
+        return true;
     }
+	
+	public int countRecords() {
+		int count = 0;
+		String sql = "SELECT count(*) FROM " + TABLE_NAME;
+		if(conn == null)
+        	connect();
+		Statement stmt = null;
+		ResultSet rset = null;
+		if(conn != null) {
+			try {
+				stmt = conn.createStatement();
+				rset = stmt.executeQuery(sql);
+				rset.next();
+				count = rset.getInt("rowcount");
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}finally {
+				try {
+					stmt.close();
+					rset.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return count;
+	}
 	
 	public LinkedList<Info> selectAll(){
 		LinkedList<Info> list  = new LinkedList<>();

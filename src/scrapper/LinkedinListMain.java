@@ -151,14 +151,18 @@ public class LinkedinListMain {
 	*/
 
 	public int clearList() {
-		if (localDb.dropTable()) {
+		if (localDb.createNewTable()) { // drop & create table
 			listSize = 0;
 			return 0;
 		} else {
 			return -1;
 		}
 	}
-
+	
+	public int countData() {
+		return localDb.countRecords();
+	}
+	
 	public int printList(String keyword) {
 		list = localDb.selectAll();
 		CsvGenerator csv = new CsvGenerator();

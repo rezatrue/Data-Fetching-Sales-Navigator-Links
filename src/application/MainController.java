@@ -152,6 +152,9 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setText("Close");
 			openBrowserBtn.setDisable(true);
 
+			clearDataNotification();
+			textListSize.setText(Integer.toString(linkedinListMain.countData()));
+			
 			ShowProgressBar showProgress = new ShowProgressBar();
 
 			this.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -162,7 +165,7 @@ public class MainController  extends Service<String> implements Initializable {
 					System.out.println(status);
 					if(status == "Done") {
 						showProgress.close();
-						textMessage.setText("New Browser is Opened");
+						textMessage.setText("New Browser is lunched, please proceed . . .");
 						openBrowserBtn.setDisable(false);
 						enterBtn.setDisable(false);
 						startBtn.setDisable(false);
@@ -264,13 +267,7 @@ public class MainController  extends Service<String> implements Initializable {
 	public void resetBtnAction(ActionEvent event) {
 		System.out.println("Reset");
 
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Please Confirmation");
-		alert.setHeaderText("All collected data will be removed");
-		alert.setContentText("Are you ok with this?");
-
-		java.util.Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK) {
+		if (clearDataNotification()) {
 			int listSize = linkedinListMain.clearList();
 			if (listSize == 0)
 				textListSize.setText(String.valueOf(listSize));
@@ -280,10 +277,24 @@ public class MainController  extends Service<String> implements Initializable {
 			linkedinListMain.setProfileMode(choiceBoxItems[0]);
 			textMessage.setText("All data deleted & Profile reset");
 			reset();
+		}else {
+			textMessage.setText("Unable to clear previous Data");
 		}
 
 	}
 
+	private boolean clearDataNotification() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Please Confirmation");
+		alert.setHeaderText("Previously collected all data will be removed.");
+		alert.setContentText("Do you want to delete all previously data?");
+
+		java.util.Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+			return true;
+		return false;
+	}
+	
 	@FXML
 	private CheckBox auto;
 
@@ -344,7 +355,7 @@ public class MainController  extends Service<String> implements Initializable {
 		 * stage.setScene(new Scene(parent)); stage.setResizable(false);
 		 * stage.show(); } catch (Exception e) { e.printStackTrace(); }
 		 */
-
+		
 		String msg = loginDialoag();
 
 		textMessage.setText(msg);
