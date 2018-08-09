@@ -334,8 +334,8 @@ public class MainController  extends Service<String> implements Initializable {
 		prefs = Preferences.userRoot().node("db");
 		enterBtn.setDisable(true);
 		startBtn.setDisable(true);
-		printListBtn.setDisable(true);
-		resetBtn.setDisable(true);
+		printListBtn.setDisable(false); // test
+		resetBtn.setDisable(true); 
 		openBrowserBtn.setDisable(true);
 
 		choiceBox.getItems().addAll(choiceBoxItems);

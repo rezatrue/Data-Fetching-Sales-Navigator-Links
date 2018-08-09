@@ -108,11 +108,15 @@ public class CsvGenerator {
 	} 
 
 	protected String commaSkiping(String text) {
-		String newText = text;
+		try {
+		String newText = text ;
 		if (newText.contains(","))
 			if (!newText.startsWith("\"") && !newText.endsWith("\""))
 				newText = "\"" + newText + "\"";
 		return newText;
+		}catch (Exception e) {
+			return "";
+		}
 	}
 
 }
