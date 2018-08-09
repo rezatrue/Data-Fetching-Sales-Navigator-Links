@@ -127,7 +127,7 @@ public class LocalDBHandler {
 				stmt = conn.createStatement();
 				rset = stmt.executeQuery(sql);
 				rset.next();
-				count = rset.getInt("rowcount");
+				count = rset.getInt(1);
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 			}finally {
@@ -139,6 +139,7 @@ public class LocalDBHandler {
 				}
 			}
 		}
+		System.out.println("total : " + count);
 		return count;
 	}
 	

@@ -67,7 +67,7 @@ public class MainController  extends Service<String> implements Initializable {
 	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile" };
 	private LinkedinListMain linkedinListMain;
 	private DBHandler dBHandler;
-	
+	private int listSize;
 	
 	@FXML
 	private Button settingBtn;
@@ -152,8 +152,15 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setText("Close");
 			openBrowserBtn.setDisable(true);
 
-			clearDataNotification();
-			textListSize.setText(Integer.toString(linkedinListMain.countData()));
+			if(clearDataNotification()){
+				int size = linkedinListMain.clearList();
+				if (size > 0)
+					listSize = size ;
+			}else {
+				listSize = linkedinListMain.countData();
+			}
+			//textListSize.setText(String.valueOf(listSize));
+			textListSize.setText(Integer.toString(listSize));
 			
 			ShowProgressBar showProgress = new ShowProgressBar();
 
@@ -268,7 +275,7 @@ public class MainController  extends Service<String> implements Initializable {
 		System.out.println("Reset");
 
 		if (clearDataNotification()) {
-			int listSize = linkedinListMain.clearList();
+			listSize = linkedinListMain.clearList();
 			if (listSize == 0)
 				textListSize.setText(String.valueOf(listSize));
 			textCurrentPage.setText("0");
@@ -330,11 +337,12 @@ public class MainController  extends Service<String> implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-
+		listSize = 0;
+		
 		prefs = Preferences.userRoot().node("db");
 		enterBtn.setDisable(true);
 		startBtn.setDisable(true);
-		printListBtn.setDisable(false); // test
+		printListBtn.setDisable(true);
 		resetBtn.setDisable(true); 
 		openBrowserBtn.setDisable(true);
 
