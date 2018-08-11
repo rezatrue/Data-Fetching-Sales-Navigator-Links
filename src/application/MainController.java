@@ -125,8 +125,8 @@ public class MainController  extends Service<String> implements Initializable {
 
 						}
 					} while (autoSelected && startBtn.getText().contains("Pause") && run);
-					startBtn.setText("Start");
 					textMessage.setText("Process stopped at page " + currentPage);
+					startBtn.setText("Start");
 				}
 			});
 
@@ -140,8 +140,6 @@ public class MainController  extends Service<String> implements Initializable {
 
 	@FXML
 	public void openBrowserBtnAction(ActionEvent event) {
-		
-
 		System.out.println("Open Browser Button");
 		String buttonText = openBrowserBtn.getText();
 
@@ -191,11 +189,7 @@ public class MainController  extends Service<String> implements Initializable {
 				this.start();
 				break;
 			case "CANCELLED":
-				this.scheduled();
-				this.restart();
-				break;
 			case "SUCCEEDED":
-				this.scheduled();
 				this.restart();
 				break;
 			}
@@ -283,7 +277,7 @@ public class MainController  extends Service<String> implements Initializable {
 			choiceBox.setValue(choiceBoxItems[0]);
 			linkedinListMain.setProfileMode(choiceBoxItems[0]);
 			textMessage.setText("All data deleted & Profile reset");
-			reset();
+			guireset();
 		}else {
 			textMessage.setText("Unable to clear previous Data");
 		}
@@ -350,7 +344,7 @@ public class MainController  extends Service<String> implements Initializable {
 		choiceBox.setValue(choiceBoxItems[0]);
 		choiceBox.setOnAction(e -> choiceBoxSetup(choiceBox));
 		choiceBox.setDisable(true);
-		reset();
+		guireset();
 
 		textUserId.setText(prefs.get("linkedinUser", ""));
 		textPassword.setText(prefs.get("linkedinPassword", ""));
@@ -468,7 +462,7 @@ public class MainController  extends Service<String> implements Initializable {
 		return null;
 	}
 
-	public void reset() {
+	private void guireset() {
 		previousPageBtn.setDisable(true);
 		nextPageBtn.setDisable(true);
 	}
