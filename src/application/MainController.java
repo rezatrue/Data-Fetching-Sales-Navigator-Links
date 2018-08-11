@@ -95,14 +95,54 @@ public class MainController  extends Service<String> implements Initializable {
 	public void startBtnAction(ActionEvent event) {
 		System.out.println("Start Button");
 
+		MyService runService = new MyService();
+		
+		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// event.getSource().getValue() will take return value from service thread 
+				startBtn.setText(event.getSource().getValue().toString());
+			}
+		});
+		
 		if (startBtn.getText().contains("Pause")) {
 			startBtn.setText("Start");
+			openBrowserBtn.setDisable(false);
+			switch(runService.getState().toString()) {
+			case "RUNNING":
+				runService.cancel();
+				break;
+			}	
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
+			openBrowserBtn.setDisable(true);
+			// calling MyService start / cancel /restart based on getState() 
+			System.out.println(runService.getState().toString());
+			
+			switch(runService.getState().toString()) {
+			case "READY":
+				runService.start();
+				break;
+			case "CANCELLED":
+			case "SUCCEEDED":
+				runService.restart();
+				break;
+			}
 
-			Thread runSchedule = new Thread(new Runnable() {
+		}
+
+	}
+
+	private class MyService extends Service<String>{
+
+		@Override
+		protected Task<String> createTask() {
+			
+			return new Task<String>() {
+				
 				@Override
-				public void run() {
+				protected String call() throws Exception {
 					boolean run = true;
 					boolean autoSelected;
 					int currentPage;
@@ -126,15 +166,16 @@ public class MainController  extends Service<String> implements Initializable {
 						}
 					} while (autoSelected && startBtn.getText().contains("Pause") && run);
 					textMessage.setText("Process stopped at page " + currentPage);
-					startBtn.setText("Start");
+					openBrowserBtn.setDisable(false);
+					return "Start";
 				}
-			});
-
-			runSchedule.start();
+			};
+			
 		}
-
+		
 	}
-
+	
+	
 	@FXML
 	private Button openBrowserBtn;
 
