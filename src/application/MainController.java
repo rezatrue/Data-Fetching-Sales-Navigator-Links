@@ -192,9 +192,7 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setDisable(true);
 
 			if(clearDataNotification()){
-				int size = linkedinListMain.clearList();
-				if (size > 0)
-					listSize = size ;
+				listSize = linkedinListMain.clearList();
 			}else {
 				listSize = linkedinListMain.countData();
 			}
