@@ -25,16 +25,7 @@ public class SettingsController implements Initializable {
 	@FXML
 	private TextField txtdriver;
 	@FXML
-	private PasswordField txtdbUser;
-	@FXML
-	private PasswordField txtdbPassword;
-	@FXML
 	private PasswordField txtdbServer;
-	@FXML
-	private PasswordField txttable;
-	@FXML
-	private PasswordField txtcolumn;
-
 	@FXML
 	private Button saveBtn;
 
@@ -49,14 +40,10 @@ public class SettingsController implements Initializable {
 		prefs.put("linkedinPassword", txtLinkedinPassword.getText());
 
 		prefs.put("dataserver", txtdbServer.getText());
-		prefs.put("tablename", txttable.getText());
-		prefs.put("columnname", txtcolumn.getText());
 
 		prefs.put("profilename", txtprofile.getText());
 		prefs.put("geckodriverlocation", txtdriver.getText());
 
-		prefs.put("dbuser", txtdbUser.getText());
-		prefs.put("dbpassword", txtdbPassword.getText());
 		Stage stage = (Stage) txtuserName.getScene().getWindow();
 		stage.close();
 	}
@@ -70,12 +57,10 @@ public class SettingsController implements Initializable {
 		txtLinkedinUser.setText(prefs.get("linkedinUser", ""));
 		txtLinkedinPassword.setText(prefs.get("linkedinPassword", ""));
 		txtdbServer.setText(prefs.get("dataserver", ""));
-		txttable.setText(prefs.get("tablename", ""));
-		txtcolumn.setText(prefs.get("columnname", ""));
+		
 		txtprofile.setText(prefs.get("profilename", ""));
 		txtdriver.setText(prefs.get("geckodriverlocation", ""));
-		txtdbUser.setText(prefs.get("dbuser", ""));
-		txtdbPassword.setText(prefs.get("dbpassword", ""));
+		
 
 	}
 

@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-import db.DBHandler;
+import api.ApiClient;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -66,7 +66,7 @@ public class MainController  extends Service<String> implements Initializable {
 	private ChoiceBox<String> choiceBox = new ChoiceBox<>();
 	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile" };
 	private LinkedinListMain linkedinListMain;
-	private DBHandler dBHandler;
+	private ApiClient apiClient; 
 	private int listSize;
 	
 	@FXML
@@ -399,6 +399,7 @@ public class MainController  extends Service<String> implements Initializable {
 		
 		String msg = loginDialoag();
 
+		//msg = "welcome test";
 		textMessage.setText(msg);
 		if (msg.toLowerCase().contains("welcome"))
 			openBrowserBtn.setDisable(false);
@@ -413,14 +414,13 @@ public class MainController  extends Service<String> implements Initializable {
 
 	private String loginDialoag() {
 		prefs = Preferences.userRoot().node("db");
-		dBHandler = new DBHandler();
+		apiClient = new ApiClient();
 		String msg = "";
 
 		// Create the custom dialog.
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("LLF Login");
-		dialog.setHeaderText("Look, a Custom Login Dialog");
-
+		dialog.setHeaderText("Please Enter your Credentials");
 		
 		File file = new File("image/login.png");
         Image imageLock = new Image(file.toURI().toString());
@@ -483,7 +483,7 @@ public class MainController  extends Service<String> implements Initializable {
 			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
 		});
 
-		return msg = dBHandler.userAuth(username.getText(), password.getText());
+		return msg = apiClient.userAuth(username.getText(), password.getText());
 
 	}
 

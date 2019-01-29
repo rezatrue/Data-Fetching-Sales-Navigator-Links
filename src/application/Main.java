@@ -22,7 +22,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Linkedin list Fetcher : 2.00");
+			primaryStage.setTitle("Linkedin list Fetcher : 2.10");
 			primaryStage.getIcons().add(new Image(new File("image/linkedin_icon.gif").toURI().toString()));
 			primaryStage.setResizable(false);
 			primaryStage.show();
