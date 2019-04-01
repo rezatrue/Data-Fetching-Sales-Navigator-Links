@@ -1,5 +1,7 @@
 package webhandler;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
@@ -12,9 +14,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 public class FireFoxOperator {
 
@@ -41,6 +46,42 @@ public class FireFoxOperator {
 
 	}
 
+	public String getInductry() {
+		String industries = "";
+
+		String industrySelector = "//li[contains(@class, 'search-s-facet--industry')]"; 
+		String singleIndustrySelector = "//li/input[contains(@id, 'industry')]";
+		boolean isindustryPresent = isElementPresent(By.xpath(industrySelector));
+		if(isindustryPresent) {
+			WebElement element = driver.findElement(By.xpath(industrySelector));
+			industries = element.getText();
+			if(industries.matches("Industries.\\([2-9]\\)")) {
+				industries = "";
+				element.click();
+				try {Thread.sleep(1000);					
+				}catch (InterruptedException e) { e.printStackTrace();	}
+				List<WebElement> lists = driver.findElements(By.xpath(singleIndustrySelector));
+				Iterator<WebElement> it = lists.iterator();
+				WebElement webElement = it.next();
+				//stackoverflow.com/questions/8187772/selenium-checkbox-attribute-checked
+				//System.out.println(webElement.getAttribute("checked"));
+				if(webElement.isSelected()) {
+					industries = webElement.findElement(By.xpath("../label/p/span")).getText();
+				}
+				while(it.hasNext()) {
+					webElement = it.next();
+					//System.out.println(webElement.getAttribute("checked"));
+					if(webElement.isSelected()) {
+						industries = industries + ", " + webElement.findElement(By.xpath("../label/p/span")).getText();
+					}
+				}
+				element.click();
+			}
+			System.out.println(industries + " : industries");
+		}
+		return industries;
+	}
+	
 	public boolean browserLauncher() {
 
 		ProfilesIni profile = new ProfilesIni();
@@ -153,19 +194,20 @@ public class FireFoxOperator {
 
 	public int currentPageNumber() {
 		String oldnCurrentSelector = "ul.pagination li.active"; // old
-		String newCurrentSelector = "li.page-list li.active"; // new
-		String salesNavCurrentSelector = "ul.pagination-links li.active.pagination-link-item"; // sales
-																								// navigator
+		//String newCurrentSelector = "li.page-list li.active"; // new
+		String newCurrentSelector = "//ul/li[contains(@class, 'active')]/span";
+		//String salesNavCurrentSelector = "ul.pagination-links li.active.pagination-link-item"; 
+		String salesNavCurrentSelector = "//ol[@class='search-results__pagination-list']/li[contains(@class, 'selected')]"; 
 		// li.page-list li.active
 		WebElement element;
 		if (isElementPresent(By.cssSelector(oldnCurrentSelector))) {
 			element = driver.findElement(By.cssSelector(oldnCurrentSelector));
 			return Integer.parseInt(element.getText());
-		} else if (isElementPresent(By.cssSelector(newCurrentSelector))) {
-			element = driver.findElement(By.cssSelector(newCurrentSelector));
+		} else if (isElementPresent(By.xpath(newCurrentSelector))) {
+			element = driver.findElement(By.xpath(newCurrentSelector));
 			return Integer.parseInt(element.getText());
-		} else if (isElementPresent(By.cssSelector(salesNavCurrentSelector))) {
-			element = driver.findElement(By.cssSelector(salesNavCurrentSelector));
+		} else if (isElementPresent(By.xpath(salesNavCurrentSelector))) {
+			element = driver.findElement(By.xpath(salesNavCurrentSelector));
 			return Integer.parseInt(element.getText());
 		} else
 			return -1;
@@ -180,24 +222,19 @@ public class FireFoxOperator {
 		if (isSalesNavDisable)
 			return responsepage;
 
-		String oldnextPageSelector = "li.next > a";
-		String newnextPageSelector = "button.next"; // put new lay out page
-													// selector here
-		String salesNavnextPageSelector = "a.next-pagination.page-link"; // remove
-																			// 1
-																			// for
-																			// live
-																			// site
+		String oldnextPageSelector = "li.next > a"; // old 
+		String newnextPageSelector = "//button[contains(@class, 'artdeco-pagination__button--next')][child::span[contains(., 'Next')]]"; // put new lay out page selector here button.next
+		String salesNavnextPageSelector = "//button[contains(@class,'search-results__pagination-next-button')][child::span[contains(., 'Next')]]"; 
 		boolean isOldPresent = isElementPresent(By.cssSelector(oldnextPageSelector));
-		boolean isNewPresent = isElementPresent(By.cssSelector(newnextPageSelector));
-		boolean isSalesNavPresent = isElementPresent(By.cssSelector(salesNavnextPageSelector));
+		boolean isNewPresent = isElementPresent(By.xpath(newnextPageSelector));
+		boolean isSalesNavPresent = isElementPresent(By.xpath(salesNavnextPageSelector));
 
 		if (isOldPresent) {
 			responsepage = switchingPage(By.cssSelector(oldnextPageSelector));
 		} else if (isNewPresent) {
-			responsepage = switchingPage(By.cssSelector(newnextPageSelector));
+			responsepage = switchingPage(By.xpath(newnextPageSelector));
 		} else if (isSalesNavPresent) {
-			responsepage = switchingPage(By.cssSelector(salesNavnextPageSelector));
+			responsepage = switchingPage(By.xpath(salesNavnextPageSelector));
 		} else {
 			responsepage = -1;
 		}
@@ -209,23 +246,18 @@ public class FireFoxOperator {
 		int currentpage = currentPageNumber();
 		int responsepage = -1;
 		String oldPrevPageSelector = "li.prev > a";
-		String newPrevPageSelector = "button.prev"; // put new lay out page
-													// selector here
-		String salesNavPrevPageSelector = "a.prev-pagination.page-link"; // remove
-																			// 1
-																			// for
-																			// live
-																			// site
+		String newPrevPageSelector = "//button[contains(@class, 'artdeco-pagination__button--previous')][child::span[contains(., 'Previous')]]"; // button.prev
+		String salesNavPrevPageSelector = "//button[contains(@class,'search-results__pagination-previous-button')][child::span[contains(., 'Previous')]]"; // a.prev-pagination.page-link
 		boolean isOldPresent = isElementPresent(By.cssSelector(oldPrevPageSelector));
-		boolean isNewPresent = isElementPresent(By.cssSelector(newPrevPageSelector));
-		boolean isSalesNavPresent = isElementPresent(By.cssSelector(salesNavPrevPageSelector));
+		boolean isNewPresent = isElementPresent(By.xpath(newPrevPageSelector));
+		boolean isSalesNavPresent = isElementPresent(By.xpath(salesNavPrevPageSelector));
 
 		if (isOldPresent) {
 			responsepage = switchingPage(By.cssSelector(oldPrevPageSelector));
 		} else if (isNewPresent) {
-			responsepage = switchingPage(By.cssSelector(newPrevPageSelector));
+			responsepage = switchingPage(By.xpath(newPrevPageSelector));
 		} else if (isSalesNavPresent) {
-			responsepage = switchingPage(By.cssSelector(salesNavPrevPageSelector));
+			responsepage = switchingPage(By.xpath(salesNavPrevPageSelector));
 		} else {
 			responsepage = -1;
 		}

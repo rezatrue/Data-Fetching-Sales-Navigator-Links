@@ -10,6 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
+import application.MainController;
+
 public class NewHtmlParser extends Parser  {
 	private String industries;
 	private String companySize;
@@ -82,7 +84,7 @@ public class NewHtmlParser extends Parser  {
 				info.setCurrentJobTitle(commaSkiping(jobTitle));
 				info.setCurrentCompany(commaSkiping(company));
 
-				info.setIndustry("");
+				info.setIndustry(MainController.industry);
 				info.setCompanySize("");
 				info.setEmail("");
 				info.setPhone("");

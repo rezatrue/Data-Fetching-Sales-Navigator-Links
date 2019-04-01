@@ -44,6 +44,10 @@ public class LinkedinListMain {
 
 	}
 
+	public String getInductry() {
+		return fireFoxOperator.getInductry();
+	}
+	
 	// modified 11 mar 2018
 	public String searchItemOnPage() {
 		return fireFoxOperator.currentPageStatus();
