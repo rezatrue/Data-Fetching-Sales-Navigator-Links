@@ -1,6 +1,7 @@
 package webhandler;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
@@ -21,12 +22,18 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
+import scrapper.Info;
+import scrapper.HtmlParser;
+import scrapper.Parser;
+import scrapper.SalesNavAccountsParser;
+import scrapper.SalesNavigatorParser;
+
 public class FireFoxOperator {
 
 	private String profileName = "default";
 	private String geckodriverdir;
 
-	private WebDriver driver = null;
+	public static WebDriver driver = null;
 	private String url = "https://www.linkedin.com/";
 	private String salesNavUrl = "https://www.linkedin.com/sales/settings?trk=nav_user_menu_manage_sales_nav";
 	private String selesnavsignouturl = "https://www.linkedin.com/sales/logout?trk=sn_nav2__util_nav_logout";
@@ -34,53 +41,46 @@ public class FireFoxOperator {
 
 	private Preferences prefs;
 
+	private Parser parser = null; // changing
+	
 	public FireFoxOperator() {
 		prefs = Preferences.userRoot().node("db");
 		this.profileName = prefs.get("profilename", "");
 		// this.filefoxdir = prefs.get("firefoxlocation", "");
 		this.geckodriverdir = prefs.get("geckodriverlocation", "");
-
+		parser = new HtmlParser(); // changing
 		// resource location explicitly stated for testing purpose
 		// this.profileName = "default";
 		// this.geckodriverdir = "Geckodriver\\v0.19.1\\32\\geckodriver.exe";
 
 	}
 
-	public String getInductry() {
-		String industries = "";
-
-		String industrySelector = "//li[contains(@class, 'search-s-facet--industry')]"; 
-		String singleIndustrySelector = "//li/input[contains(@id, 'industry')]";
-		boolean isindustryPresent = isElementPresent(By.xpath(industrySelector));
-		if(isindustryPresent) {
-			WebElement element = driver.findElement(By.xpath(industrySelector));
-			industries = element.getText();
-			if(industries.matches("Industries.\\([2-9]\\)")) {
-				industries = "";
-				element.click();
-				try {Thread.sleep(1000);					
-				}catch (InterruptedException e) { e.printStackTrace();	}
-				List<WebElement> lists = driver.findElements(By.xpath(singleIndustrySelector));
-				Iterator<WebElement> it = lists.iterator();
-				WebElement webElement = it.next();
-				//stackoverflow.com/questions/8187772/selenium-checkbox-attribute-checked
-				//System.out.println(webElement.getAttribute("checked"));
-				if(webElement.isSelected()) {
-					industries = webElement.findElement(By.xpath("../label/p/span")).getText();
-				}
-				while(it.hasNext()) {
-					webElement = it.next();
-					//System.out.println(webElement.getAttribute("checked"));
-					if(webElement.isSelected()) {
-						industries = industries + ", " + webElement.findElement(By.xpath("../label/p/span")).getText();
-					}
-				}
-				element.click();
-			}
-			System.out.println(industries + " : industries");
+	
+	public void setProfileMode(String type) {
+		System.out.println(" --- " + type);
+		parser = null;
+		if (type.toLowerCase().contains("salesnavleads")) {
+			parser = new SalesNavigatorParser();
+			this.setUrl("salesnavleads");
+		} else if (type.toLowerCase().contains("salesnavaccounts")) {
+			parser = new SalesNavAccountsParser();
+			this.setUrl("salesnavaccounts");
+		} else {
+			parser = new HtmlParser(); // default selected
+			this.setUrl("profilesearch");
 		}
-		return industries;
+
 	}
+	
+	public LinkedList<Info> takeList() { // 1
+		
+		LinkedList<Info> currentlist = parser.parse();
+
+		return currentlist;
+	}
+	
+	
+	
 	
 	public boolean browserLauncher() {
 

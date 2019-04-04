@@ -1,12 +1,18 @@
 package scrapper;
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import webhandler.FireFoxOperator;
 
 public class SalesNavAccountsParser extends Parser {
 
@@ -14,60 +20,37 @@ public class SalesNavAccountsParser extends Parser {
 		super();
 	}
 	
-	public LinkedList<Info> parse(String html){
+	public LinkedList<Info> parse(){
 		list = new LinkedList<Info>();
-		// testing with company info
-		try {
-			Document doc = Jsoup.parse(html, baseUrl);
-			
-			Elements elements = doc.select("div.content-wrapper");
-		    ListIterator<Element> it = elements.listIterator();
-		    Element element = it.next();
-			
-			while(element != null){
-				Info info = new Info();
-				Elements name = element.select("h4.name a");
-		  		System.out.println("Company Link :- "+name.attr("abs:href").toString());
-		  		String longLink = name.attr("abs:href").toString().trim();
-		  		if(longLink.toLowerCase().contains("&pagekey")) info.setLink(commaSkiping(longLink.substring(0, longLink.indexOf("&pageKey"))));
-		  		else info.setLink(commaSkiping(longLink));
-		  		info.setCurrentCompany(commaSkiping(name.attr("title").toString()));
-		  		System.out.println("Company Name :- "+name.attr("title").toString());
+		String companiesXpath = "//ol[@class=\"search-results__result-list\"]/li//article";
+		String companyNameXpath = ".//dt[@class=\"result-lockup__name\"]/a";
+		String companyCategoryXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][1]";
+		String companySizeXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][contains(., 'employee')]";
+		String companyLocationXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][3]";
+		
+		List<WebElement> lists = FireFoxOperator.driver.findElements(By.xpath(companiesXpath));
+		Iterator<WebElement> it = lists.iterator();
+		System.out.println(lists.size() + " : SIZE");
+		while(it.hasNext()) {
+			System.out.println("IN" + " : SIZE");
+			Info company = new Info();
+			WebElement companyElement = it.next();
+			String companyName = companyElement.findElement(By.xpath(companyNameXpath)).getText();
+			System.out.println(companyName + " : companyName");
 
-		  				  					
-				Elements industry = element.select("div.info p.info-value:eq(0)");
-		  		System.out.println("Industry :- "+industry.text());
-		  		info.setIndustry(commaSkiping(industry.text()));
-		  		
-		  		Elements location = element.select("div.info p.info-value:eq(1)");
-		  		System.out.println("Location :- "+location.text());
-		  		String loca = location.text();
-		  		if (loca.equalsIgnoreCase("employe")) {
-					info.setCompanySize(commaSkiping(loca));
-				} else {
-			  		info.setLocation(commaSkiping(location.text()));
-			  		Elements comSize = element.select("div.info p.info-value:eq(2)");
-			  		System.out.println("com_size :- "+comSize.text());
-					info.setCompanySize(commaSkiping(comSize.text()));
-				}
-		  		
-
-				info.setEmail("");
-				info.setPhone("");
-				info.setSecondName("");
-				info.setFirstName("");
-				info.setCurrentJobTitle("");
-				list.add(info);
-				
-				element = it.next();
-				
-			}
-		} catch (Exception e) {
-			//System.out.println("error-"+e.getMessage());
-			//e.printStackTrace();
+			String companyURL = companyElement.findElement(By.xpath(companyNameXpath)).getAttribute("href");
+			String companyCategory = companyElement.findElement(By.xpath(companyCategoryXpath)).getText();
+			String companySize = companyElement.findElement(By.xpath(companySizeXpath)).getText();
+			String companyLocation = companyElement.findElement(By.xpath(companyLocationXpath)).getText();
+			
+			company.setCurrentCompany(commaSkiping(companyName));
+			company.setLink(commaSkiping(companyURL));
+			company.setIndustry(commaSkiping(companyCategory));
+			company.setCompanySize(commaSkiping(companySize));
+			company.setLocation(commaSkiping(companyLocation));
+			list.add(company);
 		}
-
-	return list;	
+		return list;
 	}
 	
 	

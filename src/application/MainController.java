@@ -57,8 +57,6 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private TextField textListSize;
 
-	public static String industry = "";
-	
 	static boolean status = false;
 	
 	private Preferences prefs = null;
@@ -149,7 +147,6 @@ public class MainController  extends Service<String> implements Initializable {
 					int currentPage;
 					int endPage;
 					currentPage = linkedinListMain.currentpage();
-					industry = linkedinListMain.getInductry();
 					do {
 						autoSelected = auto.isSelected();
 						textCurrentPage.setText(currentPage + "");

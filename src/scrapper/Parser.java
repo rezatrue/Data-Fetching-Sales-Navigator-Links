@@ -6,10 +6,14 @@ public class Parser {
 	protected String baseUrl = "https://www.linkedin.com/";
 	protected LinkedList<Info> list = null;
 
-	protected LinkedList<Info> parse(String html) {
+	public LinkedList<Info> parse(String html) {
 		return list;
 	}
-
+	
+	public LinkedList<Info> parse() {
+		return list;
+	}
+	
 	protected String commaSkiping(String text) {
 		String newText = text;
 		// if (newText.contains(",")) {

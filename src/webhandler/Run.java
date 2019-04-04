@@ -35,6 +35,10 @@ public class Run {
 		// System.out.println(element.getText());
 	}
 
+	
+	
+	
+	
 	static String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";
 	static String infoBtnCssSelector1 = ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)";
 
@@ -95,9 +99,9 @@ public class Run {
 		myprofile.setPreference("network.proxy.type", 0);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(FirefoxDriver.PROFILE, myprofile);
-
+		
 		System.setProperty("webdriver.gecko.driver",
-				"C:\\Users\\jAVA_USER\\Desktop\\Selenium-Test-Resouces\\geckodriver.exe");
+				"Geckodriver\\v0.21.0-win64\\geckodriver.exe");
 
 		driver = new FirefoxDriver(capabilities);
 		driver.get("https://www.linkedin.com/");

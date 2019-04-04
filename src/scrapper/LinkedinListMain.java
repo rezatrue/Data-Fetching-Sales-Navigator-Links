@@ -13,7 +13,7 @@ public class LinkedinListMain {
 	LocalDBHandler localDb;
 	FireFoxOperator fireFoxOperator = new FireFoxOperator();
 	// old private BrowserHandler browser = null ;
-	private Parser parser = null;
+	//private Parser parser = null; // 1
 	private DBHandler dbHandler = null;
 	int listSize = 0;
 
@@ -23,31 +23,15 @@ public class LinkedinListMain {
 		listSize = 0;
 		// browser = new BrowserHandler(); // create issue as resource location
 		// is not same in different PC
-		parser = new NewHtmlParser(); // default selected
+		//parser = new NewHtmlParser(); // default selected // 1
 		dbHandler = new DBHandler(); // need to add param at last
 
 	}
 
-	public void setProfileMode(String type) {
-		System.out.println(" --- " + type);
-		parser = null;
-		if (type.toLowerCase().contains("salesnavleads")) {
-			parser = new SalesNavigatorParser();
-			fireFoxOperator.setUrl("salesnavleads");
-		} else if (type.toLowerCase().contains("salesnavaccounts")) {
-			parser = new SalesNavAccountsParser();
-			fireFoxOperator.setUrl("salesnavaccounts");
-		} else {
-			parser = new NewHtmlParser(); // default selected
-			fireFoxOperator.setUrl("profilesearch");
-		}
-
+	public void setProfileMode(String type) { // 1
+		fireFoxOperator.setProfileMode(type); 
 	}
 
-	public String getInductry() {
-		return fireFoxOperator.getInductry();
-	}
-	
 	// modified 11 mar 2018
 	public String searchItemOnPage() {
 		return fireFoxOperator.currentPageStatus();
@@ -100,19 +84,9 @@ public class LinkedinListMain {
 	}
 
 	// modified 28 July 2018
-	public int takeList() {
-		LinkedList<Info> currentlist = parser.parse(fireFoxOperator.getSourseCode());
-		
+	public int takeList() { // 1
+		LinkedList<Info> currentlist = fireFoxOperator.takeList();
 		return addToDb(currentlist);
-		/*
-		LinkedList<Info> uniquelist = removeDuplicate(currentlist);
-		if (uniquelist.size() > 0) {
-			list.addAll(uniquelist);
-			return uniquelist.size();
-		} else {
-			return 0;
-		}
-		*/
 	}
 
 	public int addToDb(LinkedList<Info> parsedlist) {
