@@ -90,11 +90,12 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private Button startBtn;
 
+	MyService runService;
 	@FXML
 	public void startBtnAction(ActionEvent event) {
 		System.out.println("Start Button");
 
-		MyService runService = new MyService();
+		
 		
 		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
@@ -108,6 +109,8 @@ public class MainController  extends Service<String> implements Initializable {
 		if (startBtn.getText().contains("Pause")) {
 			startBtn.setText("Start");
 			openBrowserBtn.setDisable(false);
+			System.out.println("--------------paused---------------------" + runService.getState().toString());
+
 			switch(runService.getState().toString()) {
 			case "RUNNING":
 				runService.cancel();
@@ -116,7 +119,10 @@ public class MainController  extends Service<String> implements Initializable {
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
 			openBrowserBtn.setDisable(true);
+			textCurrentPage.setText(0 + "");
 			// calling MyService start / cancel /restart based on getState() 
+			System.out.println("--------------started---------------------" + runService.getState().toString());
+
 			System.out.println(runService.getState().toString());
 			
 			switch(runService.getState().toString()) {
@@ -144,28 +150,32 @@ public class MainController  extends Service<String> implements Initializable {
 				protected String call() throws Exception {
 					boolean run = true;
 					boolean autoSelected;
-					int currentPage;
+					int currentPage = 0;
 					int endPage;
-					currentPage = linkedinListMain.currentpage();
-					do {
-						autoSelected = auto.isSelected();
-						textCurrentPage.setText(currentPage + "");
-						endPage = Integer.parseInt(textEndPage.getText());
-						if (currentPage <= endPage) {
-							int newadded = linkedinListMain.takeList();
-							String sizeText = textListSize.getText();
-							textListSize.setText(Integer.parseInt(sizeText) + newadded + "");
-							textMessage.setText("Processing page " + currentPage);
-							if (autoSelected && currentPage < endPage) {
-								currentPage = linkedinListMain.openNextPage();
-							} else {
-								run = false;
+					linkedinListMain.fullPageScroll();
+					//currentPage = linkedinListMain.currentpage();
+					
+						do {
+							autoSelected = auto.isSelected();
+							textCurrentPage.setText(currentPage + "");
+							endPage = Integer.parseInt(textEndPage.getText());
+							if (currentPage <= endPage) {
+								int newadded = linkedinListMain.takeList();
+								String sizeText = textListSize.getText();
+								textListSize.setText(Integer.parseInt(sizeText) + newadded + "");
+								textMessage.setText("Processing page " + currentPage);
+								if (autoSelected && currentPage < endPage) {
+									currentPage = linkedinListMain.openNextPage();
+									textCurrentPage.setText(currentPage + "");
+								} else {
+									run = false;
+								}
 							}
-
-						}
-					} while (autoSelected && startBtn.getText().contains("Pause") && run);
+						} while (autoSelected && startBtn.getText().contains("Pause") && run);
+					
 					textMessage.setText("Process stopped at page " + currentPage);
 					openBrowserBtn.setDisable(false);
+					textCurrentPage.setText(0 + "");
 					return "Start";
 				}
 			};
@@ -370,7 +380,7 @@ public class MainController  extends Service<String> implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		listSize = 0;
-		
+		runService = new MyService();
 		prefs = Preferences.userRoot().node("db");
 		enterBtn.setDisable(true);
 		startBtn.setDisable(true);

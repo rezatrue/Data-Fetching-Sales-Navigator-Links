@@ -73,7 +73,10 @@ public class LinkedinListMain {
 	public int openNextPage() {
 		return fireFoxOperator.openNextPage();
 	}
-
+	
+	public void fullPageScroll() {
+		fireFoxOperator.fullPageScroll();
+	}
 	// modified 11 mar 2018
 	public int openPreviousPage() {
 		return fireFoxOperator.openPreviousPage();

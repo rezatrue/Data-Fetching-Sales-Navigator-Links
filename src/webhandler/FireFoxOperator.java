@@ -215,29 +215,28 @@ public class FireFoxOperator {
 	}
 
 	public int openNextPage() {
-		int currentpage = currentPageNumber();
-		int responsepage = -1;
-
-		boolean isSalesNavDisable = isElementPresent(By.cssSelector("a.next-pagination.page-link.disabled"));
-		if (isSalesNavDisable)
-			return responsepage;
-
-		String oldnextPageSelector = "li.next > a"; // old 
-		String newnextPageSelector = "//button[contains(@class, 'artdeco-pagination__button--next')][child::span[contains(., 'Next')]]"; // put new lay out page selector here button.next
-		String salesNavnextPageSelector = "//button[contains(@class,'search-results__pagination-next-button')][child::span[contains(., 'Next')]]"; 
-		boolean isOldPresent = isElementPresent(By.cssSelector(oldnextPageSelector));
+		System.out.println(" <- openNextPage clicked");
+		int responsepage = 0;
+		String newnextPageSelectorDisabled = "//button[contains(@class, 'artdeco-pagination__button--next')][contains(@class, 'artdeco-button--disabled')][child::span[contains(., 'Next')]]";
+		String salesNavnextPageSelectorDisabled = "//button[contains(@class,'search-results__pagination-next-button')][contains(@disabled)][child::span[contains(., 'Next')]]";
+		boolean isNewDisabled = isElementPresent(By.xpath(newnextPageSelectorDisabled));
+		boolean isSalesDisabled = isElementPresent(By.xpath(salesNavnextPageSelectorDisabled));
+		if(isNewDisabled || isSalesDisabled) return responsepage;
+		
+		
+		String newnextPageSelector = "//button[contains(@class, 'artdeco-pagination__button--next')][child::span[contains(., 'Next')]]";
+		String salesNavnextPageSelector = "//button[contains(@class,'search-results__pagination-next-button')][child::span[contains(., 'Next')]]";
 		boolean isNewPresent = isElementPresent(By.xpath(newnextPageSelector));
 		boolean isSalesNavPresent = isElementPresent(By.xpath(salesNavnextPageSelector));
+		System.out.println(isNewPresent + " <- isNewPresent");
 
-		if (isOldPresent) {
-			responsepage = switchingPage(By.cssSelector(oldnextPageSelector));
-		} else if (isNewPresent) {
+		if (isNewPresent) {
 			responsepage = switchingPage(By.xpath(newnextPageSelector));
 		} else if (isSalesNavPresent) {
 			responsepage = switchingPage(By.xpath(salesNavnextPageSelector));
-		} else {
-			responsepage = -1;
 		}
+		System.out.println(responsepage + " <- responsepage");
+
 		return responsepage;
 
 	}
@@ -267,22 +266,25 @@ public class FireFoxOperator {
 	}
 
 	public int switchingPage(By by) {
-		int currentpage = currentPageNumber();
-		int switchedpage = -1;
+		//int switchedpage = 0;
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		try {
 			driver.findElement(by).click();
+			fullPageScroll();
 		} catch (NoSuchElementException e) {
-			currentpage = -1;
+			System.out.println(e.getMessage());;
 		}
+		/*
 		int limits = 5;
 		do {
 			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 			switchedpage = currentPageNumber();
 			limits--;
-		} while ((switchedpage == currentpage) && limits > 0);
-		// System.out.println("Switched page---- "+switchedpage);
-		return switchedpage;
+		} while ((switchedpage == 0) && limits > 0);
+		*/
+		System.out.println(currentPageNumber() + " <- currentPageNumber");
+
+		return currentPageNumber();
 	}
 
 	public boolean setUrl(String type) {
@@ -298,10 +300,12 @@ public class FireFoxOperator {
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
 		try {
 			jse.executeScript("scroll(0, 250);");
-			Thread.sleep(1000);
+			Thread.sleep(500);
 			jse.executeScript("scroll(0, 550);");
 			Thread.sleep(1000);
 			jse.executeScript("scroll(0, 750);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 950);");
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
