@@ -88,7 +88,7 @@ public class CsvGenerator {
 					writer.append(",");
 					writer.append(commaSkiping(info.getCurrentCompany()));
 					writer.append(",");
-					writer.append("["+commaSkiping(info.getCompanySize())+"]");
+					writer.append(commaSkiping("["+info.getCompanySize()+"]"));
 					writer.append("\n");
 					count++;
 				}

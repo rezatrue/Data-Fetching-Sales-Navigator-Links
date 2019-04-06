@@ -14,12 +14,5 @@ public class Parser {
 		return list;
 	}
 	
-	protected String commaSkiping(String text) {
-		String newText = text;
-		// if (newText.contains(",")) {
-		// newText = "\"" +newText + "\"";
-		// }
-		return newText;
-	}
 
 }

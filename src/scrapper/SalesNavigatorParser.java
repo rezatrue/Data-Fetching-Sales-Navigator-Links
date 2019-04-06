@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
 import webhandler.FireFoxOperator;
@@ -21,41 +22,53 @@ public class SalesNavigatorParser extends Parser {
 //	public LinkedList<Info> list = null;
 	private String industries;
 	private String companySize;
-	private boolean common;
 	
 	public SalesNavigatorParser(){
 		super();
-		common = false;
 	}
 	
 	private void getCommonData() {
-		
+		String companyCategoryXpath = "//li/div/div[child::div/div/label[contains(text(),'Industry')]]/ul/li";
+
 		try {
-			String companyCategoryXpath = "//li/div/div[child::div/div/label[contains(text(),'Industry')]]/ul/li";
-			String companyCategory = FireFoxOperator.driver.findElement(By.xpath(companyCategoryXpath)).getText();
-			this.industries = companyCategory;
+			List<WebElement> companyCategoryElements = FireFoxOperator.driver.findElements(By.xpath(companyCategoryXpath));
+			Iterator it = companyCategoryElements.iterator();
+			this.industries = ((WebElement)it.next()).getText();
+			while(it.hasNext()) {
+				this.industries += (", " +((WebElement)it.next()).getText());
+			}
+//			String companyCategory = FireFoxOperator.driver.findElement(By.xpath(companyCategoryXpath)).getText();
+//			this.industries = companyCategory;
 		} catch (Exception e) {	e.printStackTrace(); }
 		
+		String companySizeXpath = "//li/div/div[child::div/div/label[contains(text(),'Company headcount')]]/ul/li/span/span";
+
 		try {
-			String companySizeXpath = "//li/div/div[child::div/div/label[contains(text(),'Company headcount')]]/ul/li";
-			String companySize = FireFoxOperator.driver.findElement(By.xpath(companySizeXpath)).getText();
-			this.companySize = companySize;
+			List<WebElement> companySizeElements = FireFoxOperator.driver.findElements(By.xpath(companySizeXpath));
+			Iterator it = companySizeElements.iterator();
+			this.companySize = ((WebElement)it.next()).getText();
+			while(it.hasNext()) {
+				this.companySize += (", " +((WebElement)it.next()).getText());
+			}
+			//String companySize = FireFoxOperator.driver.findElement(By.xpath(companySizeXpath)).getText();
+			//this.companySize = companySize;
 		} catch (Exception e) {	e.printStackTrace(); }
 		
 	}
 	
+	
+	
 	public LinkedList<Info> parse(){
+		
 		list = new LinkedList<Info>();
-		String employeeXpath = "//ol[@class='search-results__result-list']/li//div[contains(@class,'horizontal-person-entity-lockup')]";
+		String employeeXpath = "//ol[@class='search-results__result-list']//li//div[contains(@class,'horizontal-person-entity-lockup')]";
 		String employeeNameXpath = ".//dt[@class='result-lockup__name']/a";
 		String companyNameXpath = ".//dd[@class='result-lockup__highlight-keyword']/span/span[@class='result-lockup__position-company']/a/span[1]";
 		String employeeJobTitleXpath = ".//dd[@class='result-lockup__highlight-keyword']/span[1]";
 		String employeeLocationXpath = ".//ul/li[@class='result-lockup__misc-item']";
 		
-		if(!common) {
-			getCommonData();
-			common= true;
-		}
+		getCommonData();
+		
 		
 	try {
 		List<WebElement> lists = FireFoxOperator.driver.findElements(By.xpath(employeeXpath));
@@ -67,12 +80,12 @@ public class SalesNavigatorParser extends Parser {
 			String employeeName = employeeElement.findElement(By.xpath(employeeNameXpath)).getText();
 	  		if (employeeName.contains(" ")) {
 	  			String fname = employeeName.substring(0, employeeName.indexOf(' '));
-	  			employee.setFirstName(commaSkiping(fname));
+	  			employee.setFirstName(fname);
 	  			String lname = employeeName.substring(employeeName.indexOf(' ')+1, employeeName.length());
-	  			employee.setSecondName(commaSkiping(lname));
+	  			employee.setSecondName(lname);
 	  			System.out.println("Frist name :- "+ fname + " Last name :- "+ lname );
 			} else {
-				employee.setFirstName(commaSkiping(employeeName));
+				employee.setFirstName(employeeName);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
 		

@@ -73,9 +73,7 @@ public class FireFoxOperator {
 	}
 	
 	public LinkedList<Info> takeList() { // 1
-		
 		LinkedList<Info> currentlist = parser.parse();
-
 		return currentlist;
 	}
 	
@@ -271,6 +269,8 @@ public class FireFoxOperator {
 		try {
 			driver.findElement(by).click();
 			fullPageScroll();
+			if(parser instanceof SalesNavigatorParser) salesPageScroll();
+			if(parser instanceof SalesNavAccountsParser) salesPageScroll();
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());;
 		}
@@ -307,15 +307,35 @@ public class FireFoxOperator {
 			Thread.sleep(500);
 			jse.executeScript("scroll(0, 950);");
 			Thread.sleep(1000);
+			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		// if I direct go to bottom of the page page full content don't load
 		// jse.executeScript("window.scrollTo(0, document.body.scrollHeight)");
 	}
 
+	public void salesPageScroll() {
+		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		try {
+			jse.executeScript("scroll(0, 1450);");
+			Thread.sleep(1000);
+			jse.executeScript("scroll(0, 1950);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 2450);");
+			Thread.sleep(1000);
+			jse.executeScript("scroll(0, 2950);");
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	// For public profile link
 	public boolean newTabOpener() {
 		String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL, "t");

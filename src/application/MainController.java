@@ -153,8 +153,7 @@ public class MainController  extends Service<String> implements Initializable {
 					int currentPage = 0;
 					int endPage;
 					linkedinListMain.fullPageScroll();
-					//currentPage = linkedinListMain.currentpage();
-					
+					linkedinListMain.salesPageScroll();
 						do {
 							autoSelected = auto.isSelected();
 							textCurrentPage.setText(currentPage + "");

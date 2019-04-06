@@ -20,11 +20,9 @@ import webhandler.FireFoxOperator;
 
 public class HtmlParser extends Parser  {
 	private String industries;
-	private boolean common;
 	
 	public HtmlParser(){
 		super();
-		common = false;
 	}
 	
 	private boolean isElementPresent(By by) {
@@ -83,10 +81,7 @@ public class HtmlParser extends Parser  {
 		String employeeJobTitleCompanyXpathP3 = ""; // 3rd priority - if contains ','  + company after ','
 		
 		
-		if(!common) {
-			getInductry();
-			common= true;
-		}
+		getInductry();
 		
 	try {
 		List<WebElement> lists = FireFoxOperator.driver.findElements(By.xpath(employeeXpath));
@@ -100,11 +95,11 @@ public class HtmlParser extends Parser  {
 			employee.setLink(employeeProfileUrl);
 	  		if (employeeName.contains(" ")) {
 	  			String fname = employeeName.substring(0, employeeName.indexOf(' '));
-	  			employee.setFirstName(commaSkiping(fname));
+	  			employee.setFirstName(fname);
 	  			String lname = employeeName.substring(employeeName.indexOf(' ')+1, employeeName.length());
-	  			employee.setSecondName(commaSkiping(lname));
+	  			employee.setSecondName(lname);
 			} else {
-				employee.setFirstName(commaSkiping(employeeName));
+				employee.setFirstName(employeeName);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
 		
