@@ -20,22 +20,32 @@ import org.json.JSONObject;
 public class ApiClient {
 	private Preferences prefs;
 	private String domain;
-	private String api = "lin-api";
-	String name;
-	String limits;
-	String usage;
-	String expaired;
+	private String api = "api/lin";
+	private String name;
+	private int limits;
+	private int usage;
+	private String expaired;
 	
 	public ApiClient() {
 		prefs = Preferences.userRoot().node("db");
 		this.domain = prefs.get("dataserver", "http://localhost");
 	}
 
+	public int getLimits() {
+		return limits;
+	}
+
+	public int getUsage() {
+		return usage;
+	}
+
+
+
 	public String userAuth(String email, String password) {
 		String responseString = null;
 		try {
 
-			//URL url = new URL("http://localhost/lin-api/user/login.php");
+			//URL url = new URL("http://localhost/api/lin/user/login.php");
 			URL url = new URL(domain + "/" + api + "/user/login.php");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -91,8 +101,8 @@ public class ApiClient {
 		    for (int i = 0; i < user.length(); i++)
 		    {
 		        name = user.getJSONObject(i).getString("name");
-		        limits = user.getJSONObject(i).getString("limits");
-		        usage = user.getJSONObject(i).getString("usage");
+		        limits = Integer.parseInt(user.getJSONObject(i).getString("limits"));
+		        usage = Integer.parseInt(user.getJSONObject(i).getString("usage"));
 		        expaired = user.getJSONObject(i).getString("expaired");
 			    System.out.println(name + " : " + limits + " : " + usage + " : " + expaired);
 		    }
@@ -100,14 +110,98 @@ public class ApiClient {
 	    else if(res.equalsIgnoreCase("failed")) return "User not found ";
 	    else return "oops something went wrong";
 	    	
-	    if(!check(expaired)) return "Your license has expired";
-	    else
-	    	if(Integer.parseInt(usage) >= Integer.parseInt(limits)) return "Your limits has expired";
+	    if(!checkExpairedDate(expaired)) return "Your license has expired";
+	    if(usage >= limits) return "Your limits has expired";
 	  
 		return "Welcome "+ name;
 	}
 	
-	private boolean check(String dateDB){
+	public int updateUseage(int newUse) {
+		System.out.println(newUse + "-");
+		String email = prefs.get("user", ""); 
+		String password = prefs.get("password", "");
+		
+		String responseString = null;
+		try {
+
+			//URL url = new URL("http://localhost/api/lin/user/updateusage.php");
+			URL url = new URL(domain + "/" + api + "/user/updateusage.php");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String namekey = "user_email";
+			String nameValue =  email ;
+			String passwordkey = "user_password";
+			String passwordValue =  password ;
+			String useagekey = "new_usage";
+			int useageValue =  newUse ;
+			
+			String input = "{\"" + namekey + "\":\""+ nameValue + "\",\""+ passwordkey + "\":\""+ passwordValue + "\",\""+ useagekey + "\":\""+ useageValue + "\"}";
+//			String input = "{\"user_email\":\"reza@mail.com\",\"user_password\":\"123\",\""+ useagekey + "\":\""+ useageValue + "\"}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(input.getBytes());
+			os.flush();
+
+			/*
+			if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+			*/
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+			StringBuilder sb = new StringBuilder();
+			String output;
+			System.out.println("Output from Server (useage update).... \n");
+			while ((output = br.readLine()) != null) {
+				//System.out.println(output);
+				sb.append(output);
+			}
+			responseString = sb.toString();
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return -1;
+		}
+		
+		// extracting data from response 
+		JSONObject obj = new JSONObject(responseString);
+	    String res = obj.getString("response");
+	    System.out.println(res);
+
+	    if(res.equalsIgnoreCase("ok")) {
+		    JSONArray user = obj.getJSONArray("user");
+		    
+		    for (int i = 0; i < user.length(); i++)
+		    {
+		        name = user.getJSONObject(i).getString("name");
+		        limits = Integer.parseInt(user.getJSONObject(i).getString("limits"));
+		        usage = Integer.parseInt(user.getJSONObject(i).getString("usage"));
+		        expaired = user.getJSONObject(i).getString("expaired");
+			    System.out.println(name + " : " + limits + " : " + usage + " : " + expaired);
+		    }
+	    }else {
+	    	System.err.println(res.toString());
+	    	return -1;
+	    }
+	    // bypass error code , if limit accessed by one
+	    int returnCode = limits - usage;
+		return returnCode == -1 ? 0 : returnCode;
+	}
+
+	
+	
+	
+	private boolean checkExpairedDate(String dateDB){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		Date dbDate = null;

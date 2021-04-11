@@ -9,11 +9,11 @@ import java.util.Scanner;
 
 import scrapper.Info;
 
-public class CSV_Scanner {
+public class CSV_Scan_Com {
 
 	//........
 	private String location = null;
-	public CSV_Scanner() {
+	public CSV_Scan_Com() {
 		// default location present directory
 		location = "";
 	}
@@ -33,7 +33,7 @@ public class CSV_Scanner {
 	}
 	//......................
 	
-	private LinkedList<Info> list = null;
+	private LinkedList<Company> list = null;
 
 	// use third party OpenCSV library
 	// source :
@@ -41,10 +41,10 @@ public class CSV_Scanner {
 	private static final char DEFAULT_SEPARATOR = ',';
 	private static final char DEFAULT_QUOTE = '"';
 
-	public LinkedList<Info> dataScan(String filePath) {
+	public LinkedList<Company> dataScan(String filePath) {
 		location = filePath.substring(0, filePath.lastIndexOf("\\")+1);
 		list = new LinkedList<>();
-		Info info = null;
+		Company com = null;
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(new File(filePath));
@@ -68,14 +68,13 @@ public class CSV_Scanner {
 			if(rightFormat) {
 				while (scanner.hasNext()) {
 					List<String> line = parseLine(scanner.nextLine());
-					info = new Info(removingQuotes(line.get(0)), removingQuotes(line.get(1)), removingQuotes(line.get(2)), removingQuotes(line.get(3)),
-							removingQuotes(line.get(4)), removingQuotes(line.get(5)), removingQuotes(line.get(6)), removingQuotes(line.get(7)), 
-							removingQuotes(line.get(8)), removingQuotes(line.get(9)));
-					list.add(info);
-					System.out.println("[Linkedin_Profile_URL= " + line.get(0) + ", First_Name= " + line.get(1)
+					com = new Company(removingQuotes(line.get(0)), removingQuotes(line.get(1)), removingQuotes(line.get(2)), removingQuotes(line.get(3)),
+							removingQuotes(line.get(4)), removingQuotes(line.get(5)), removingQuotes(line.get(6)), removingQuotes(line.get(7)));
+					list.add(com);
+					System.out.println("[Linkedin_Company_URL= " + line.get(0) + ", Name= " + line.get(1)
 							+ " , Last_Name=" + line.get(2) + ", Email_ID= " + line.get(3) + ", Contact_Number= "
 							+ line.get(4) + " , Location=" + line.get(5) + ", Industry= " + line.get(6) + ", Designation= "
-							+ line.get(7) + " , Company_Name=" + line.get(8) + ", Company_Size= " + line.get(9) + "]");
+							+ line.get(7) + "]");
 	
 				}
 			}

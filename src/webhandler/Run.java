@@ -1,5 +1,6 @@
 package webhandler;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -9,6 +10,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.security.Credentials;
+import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,9 +21,11 @@ public class Run {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Hello:");
-		runfirefoxDefaultProfile();
+		alertTest();
+		
+		//runfirefoxDefaultProfile();
 		// openNavLink();
-		linkedinLogin("ebrahimthex@gmail.com", "$RFV4rfv");
+		//linkedinLogin("ebrahimthex@gmail.com", "$RFV4rfv");
 		/*
 		 * driver.get(
 		 * "https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"
@@ -30,13 +35,34 @@ public class Run {
 		 * ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)"
 		 * ));
 		 */
-		System.out.println(getPublicLink(
-				"https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"));
+		
+		//System.out.println(getPublicLink(
+			//	"https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"));
 		// System.out.println(element.getText());
 	}
 
 	
-	
+	public static void alertTest() {
+		
+		String url = "https://dev20-web-jnj.demandware.net/on/demandware.store/Sites-Exuviance-Site/default/Home-Show";
+		String username = "storefront";
+		String password = "exuweb2020";
+		
+		
+		System.setProperty("webdriver.gecko.driver",
+				"Geckodriver\\v0.21.0-win64\\geckodriver.exe");
+
+		driver = new FirefoxDriver();
+		
+		String urlTemp = url.replaceFirst("https://", "");
+		String URL = "https://" + username  + ":" + password + "@" + urlTemp;
+		driver.get(URL); // Basically operation done here itself still if not work use further Alert code as well
+		
+		Alert alert = driver.switchTo().alert();
+		alert.accept();
+			
+		
+	}
 	
 	
 	static String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";

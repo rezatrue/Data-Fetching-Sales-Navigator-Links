@@ -18,11 +18,12 @@ import org.openqa.selenium.WebElement;
 import application.MainController;
 import webhandler.FireFoxOperator;
 
-public class HtmlParser extends Parser  {
+public class HtmlParser implements Parser  {
+	private String baseUrl = "https://www.linkedin.com/";
+	private LinkedList<Info> proList = null;
 	private String industries;
 	
 	public HtmlParser(){
-		super();
 	}
 	
 	private boolean isElementPresent(By by) {
@@ -71,7 +72,7 @@ public class HtmlParser extends Parser  {
 	}
 	
 	public LinkedList<Info> parse(){
-		list = new LinkedList<Info>();
+		proList = new LinkedList<Info>();
 		String employeeXpath = "//div[contains(@class,'blended-srp-results-js')]/ul[contains(@class,'search-results__list')]/li";
 		String employeeNameXpath = ".//div[@class='search-result__wrapper']/div[contains(@class,'search-result__info')]/a[contains(@class,'search-result__result-link')]//span[@class='name actor-name']";
 		String employeeProfileUrlXpath = ".//div[@class='search-result__wrapper']/div[contains(@class,'search-result__info')]/a[contains(@class,'search-result__result-link')]";
@@ -150,11 +151,17 @@ public class HtmlParser extends Parser  {
 					+ employee.getCurrentCompany()
 					);
 			
-			list.add(employee);
+			proList.add(employee);
 		}
 	} catch (Exception e) {	e.printStackTrace(); }
 		
-	return list;
+	return proList;
+	}
+
+	@Override
+	public LinkedList<?> parse(String html) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -17,14 +17,13 @@ import org.openqa.selenium.WebElement;
 
 import webhandler.FireFoxOperator;
 
-public class SalesNavigatorParser extends Parser {
-//	public String baseUrl = "https://www.linkedin.com/";
-//	public LinkedList<Info> list = null;
+public class SalesNavigatorParser implements Parser {
+	private String baseUrl = "https://www.linkedin.com/";
+	private LinkedList<Info> proList = null;
 	private String industries;
 	private String companySize;
 	
 	public SalesNavigatorParser(){
-		super();
 	}
 	
 	private void getCommonData() {
@@ -58,9 +57,9 @@ public class SalesNavigatorParser extends Parser {
 	
 	
 	
-	public LinkedList<Info> parse(){
+	public LinkedList<?> parse(){
 		
-		list = new LinkedList<Info>();
+		proList = new LinkedList<Info>();
 		String employeeXpath = "//ol[@class='search-results__result-list']//li//div[contains(@class,'horizontal-person-entity-lockup')]";
 		String employeeNameXpath = ".//dt[@class='result-lockup__name']/a";
 		String companyNameXpath = ".//dd[@class='result-lockup__highlight-keyword']/span/span[@class='result-lockup__position-company']/a/span[1]";
@@ -107,11 +106,17 @@ public class SalesNavigatorParser extends Parser {
 		} catch (Exception e) {	e.printStackTrace(); }	
 			employee.setIndustry(industries);
 			employee.setCompanySize(companySize);
-			list.add(employee);
+			proList.add(employee);
 		}
 	} catch (Exception e) {	e.printStackTrace(); }
 		
-	return list;
+	return proList;
+	}
+
+	@Override
+	public LinkedList<?> parse(String html) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

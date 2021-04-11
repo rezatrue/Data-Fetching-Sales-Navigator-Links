@@ -15,27 +15,30 @@ import org.openqa.selenium.WebElement;
 
 import webhandler.FireFoxOperator;
 
-public class SalesNavAccountsParser extends Parser {
+public class SalesNavAccountsParser implements Parser {
 
+	private String baseUrl = "https://www.linkedin.com/";
+	private LinkedList<Company> comList = null;
+
+	
 	public SalesNavAccountsParser() {
-		super();
 	}
 	
 	
-	public LinkedList<Info> parse(){
-		list = new LinkedList<Info>();
-		String companiesXpath = "//ol[@class=\"search-results__result-list\"]//li//article";
-		String companyNameXpath = ".//dt[@class=\"result-lockup__name\"]/a";
-		String companyCategoryXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][1]";
-		String companySizeXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][contains(., 'employee')]";
-		String companyLocationXpath = ".//dd/ul/li[@class=\"result-lockup__misc-item\"][3]";
+	public LinkedList<?> parse(){
+		comList = new LinkedList<>();
+		String companiesXpath = "//ol[@class='search-results__result-list']//li//article";
+		String companyNameXpath = ".//dt[@class='result-lockup__name']/a";
+		String companyCategoryXpath = ".//dd/ul/li[@class='result-lockup__misc-item'][1]";
+		String companySizeXpath = ".//dd/ul/li[@class='result-lockup__misc-item'][contains(., 'employee')]";
+		String companyLocationXpath = ".//dd/ul/li[@class='result-lockup__misc-item'][3]";
 		try {
 			List<WebElement> lists = FireFoxOperator.driver.findElements(By.xpath(companiesXpath));
 			Iterator<WebElement> it = lists.iterator();
 			System.out.println(lists.size() + " : SIZE");
 			while(it.hasNext()) {
 				System.out.println("IN" + " : SIZE");
-				Info company = new Info();
+				Company company = new Company();
 				WebElement companyElement = it.next();
 				String companyName = null;
 				try {
@@ -59,15 +62,22 @@ public class SalesNavAccountsParser extends Parser {
 						try {
 						companyLocation = companyElement.findElement(By.xpath(companyLocationXpath)).getText();
 						} catch (Exception e) {	e.printStackTrace();}
-				company.setCurrentCompany(companyName);
-				company.setLink(companyURL);
-				company.setIndustry(companyCategory);
-				company.setCompanySize(companySize);
-				company.setLocation(companyLocation);
-				list.add(company);
+				company.setComName(companyName);
+				company.setComUrl(companyURL);
+				company.setComIndustry(companyCategory);
+				company.setComSize(companySize);
+				company.setComHeadquarters(companyLocation);
+				comList.add(company);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
-		return list;
+		return comList;
+	}
+
+
+	@Override
+	public LinkedList<?> parse(String html) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

@@ -3,6 +3,7 @@ package webhandler;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
@@ -26,6 +27,7 @@ import scrapper.Info;
 import scrapper.HtmlParser;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;
+import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 
 public class FireFoxOperator {
@@ -36,9 +38,11 @@ public class FireFoxOperator {
 	public static WebDriver driver = null;
 	private String url = "https://www.linkedin.com/";
 	private String salesNavUrl = "https://www.linkedin.com/sales/settings?trk=nav_user_menu_manage_sales_nav";
+	private String salesListUrl = "https://www.linkedin.com/sales/lists/people";
 	private String selesnavsignouturl = "https://www.linkedin.com/sales/logout?trk=sn_nav2__util_nav_logout";
 	private String signouturl = "https://www.linkedin.com/m/logout/";
-
+	private String signInUrl = "https://www.linkedin.com/sales/login";
+	
 	private Preferences prefs;
 
 	private Parser parser = null; // changing
@@ -65,6 +69,9 @@ public class FireFoxOperator {
 		} else if (type.toLowerCase().contains("salesnavaccounts")) {
 			parser = new SalesNavAccountsParser();
 			this.setUrl("salesnavaccounts");
+		}  else if (type.toLowerCase().contains("salesnavlists")) {
+			parser = new SalesNavListsParser();
+			this.setUrl("salesnavlists");
 		} else {
 			parser = new HtmlParser(); // default selected
 			this.setUrl("profilesearch");
@@ -72,8 +79,8 @@ public class FireFoxOperator {
 
 	}
 	
-	public LinkedList<Info> takeList() { // 1
-		LinkedList<Info> currentlist = parser.parse();
+	public LinkedList<?> takeList() { // 1
+		LinkedList<?> currentlist = parser.parse();
 		return currentlist;
 	}
 	
@@ -98,22 +105,87 @@ public class FireFoxOperator {
 		return true;
 	}
 
+	
+	
+	public boolean isLoginPage() {
+
+		By profileImageBy = By.xpath("//img[contains(@class,'app-header-item-content__entity-image')]");
+		
+		try {
+			driver.findElement(profileImageBy).getText();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		By salesProfileImageBy = By.xpath("//img[contains(@class,'global-nav__me-photo')]");
+
+		try {
+			driver.findElement(salesProfileImageBy).getText();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public boolean waitUntillVisible(By by) {
+		
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 60);
+			wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	private final String LOGINTAG = "login-email";
 	private final String PASSWORDTAG = "login-password";
 	private final String LOGINSUBMITTAG = "login-submit";
 
-	public boolean linkedinLogin(String user, String password) {
+	private boolean moveToSignInPage() {
+		
+		By signInLinkTextBy = By.xpath("//a[contains(text(),'Sign in')]");
+		
 		try {
-			driver.findElement(By.id(LOGINTAG)).clear();
-			driver.findElement(By.id(LOGINTAG)).sendKeys(user);
-			driver.findElement(By.id(PASSWORDTAG)).clear();
-			driver.findElement(By.id(PASSWORDTAG)).sendKeys(password);
-			driver.findElement(By.id(LOGINSUBMITTAG)).click();
+			driver.findElement(signInLinkTextBy).click();
 			return true;
-		} catch (Exception e) {
-			// e.printStackTrace();
-			return false;
+		} catch (NoSuchElementException nsee) {
+			nsee.printStackTrace();
 		}
+		driver.get(signInUrl);
+		return true;
+	}
+	
+	// modified 12 feb 2021
+	public boolean linkedinLogin() {
+		if(isLoginPage()) return true;
+			
+		String name = prefs.get("linkedinUser", "");
+		String password = prefs.get("linkedinPassword", "");
+		
+		moveToSignInPage();
+		
+		By userNameBy = By.xpath("//form//input[contains(@id,'user')]");
+		By passwordBy = By.xpath("//form//input[contains(@id,'pass')]");
+		By loginButtonBy = By.xpath("//form//button[contains(text(),'Sign in')]");
+		
+		try {
+			driver.findElement(userNameBy).clear();
+			driver.findElement(userNameBy).sendKeys(name);
+			driver.findElement(passwordBy).clear();
+			driver.findElement(passwordBy).sendKeys(password);
+			driver.findElement(loginButtonBy).click();
+		} catch (NoSuchElementException nsee) {
+			nsee.printStackTrace();
+		}
+		
+		if(isLoginPage()) return true;
+		
+		return false;
 	}
 
 	private final String SEARCHCSSTAG = "input.ember-text-field.ember-view";
@@ -196,6 +268,7 @@ public class FireFoxOperator {
 		String newCurrentSelector = "//ul/li[contains(@class, 'active')]/span";
 		//String salesNavCurrentSelector = "ul.pagination-links li.active.pagination-link-item"; 
 		String salesNavCurrentSelector = "//ol[@class='search-results__pagination-list']/li[contains(@class, 'selected')]"; 
+		String salesNavListCurrentSelector = "//button[contains(@aria-label,\"current page\")]/span[1]"; 
 		// li.page-list li.active
 		WebElement element;
 		if (isElementPresent(By.cssSelector(oldnCurrentSelector))) {
@@ -206,6 +279,9 @@ public class FireFoxOperator {
 			return Integer.parseInt(element.getText());
 		} else if (isElementPresent(By.xpath(salesNavCurrentSelector))) {
 			element = driver.findElement(By.xpath(salesNavCurrentSelector));
+			return Integer.parseInt(element.getText());
+		}  else if (isElementPresent(By.xpath(salesNavListCurrentSelector))) {
+			element = driver.findElement(By.xpath(salesNavListCurrentSelector));
 			return Integer.parseInt(element.getText());
 		} else
 			return -1;
@@ -224,14 +300,18 @@ public class FireFoxOperator {
 		
 		String newnextPageSelector = "//button[contains(@class, 'artdeco-pagination__button--next')][child::span[contains(., 'Next')]]";
 		String salesNavnextPageSelector = "//button[contains(@class,'search-results__pagination-next-button')][child::span[contains(., 'Next')]]";
+		String salesNavListnextPageSelector = "//div[contains(@class, \"table-pagination\")]//button[contains(@class, \"pagination__button--next\") and not(contains(@disabled,\"disabled\"))]";
 		boolean isNewPresent = isElementPresent(By.xpath(newnextPageSelector));
 		boolean isSalesNavPresent = isElementPresent(By.xpath(salesNavnextPageSelector));
+		boolean isSalesNavListPresent = isElementPresent(By.xpath(salesNavListnextPageSelector));
 		System.out.println(isNewPresent + " <- isNewPresent");
 
 		if (isNewPresent) {
 			responsepage = switchingPage(By.xpath(newnextPageSelector));
 		} else if (isSalesNavPresent) {
 			responsepage = switchingPage(By.xpath(salesNavnextPageSelector));
+		}else if (isSalesNavListPresent) {
+			responsepage = switchingPage(By.xpath(salesNavListnextPageSelector));
 		}
 		System.out.println(responsepage + " <- responsepage");
 
@@ -288,10 +368,13 @@ public class FireFoxOperator {
 	}
 
 	public boolean setUrl(String type) {
-		if (type.toLowerCase().contains("salesnav"))
-			driver.get(salesNavUrl);
-		else
-			driver.get(url);
+		String urlString = url;
+		if(type.toLowerCase().contains("salesnavleads")) urlString = salesNavUrl;
+		if(type.toLowerCase().contains("salesnavaccounts")) urlString = salesNavUrl;
+		if(type.toLowerCase().contains("salesnavlists")) urlString = salesListUrl;
+		
+		driver.get(urlString);
+		
 		return true;
 	}
 
@@ -360,25 +443,360 @@ public class FireFoxOperator {
 
 	}
 
-	String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";
-	String infoBtnCssSelector1 = ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)";
-
-	public String getPublicLink(String salesProLink) {
-		driver.get(salesProLink);
-		if (!findAndClick(infoBtnCssSelector))
-			return salesProLink;
-		try {
-			WebElement element = driver.findElement(By.cssSelector(infoBtnCssSelector1));
-			return element.getText();
-		} catch (Exception e) {
+//	String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";
+//	String infoBtnCssSelector1 = ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)";
+//
+//	public String getPublicLink(String salesProLink) {
+//		driver.get(salesProLink);
+//		if (!findAndClick(infoBtnCssSelector))
+//			return salesProLink;
+//		try {
+//			WebElement element = driver.findElement(By.cssSelector(infoBtnCssSelector1));
+//			return element.getText();
+//		} catch (Exception e) {
+//		}
+//
+//		return salesProLink;
+//	}
+	
+	
+	public Info getPublicLinkDetails(String salesProLink) {
+		
+		if(isLoginPage()) linkedinLogin();
+		
+		linkOpener(salesProLink);
+		
+		Info info = generalInfo(salesProLink);
+		
+		if (isLinkedinMember()) {
+			try {
+			System.out.println("isLinkedinMember handleing ");
+			String txtMatch = "https://www.linkedin.com/in/";
+			String[] data = getGoogleResult(info.getCurrentJobTitle(), info.getCurrentCompany());
+			System.out.println("isLinkedinMember handleing 0 " + data[0]);
+			if(data[0].contains("Not Found")) return info;
+			if(data[0].contains(txtMatch)) {
+					System.out.println("isLinkedinMember handleing 1 " + "txtMatch");
+					info.setLink(data[0]);
+					info.setFirstName(data[1]);
+					info.setSecondName(data[2]);
+				}
+			}catch (Exception e){
+				System.out.println("isLinkedinMember handleing error ");
+				e.printStackTrace();
+			}
+		}else {
+			String buttonClick = "//button[contains(@class,\"right-actions-overflow-menu-trigger\")]";
+			if(findAndClick(buttonClick)) {
+				try {
+					System.out.println("inhere 11");
+					String urltxt = findUrlInSourcePage();
+					System.out.println("urltxt : "+ urltxt);
+					info.setLink(urltxt);	
+				} catch (Exception e) {
+				}
+			}
 		}
-
-		return salesProLink;
+		System.out.println("return -->>");
+		return info;
 	}
 
+	public String findUrlInSourcePage() {
+		String txtMatch = "https://www.linkedin.com/in/";
+		String source = getSourseCode();
+
+		if(source.contains(txtMatch)) {
+			String fristSubString = source.substring(source.indexOf(txtMatch), source.length());
+			String urltxt = fristSubString.substring(0, fristSubString.indexOf(",")-1);
+			
+			return (urltxt.contains(txtMatch)) ? urltxt : "";
+		}
+		
+		return "";
+	}
+	
+	public String[] getGoogleResult(String title, String company) {
+		String data[] = {"Not Found", "", ""};
+			System.out.println("--getGoogleResult");
+		createSubTab();
+		switchGoogleTab();
+		
+		String siteName = "LinkedIn";
+		
+		By searchInputBy = By.xpath("//input[@name=\"q\"]");
+		try {
+			openUrl("https://www.google.com/");
+			WebElement inputElement = driver.findElement(searchInputBy);
+			//inputElement.clear();
+			inputElement.sendKeys(title + " at "+ company + " " + siteName);
+			inputElement.sendKeys(Keys.ENTER);
+		}catch (Exception e) {
+			e.printStackTrace();
+			driver.close();
+			switchLinkedinTab();
+			return data;
+		}
+		
+		
+		By searchResultsBy = By.xpath("//div[@class=\"g\"]");
+		if(!waitUntillVisible(searchResultsBy)){
+			driver.close();
+			switchLinkedinTab();
+			return data;
+		}
+		try {
+			By firstLinkBy = By.xpath("//div[@class=\"g\"][1]/div[@class=\"rc\"]/div[@class=\"r\"]/a");
+			String firstLink = driver.findElement(firstLinkBy).getAttribute("href");
+			if(firstLink.contains("https://www.linkedin.com/in/")) {
+				data[0] = firstLink;
+				By titleBy = By.xpath("//div[@class=\"g\"][1]/div[@class=\"rc\"]/div[@class=\"r\"]/a/h3");
+				String heading = driver.findElement(titleBy).getText();
+				System.out.println("heading "+ heading);
+				try {
+					String name = heading.substring(0, heading.indexOf("-")).trim();
+					System.out.println(name);
+					
+					String fName[];
+					if(name.contains(",")) {
+						fName = name.substring(0, name.indexOf(",")).split(" ");
+						data[1] = fName[0];
+						data[2] = fName[(fName.length -1)];
+					}else {
+						fName = name.split(" ");
+						data[1] = fName[0];
+						data[2] = fName[(fName.length -1)];
+					}
+					if(data[1].length() < 1 || data[2].length() < 1) {
+						fName = name.split(" ");
+						if(data[1].length() < 1) data[1] = fName[0];
+						if(data[2].length() < 1) data[2] = fName[1];
+					}
+				
+				} catch (Exception ee) {}
+			
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		List<WebElement> searchResultElements = driver.findElements(searchResultsBy);
+		System.out.println(searchResultElements.size());
+		int count = 0;
+		for (WebElement webElement : searchResultElements) {
+			count++;
+			try {
+			By linkBy = By.xpath("//div[@class=\"g\"]["+count+"]/div[@class=\"rc\"]/div[@class=\"r\"]/a");
+			String link = driver.findElement(linkBy).getAttribute("href");
+			System.out.println("link " + link);
+				if(link.contains("https://www.linkedin.com/in/")) {
+					
+					if(company.length() > 0){
+						String fName = "";
+						String lName = "";
+						By titleBy = By.xpath("//div[@class=\"g\"]["+count+"]/div[@class=\"rc\"]/div[@class=\"r\"]/a/h3");
+						String heading = driver.findElement(titleBy).getText();
+						System.out.println("heading "+ heading);
+						try {
+							String name = heading.substring(0, heading.indexOf("-")).trim();
+							System.out.println(name);
+							
+							String fullName[];
+							if(name.contains(",")) {
+								fullName = name.substring(0, name.indexOf(",")).split(" ");
+								fName = fullName[0];
+								lName = fullName[(fullName.length -1)];
+							}else {
+								fullName = name.split(" ");
+								fName = fullName[0];
+								lName = fullName[(fullName.length -1)];
+							}
+							if(fName.length() < 1 || lName.length() < 1) {
+								
+								fullName = heading.split(" ");
+								if(fName.length() < 1) fName = fullName[0];
+								if(lName.length() < 1) lName = fullName[1];
+							}
+							
+							} catch (Exception ee) {}
+							if(heading.toLowerCase().contains(company.toLowerCase())) {
+								data[0] = link; 
+								data[1] = fName;
+								data[2] = lName;
+								break;
+								}
+							By descriptionBy = By.xpath("//div[@class=\"g\"]["+count+"]/div[@class=\"rc\"]/div[@class=\"s\"]");
+							String description = driver.findElement(descriptionBy).getText().replaceAll("[\\t\\n\\r]", " ");
+							System.out.println("description "+ description);
+							if(description.toLowerCase().contains(company.toLowerCase())) {
+								data[0] = link; 
+								data[1] = fName;
+								data[2] = lName;
+								break;
+								}
+					}
+				} 
+			}catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		driver.close();
+		switchLinkedinTab();
+		
+		return data;
+		
+	}
+	
+	public boolean openUrl(String url) {
+		driver.get(url);
+		return true;
+	}
+	
+	private String linkedinTabHandaler = null; 
+	private String googleTabHandler = null; 
+	
+	public void createSubTab() {
+		if(linkedinTabHandaler == null)
+			linkedinTabHandaler = driver.getWindowHandle();
+		System.out.println("--linkedinTabHandaler--"+ linkedinTabHandaler.isEmpty());
+		((JavascriptExecutor) driver).executeScript("window.open('about:blank','_blank');");
+		//((JavascriptExecutor) driver).executeScript("window.open();");
+	   	  Set<String> handles = driver.getWindowHandles();
+		  Iterator<String> iterator = handles.iterator();
+		  while (iterator.hasNext()) {
+			  googleTabHandler = iterator.next();
+			  System.out.println("--googleTabHandler--"+ googleTabHandler.isEmpty());
+		  }
+	}
+	
+	public void switchGoogleTab() {
+		driver.switchTo().window(googleTabHandler);
+	}
+	public void switchLinkedinTab() {
+		driver.switchTo().window(linkedinTabHandaler);
+	}
+	
+	
+	public boolean isLinkedinMember() {
+		System.out.println("isLinkedinMember");
+					
+		try {
+			By memberNameBy = By.xpath("//div[contains(@class,\"profile-topcard-person-entity__content\")]//span[contains(@class,\"profile-topcard-person-entity__name\")]");
+			WebDriverWait wait = new WebDriverWait(driver, 30);
+			System.out.println("isLinkedinMember 1 ");
+			wait.until(ExpectedConditions.visibilityOfElementLocated(memberNameBy));
+			System.out.println("isLinkedinMember 2 ");
+			String text = driver.findElement(memberNameBy).getText();
+			System.out.println("isLinkedinMember 3 ");
+			if(text.contains("LinkedIn Member")) return true;
+		} catch (Exception e) {
+			System.out.println("isLinkedinMember error ");
+			String text = getSourseCode();
+			if(text.contains("LinkedIn Member")) return true;
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public Info generalInfo(String link) {
+		
+		Info info = new Info();
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
+		
+		
+		By fullNameBy = By.xpath("//div[contains(@class,\"profile-topcard-person-entity__content\")]//span[contains(@class,\"profile-topcard-person-entity__name\")]");
+		By locationBy = By.xpath("//div[@class=\"profile-topcard-person-entity__content min-width inline-block\"]/dl/dd[contains(@class,\"mt4\")]/div[contains(@class,\"profile-topcard__location-data\")]");
+		By titleBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span[1]");
+		By companyBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/a");
+		By company1By = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span[2]");
+		
+		try {
+			String name = driver.findElement(fullNameBy).getText().trim();
+			if(!name.contains("LinkedIn Member")) {
+				String fname[];
+				if(name.contains(",")) {
+					fname = name.substring(0, name.indexOf(",")).split(" ");
+					info.setFirstName(fname[0]);
+					info.setSecondName(fname[(fname.length -1)]);
+				}else {
+					fname = name.split(" ");
+					info.setFirstName(fname[0]);
+					info.setSecondName(fname[(fname.length -1)]);
+				}
+				
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String loacation = driver.findElement(locationBy).getText().replaceAll("[\\t\\n\\r]", " ");
+			info.setLocation(loacation);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		try {
+			String title = driver.findElement(titleBy).getText();
+			info.setCurrentJobTitle(title);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		try {
+			String company = driver.findElement(companyBy).getText();
+			info.setCurrentCompany(company);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			try {
+			String company = driver.findElement(company1By).getText();
+			info.setCurrentCompany(company);
+			} catch (Exception ee) {}
+		}
+		
+		/*
+		String company = info.getCurrentCompany();
+		String title = info.getCurrentJobTitle();
+		
+		By titComYearBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span");
+		By titComBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span");
+			
+		try {
+			String titComYear = driver.findElement(titComYearBy).getText();
+			
+			List<WebElement> element = driver.findElements(titComBy);
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		
+		if(company == null || company.length() < 1) {
+			
+		}
+		
+		if(title == null || title.length() < 1 ) {
+			
+		}
+		*/
+		
+		return info;
+	}
+	
+	
+	
+
+	
 	private boolean findAndClick(String selector) {
 		try {
-			By by = By.cssSelector(selector);
+			//By by = By.cssSelector(selector);
+			By by = By.xpath(selector);
 			WebDriverWait wait = new WebDriverWait(driver, 60);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 			driver.findElement(by).click();

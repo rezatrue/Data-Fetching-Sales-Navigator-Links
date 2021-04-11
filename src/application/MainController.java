@@ -31,7 +31,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -59,15 +61,213 @@ public class MainController  extends Service<String> implements Initializable {
 
 	static boolean status = false;
 	
-	private Preferences prefs = null;
+	public static Preferences prefs = null;
+	
+	//..............................
+	@FXML
+	private Button btnBrowse, btnRun; // btnLaunch, btnLogin, btnSettings,, btnPrintList 
+	@FXML
+	private TextField tfSelectedFilePath, tfLimits; // , tfLinkedinId, tfMessageBox
+
+	@FXML
+	ToggleGroup dataSourceGadioGroup;
+	@FXML
+	RadioButton dbRadioBtn, csvRadioBtn;
+
+	@FXML
+	public void dataSourceBtnAction(ActionEvent event) {
+		if(dbRadioBtn.isSelected())
+			covertSource("db");
+		if(csvRadioBtn.isSelected())
+			covertSource("scv");
+	}
+	
+	public void covertSource(String src) {
+		if (src.equalsIgnoreCase("db")) {
+			System.out.println("Database");
+			btnBrowse.setDisable(true);
+			tfSelectedFilePath.setDisable(true);
+		} else if (src.equalsIgnoreCase("scv")){
+			System.out.println("CSV file");
+			btnBrowse.setDisable(false);
+			tfSelectedFilePath.setDisable(false);
+		}
+	}
+
+	private void convertEnable() {
+		dbRadioBtn.setDisable(false);
+		csvRadioBtn.setDisable(false);
+		btnBrowse.setDisable(true);
+		tfSelectedFilePath.setDisable(true);
+		btnRun.setDisable(false);
+		tfLimits.setDisable(false);		
+			
+	}
+	private void convertDisable() {
+		dbRadioBtn.setDisable(true);
+		csvRadioBtn.setDisable(true);
+		btnBrowse.setDisable(true);
+		tfSelectedFilePath.setDisable(true);
+		btnRun.setDisable(true);
+		tfLimits.setDisable(true);
+	}
+	
+	//@FXML
+	//private PasswordField pfPassword;
+	private int converted = 0;
+	//private int totalSalesLink = 0;
+	private int listSize = 0;
+	@FXML
+	private void browseBtnAction(ActionEvent event) {
+		System.out.println("Browse Button");
+		//stackoverflow.com/questions/25491732/how-do-i-open-the-javafx-filechooser-from-a-controller-class/25491787
+		FileChooser fileChooser = new FileChooser();
+		
+		fileChooser.getExtensionFilters().addAll(
+			     new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+			);
+		
+        File file = fileChooser.showOpenDialog(new Stage());
+        
+        if(file != null) {
+        	String filepath = file.getAbsolutePath();
+    		if(filepath.endsWith(".csv")) {
+    			int number = linkedinListMain.readCsvFile(filepath); // new 
+    			//list = csvFileHandeler.read(filepath);
+    			//list.size() == 0
+    			if(number == 0) {
+    				btnRun.setDisable(true);
+    				filepath = "";
+    				textMessage.setText("File is not in proper format");
+    			}else if(number > 0) {
+    				listSize = number;
+    				btnRun.setDisable(false);
+    				textMessage.setText("List size : "+ listSize);
+    				textListSize.setText(listSize+"");
+    				tfLimits.setText(100+"");
+    			}
+    		}
+    		tfSelectedFilePath.setText(filepath);
+    		//totalSalesLink = linkedinListMain.numberOfSalesLink();
+        	//tfLimits.setText(totalSalesLink+"");
+        }
+        
+	}
+	
+	LinkConversionService linkConversionService;
+	@FXML
+	private void runBtnAction(ActionEvent event) {
+		System.out.println("Run Button");
+		
+		// checking limits, how many links need to convert
+		int limits = 0;
+		//totalSalesLink = linkedinListMain.numberOfSalesLink();
+		if(!tfLimits.getText().isEmpty()) {
+			limits = Integer.parseInt(tfLimits.getText());
+			//int numberLimit = Integer.parseInt(tfLimits.getText());
+			//limits = (numberLimit > totalSalesLink) ? totalSalesLink : numberLimit;
+			//tfLimits.setText(limits+"");
+			}
+		System.out.println("limits : "+ limits);
+		if(limits == 0) {
+			textMessage.setText("Limit Zero process terminated");
+			return;
+		}
+		
+			
+		linkConversionService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("Done : " + event.getSource().getValue()) ;
+				btnRun.setText(event.getSource().getValue().toString());
+				
+			}
+		});
+		
+		System.out.println("service Status : " + linkConversionService.getState());
+		
+		if(btnRun.getText().equals("Run")){
+			btnRun.setText("Pause"); 
+			String statustxt = linkConversionService.getState().toString();
+			if(statustxt == "READY") linkConversionService.start();
+			if(statustxt == "SUCCEEDED" || statustxt == "CANCELLED") linkConversionService.restart();
+			if(statustxt == "FAILED") { linkConversionService.reset(); linkConversionService.restart(); }
+		}
+		else if(btnRun.getText().equals("Pause")) {
+			btnRun.setText("Run");
+			if(linkConversionService.getState().toString() == "RUNNING") linkConversionService.cancel();
+			if(linkConversionService.getState().toString() == "FAILED") linkConversionService.reset();
+		}
+				
+				
+	}
+	
+	private class LinkConversionService extends Service<String>{
+		
+		protected Task<String> createTask() {
+			// TODO Auto-generated method stub
+			return new Task<String>() {
+				
+				@Override
+				protected String call() throws Exception {
+					System.out.println("I am doing assigned task ") ;
+					int index = 0; // number of loop iteration / list serial number
+					int limits = Integer.parseInt(tfLimits.getText());
+					int workCount = 0;
+					// loading sales link for first time 
+					linkedinListMain.login();
+					while (limits != 0 && btnRun.getText().contains("Pause")) {
+						
+						if(workCount == 81) {
+							linkedinListMain.closeBrowser();
+							textMessage.setText("");
+							textMessage.setText("Browser rebooting...");
+							linkedinListMain.launcherBrowser();
+							linkedinListMain.login();
+							workCount = 0;
+						}
+
+						int res = linkedinListMain.getPublicLinkDetails(index);
+						index++;
+						//totalSalesLink--;
+						if(res == 0) {
+							
+							}
+						if(res == 1) {
+							converted++;
+							workCount++;
+							limits--;
+							textMessage.setText(converted + " Links converted, process continues....");
+							}
+						
+						System.out.println("res -->>" + res);
+						if (index == listSize || btnRun.getText().contains("Run") || limits <= 0) {
+						//if (totalSalesLink == 0 || index == listSize || btnRun.getText().contains("Run") || limits <= 0) {	
+							textMessage.setText("Conversion Completed. Total : "+ converted + " links converted.");
+							tfLimits.setText(String.valueOf(limits));
+							return "Run";
+						}
+							
+					}
+					
+					return "Run";
+				}
+			};
+		}
+
+	}
+	//..............................
+	
 
 	// private LinkedList<Info> list = null;
 	@FXML
 	private ChoiceBox<String> choiceBox = new ChoiceBox<>();
-	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile" };
+	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile", "Lists", "Convert" };
 	private LinkedinListMain linkedinListMain;
 	private ApiClient apiClient; 
-	private int listSize;
+	//private int listSize;
 	
 	@FXML
 	private Button settingBtn;
@@ -160,8 +360,9 @@ public class MainController  extends Service<String> implements Initializable {
 							endPage = Integer.parseInt(textEndPage.getText());
 							if (currentPage <= endPage) {
 								int newadded = linkedinListMain.takeList();
-								String sizeText = textListSize.getText();
-								textListSize.setText(Integer.parseInt(sizeText) + newadded + "");
+								int previousListSize = Integer.parseInt(textListSize.getText());
+								listSize = previousListSize + newadded;
+								textListSize.setText( listSize + "");
 								textMessage.setText("Processing page " + currentPage);
 								if (autoSelected && currentPage < endPage) {
 									currentPage = linkedinListMain.openNextPage();
@@ -219,7 +420,7 @@ public class MainController  extends Service<String> implements Initializable {
 						showProgress.close();
 						textMessage.setText("New Browser is lunched, please proceed . . .");
 						openBrowserBtn.setDisable(false);
-						enterBtn.setDisable(false);
+						signInBtn.setDisable(false);
 						startBtn.setDisable(false);
 						printListBtn.setDisable(false);
 						resetBtn.setDisable(false);
@@ -246,54 +447,40 @@ public class MainController  extends Service<String> implements Initializable {
 			linkedinListMain.signedOut();
 			linkedinListMain.closeBrowser();
 			openBrowserBtn.setText("Open");
-			enterBtn.setDisable(true);
+			signInBtn.setDisable(true);
 			startBtn.setDisable(true);
 			choiceBox.setDisable(true);
 			textMessage.setText("Browser is Closed");
 		}
 		
-		
-		
-		
 	}
 
 	@FXML
-	private Button enterBtn;
+	private Button signInBtn;
 
 	@FXML
-	public void enterBtnAction(ActionEvent event) {
-		System.out.println("enter");
+	public void signInBtnAction(ActionEvent event) {
+		System.out.println("Sign in");
 		String userId = textUserId.getText();
 		String password = textPassword.getText();
-		String keyword = textKeyword.getText();
+		//String keyword = textKeyword.getText();
+		
+		String prefUser = prefs.get("linkedinUser", "");
+		String prefpass = prefs.get("linkedinPassword", "");
+		
+		if(userId != prefUser) 
+			prefs.put("linkedinUser", userId);
+		if (password == prefpass)
+			prefs.put("linkedinPassword", password);
+		
+		if(linkedinListMain.login())
+			textMessage.setText("Successfully Sign in");
+		else
+			textMessage.setText("Sign in failed");
+		
+		// i will delete later
+		//String currentPage = linkedinListMain.searchItemOnPage();
 
-		String currentPage = linkedinListMain.searchItemOnPage();
-
-		switch (currentPage) {
-		case (FireFoxOperator.LOGINPAGE):
-			if (userId.length() > 0 && password.length() > 0) {
-				System.out.println("userId / password :-- " + password);
-				if (linkedinListMain.login(userId, password))
-					textMessage.setText("You are now loggedin");
-				else
-					textMessage.setText("Login Error");
-			} else
-				textMessage.setText("No credential");
-			break;
-		case (FireFoxOperator.SEARCHPAGE):
-			if (keyword.length() > 0) {
-				System.out.println(" keyword :-- " + keyword);
-				if (linkedinListMain.search(keyword))
-					textMessage.setText("Search Completed");
-				else
-					textMessage.setText("Search Error");
-			} else
-				textMessage.setText("No Keyword");
-			break;
-		default:
-			textMessage.setText("Error in the page please check");
-			break;
-		}
 
 	}
 
@@ -303,8 +490,29 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	public void printListBtnAction(ActionEvent event) {
 		System.out.println("Print List");
-		int count = linkedinListMain.printList(textKeyword.getText());
-		textMessage.setText("New CSV file created with " + count + " entity.");
+		int num = prefs.getInt("unUpdatedListCount", 0);
+		prefs.putInt("unUpdatedListCount", 0);
+		int remainingLimits =  apiClient.updateUseage(num);
+		if(remainingLimits >= 0) {
+			System.out.println("listSize-> "+ listSize);//
+			int count = linkedinListMain.printList(textKeyword.getText(), listSize);
+			textMessage.setText("New CSV file created with " + count + " entity.");
+		}
+		// this will create problem if picked data limits accessed by 1 , that's why return code modified
+		if(remainingLimits == -1) textMessage.setText("Please Check your connection");
+		
+		if(remainingLimits < -1) {
+			
+			int printlistSize = listSize + remainingLimits;
+			System.out.println(printlistSize + " : -PT");
+			if(printlistSize > 0) {
+				int count = linkedinListMain.printList(textKeyword.getText(), printlistSize);
+				textMessage.setText("New CSV with " + count + " entity has been created. Pls upgrade package for full list");
+			}else {
+				textMessage.setText("Out of Limits !! Please upgrade your package");
+			}
+		}
+			
 
 	}
 
@@ -380,17 +588,30 @@ public class MainController  extends Service<String> implements Initializable {
 		// TODO Auto-generated method stub
 		listSize = 0;
 		runService = new MyService();
+		linkConversionService = new LinkConversionService();
 		prefs = Preferences.userRoot().node("db");
-		enterBtn.setDisable(true);
+		signInBtn.setDisable(true);
 		startBtn.setDisable(true);
 		printListBtn.setDisable(true);
 		resetBtn.setDisable(true); 
 		openBrowserBtn.setDisable(true);
-
+		
+		
+		dbRadioBtn.setDisable(true);
+		csvRadioBtn.setDisable(true);
+		//cbConvertSalesLink.setDisable(false);
+		btnBrowse.setDisable(true);
+		btnRun.setDisable(true);
+		tfSelectedFilePath.setDisable(true);
+		tfLimits.setDisable(true);
+		
+		
+		
+		
 		choiceBox.getItems().addAll(choiceBoxItems);
 		choiceBox.setValue(choiceBoxItems[0]);
 		choiceBox.setOnAction(e -> choiceBoxSetup(choiceBox));
-		choiceBox.setDisable(true);
+		choiceBox.setDisable(false);
 		guireset();
 
 		textUserId.setText(prefs.get("linkedinUser", ""));
@@ -498,13 +719,27 @@ public class MainController  extends Service<String> implements Initializable {
 	private Object choiceBoxSetup(ChoiceBox<String> choiceBox) {
 		String item = choiceBox.getValue();
 		System.out.println(item);
-		String type;
-		if (item == choiceBoxItems[1])
-			type = "salesnavleads";
-		else if (item == choiceBoxItems[2])
-			type = "salesnavaccounts";
-		else
+		String type = "";
+		
+		if (item == choiceBoxItems[4]) {
+				type = "convert";
+				convertEnable();
+			}else {
+				convertDisable();	
+			}
+		if (item == choiceBoxItems[0]) {
 			type = "profilesearch";
+			}
+		if (item == choiceBoxItems[1]) {
+			type = "salesnavleads";
+			}
+		if (item == choiceBoxItems[2]) {
+			type = "salesnavaccounts";
+			}
+		if (item == choiceBoxItems[3]) {
+			type = "salesnavlists";
+			}
+		
 		linkedinListMain.setProfileMode(type);
 		return null;
 	}
