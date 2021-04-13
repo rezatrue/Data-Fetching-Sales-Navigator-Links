@@ -87,6 +87,14 @@ public class MainController  extends Service<String> implements Initializable {
 			System.out.println("Database");
 			btnBrowse.setDisable(true);
 			tfSelectedFilePath.setDisable(true);
+			int num = linkedinListMain.countData();
+			tfLimits.setText(num+"");
+			if(num <= 0) {
+				btnRun.setDisable(true);
+			}else if(num > 0) {
+				btnRun.setDisable(false);
+			}
+			
 		} else if (src.equalsIgnoreCase("scv")){
 			System.out.println("CSV file");
 			btnBrowse.setDisable(false);
@@ -101,7 +109,7 @@ public class MainController  extends Service<String> implements Initializable {
 		tfSelectedFilePath.setDisable(true);
 		btnRun.setDisable(false);
 		tfLimits.setDisable(false);		
-			
+		covertSource("db");	
 	}
 	private void convertDisable() {
 		dbRadioBtn.setDisable(true);
@@ -229,7 +237,8 @@ public class MainController  extends Service<String> implements Initializable {
 							workCount = 0;
 						}
 
-						int res = linkedinListMain.getPublicLinkDetails(index);
+						//int res = linkedinListMain.getPublicLinkDetails(index);
+						int res = linkedinListMain.getCompanyLinkDetails(index);
 						index++;
 						//totalSalesLink--;
 						if(res == 0) {

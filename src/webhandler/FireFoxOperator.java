@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import scrapper.Info;
+import scrapper.Company;
 import scrapper.HtmlParser;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;
@@ -88,7 +89,7 @@ public class FireFoxOperator {
 	
 	
 	public boolean browserLauncher() {
-
+		
 		ProfilesIni profile = new ProfilesIni();
 		FirefoxProfile myprofile = profile.getProfile(profileName);
 
@@ -99,9 +100,13 @@ public class FireFoxOperator {
 		System.setProperty("webdriver.gecko.driver", geckodriverdir);
 
 		driver = new FirefoxDriver(capabilities);
-
+		
+		
 		driver.get(url);
-
+		/*
+		System.setProperty("webdriver.gecko.driver", geckodriverdir);
+		driver = new FirefoxDriver();
+		*/
 		return true;
 	}
 
@@ -389,6 +394,8 @@ public class FireFoxOperator {
 			jse.executeScript("scroll(0, 750);");
 			Thread.sleep(500);
 			jse.executeScript("scroll(0, 950);");
+			Thread.sleep(5000);
+			jse.executeScript("scroll(0, 1200);");
 			Thread.sleep(1000);
 			
 		} catch (InterruptedException e) {
@@ -501,6 +508,96 @@ public class FireFoxOperator {
 		return info;
 	}
 
+	
+	public Company getCompanyLinkDetails(String salesComLink) {
+		
+		Company com = new Company();
+		
+		if(isLoginPage()) linkedinLogin();
+		
+		driver.get(salesComLink);
+		/*
+		By titleBy = By.xpath("//div[contains(@class,'basic-info')]//div[contains(@class,'title')][1]");
+		By subtitleBy = By.xpath("//div[contains(@class,'basic-info')]//div[contains(@class,'subtitle')]/div");
+
+		try {
+			String name = driver.findElement(titleBy).getText();
+			com.setComName(name);
+		} catch (Exception e1) {}
+		
+		try {
+			String txt = driver.findElement(subtitleBy).getText().replaceAll("\\s+", " ");
+			System.out.println(txt);
+			String industry = txt.subSequence(0, txt.indexOf("·")).toString().trim();
+			com.setComIndustry(industry);
+			System.out.println(industry + " : industry");
+			String comSize = txt.substring(txt.indexOf("·")+1, txt.length()).trim();
+			com.setComSize(comSize);
+			System.out.println(comSize + " : comSize");
+		} catch (Exception e1) {}
+		*/
+		String dropDownbtn = "//div[contains(@class,'account-actions')]/div[2]/button";
+		if(findAndClick(dropDownbtn)) {
+			try {
+				String urltxt = findComUrlInSourcePage();
+				System.out.println("url_com_txt : "+ urltxt);
+				if(urltxt.contains("linkedin.com/company/")) com.setComUrl(urltxt);
+			} catch (Exception e) {	}
+		}
+		
+		By moreInfoBy = By.xpath("//button[contains(.,'read more')]");
+		try {driver.findElement(moreInfoBy).click();} 
+		catch (Exception e) { 
+			//NoSuchElementException 	
+			return com;
+		}
+		
+		By websiteBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Website')]]/a[1]");
+		By typeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Type')]][1]");
+		By foundedBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Founded')]][1]");
+		
+		try {
+		driver.switchTo().activeElement(); //.findElement(By.xpath("//div[@role='dialog']"))
+		WebElement elm = driver.findElement(foundedBy);
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);",elm);
+		} catch (Exception e1) {}
+		
+		try {
+			String website = driver.findElement(websiteBy).getText();
+			com.setComWebsite(website);
+			System.out.println(website);
+		} catch (Exception e1) {}
+		
+		try {
+			String type = driver.findElement(typeBy).getText();
+			com.setComType(type);
+			System.out.println(type);
+		} catch (Exception e1) {}
+		
+		try {
+			String founded = driver.findElement(foundedBy).getText();
+			com.setComFounded(founded);
+			System.out.println(founded);
+		} catch (Exception e1) {}
+		
+		/*
+		By headquartersBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Headquarters')]][1]");
+		try {
+			String headquarters = driver.findElement(headquartersBy).getText();
+			com.setComHeadquarters(headquarters);
+			System.out.println(headquarters);
+		} catch (Exception e1) {}
+		*/
+		
+		By closeBY = By.xpath("//button[contains(@class,'ember-panel__dismiss')]");
+		try {driver.findElement(closeBY).click();} catch (Exception e1) {}
+		driver.switchTo().activeElement();
+		
+		System.out.println("--done--");
+		return com;
+	}
+	
+	
 	public String findUrlInSourcePage() {
 		String txtMatch = "https://www.linkedin.com/in/";
 		String source = getSourseCode();
@@ -514,6 +611,22 @@ public class FireFoxOperator {
 		
 		return "";
 	}
+	
+	public String findComUrlInSourcePage() {
+		// "flagshipCompanyUrl":"https://www.linkedin.com/company/nortal/",
+		String txtMatch = "https://www.linkedin.com/company/";
+		//String source = getSourseCode(); // not need to scroll
+		String source = driver.getPageSource().toString();
+		if(source.contains(txtMatch)) {
+			String fristSubString = source.substring(source.indexOf(txtMatch), source.length());
+			String urltxt = fristSubString.substring(0, fristSubString.indexOf(",")-1);
+			
+			return (urltxt.contains(txtMatch)) ? urltxt : "";
+		}
+		
+		return "";
+	}
+	
 	
 	public String[] getGoogleResult(String title, String company) {
 		String data[] = {"Not Found", "", ""};
@@ -789,8 +902,76 @@ public class FireFoxOperator {
 		return info;
 	}
 	
-	
-	
+	// Company about tab info
+	public Company generalCompanyInfo(String link) {
+		
+		Company com = new Company();
+		
+		driver.get(link);
+		By aboutBtnBy = By.xpath("//a[contains(.,'About')]");
+		driver.findElement(aboutBtnBy).click();
+		
+		By titleBy = By.xpath("//h1[@title]");
+		By websiteBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Website')]]/a[1]");
+		By industryBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Industry')]][1]");
+		By comSizeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Company size')]][1]");
+		By headquartersBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Headquarters')]][1]");
+		By typeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Type')]][1]");
+		By foundedBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Founded')]][1]");
+		
+		com.setComUrl(link);
+		
+		try {
+			String title = driver.findElement(titleBy).getText();
+			com.setComName(title);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String website = driver.findElement(websiteBy).getText();
+			com.setComWebsite(website);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		try {
+			String industry = driver.findElement(industryBy).getText();
+			com.setComIndustry(industry);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String comSize = driver.findElement(comSizeBy).getText();
+			com.setComSize(comSize);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String headquarters = driver.findElement(headquartersBy).getText();
+			com.setComHeadquarters(headquarters);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String type = driver.findElement(typeBy).getText();
+			com.setComType(type);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String founded = driver.findElement(foundedBy).getText();
+			com.setComFounded(founded);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		return com;
+	}
 
 	
 	private boolean findAndClick(String selector) {

@@ -21,7 +21,19 @@ public class Run {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Hello:");
-		alertTest();
+		
+		FireFoxOperator fireFoxOperator = new FireFoxOperator();
+		
+		fireFoxOperator.browserLauncher();
+		
+		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/eset.html");
+		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/ergo.html");
+		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/HRejterzy.html");
+		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/424770");
+		fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28967");
+		fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28652475");
+		
+		//alertTest();
 		
 		//runfirefoxDefaultProfile();
 		// openNavLink();
@@ -39,7 +51,12 @@ public class Run {
 		//System.out.println(getPublicLink(
 			//	"https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"));
 		// System.out.println(element.getText());
+	
+	
+	
 	}
+	
+	
 
 	
 	public static void alertTest() {
@@ -64,6 +81,7 @@ public class Run {
 		
 	}
 	
+
 	
 	static String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";
 	static String infoBtnCssSelector1 = ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)";

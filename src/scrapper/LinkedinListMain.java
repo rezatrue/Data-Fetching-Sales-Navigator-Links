@@ -40,17 +40,17 @@ public class LinkedinListMain {
 //		if(type.equalsIgnoreCase("salesnavleads")) {
 //			
 //		}
-		
+		if(type.equalsIgnoreCase("convert")) {	
+			return;
+		}
 		list = new LinkedList<Info>();
 		localDb = new DbProfile();
 		csv = new ProfileCsv();
 		
-		if(type.equalsIgnoreCase("convert")) {	
-			// np;
-		}
 		if(type.equalsIgnoreCase("salesnavaccounts")) {			
 			list = new LinkedList<Company>();
 			localDb = new DbCompany();
+			//list = localDb.selectRows(countData());
 			csv = new CompanyCsv();
 		}
 		
@@ -108,6 +108,41 @@ public class LinkedinListMain {
 		return 0;
 
 	}
+	
+	private String salesComLinkTemp = "linkedin.com/sales/company";
+	private String publicComLinkTemp = "linkedin.com/company";
+	
+	public int getCompanyLinkDetails(int index) {
+		
+		String salesComLink = localDb.selectAtIndex(index);
+		
+		System.out.println("salesComLink : " + salesComLink);
+		if (salesComLink.contains(publicComLinkTemp)) return 0;
+		if (salesComLink.contains(salesComLinkTemp)) {
+			Company newCompany = fireFoxOperator.getCompanyLinkDetails(salesComLink); 
+			/*
+			String publicCompanyLink = newCompany.getComUrl();
+			System.out.println("set in list -->>" + publicCompanyLink);
+			if(publicCompanyLink == null || publicCompanyLink.length() == 0){
+			*/
+			if(newCompany == null){
+				System.out.println("return -->> -1");
+				return 0;
+			}
+			System.out.println(newCompany.getComUrl() + " -- :: --");
+			if(newCompany.getComUrl() != null && newCompany.getComUrl().contains(publicComLinkTemp)) {
+				//converted += 1;
+				//list.set(index, newInfo);
+				localDb.update(newCompany, salesComLink);
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+		return 0;
+
+	}
+	
 	
 	
 	// modified 11 mar 2018
@@ -248,6 +283,7 @@ public class LinkedinListMain {
 //		return list.size();
 		return addToDb(csv_Scanner.dataScan(filepath));
 	}
+
 	
 	/*
 	public int numberOfSalesLink() {

@@ -24,6 +24,7 @@ public interface LocalDBHandler {
 	
 	public String selectAtIndex(int num); // {return "";}
 	
+	
 	public LinkedList<?> selectRows(int num); //{ return new LinkedList<>();}
 	
 	public boolean insert(Object obj); // {return false;}

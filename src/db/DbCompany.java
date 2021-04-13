@@ -270,11 +270,13 @@ public class DbCompany implements LocalDBHandler{
 	}
 	
 	public boolean update(Object obj, String salesLink) {
+		
+		// not updating all cell as there are data available
+		
 		Company com = (Company)obj;
 		String sql = "UPDATE " 
 					+ TABLE_NAME 
-					+ " SET Linkedin_Company_URL = ?, Company_Name = ?, Headquarters = ?, Website = ?, Founded = ?,"
-					+ " Company_Size = ?, Industry = ?, Company_Type = ? "
+					+ " SET Linkedin_Company_URL = ?, Website = ?, Founded = ?, Company_Type = ? "
 					+ " WHERE Linkedin_Company_URL = ?";
 		
 		PreparedStatement pstmt = null;
@@ -284,14 +286,10 @@ public class DbCompany implements LocalDBHandler{
 	        try {
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, com.getComUrl());
-				pstmt.setString(2, com.getComName());
-				pstmt.setString(3, com.getComHeadquarters());
-				pstmt.setString(4, com.getComWebsite());
-				pstmt.setString(5, com.getComFounded());
-				pstmt.setString(6, com.getComSize());
-				pstmt.setString(7, com.getComIndustry());
-				pstmt.setString(8, com.getComType());
-				pstmt.setString(11, salesLink);
+				pstmt.setString(2, com.getComWebsite());
+				pstmt.setString(3, com.getComFounded());
+				pstmt.setString(4, com.getComType());
+				pstmt.setString(5, salesLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
