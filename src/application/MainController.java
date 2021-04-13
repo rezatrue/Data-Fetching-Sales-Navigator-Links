@@ -627,15 +627,8 @@ public class MainController  extends Service<String> implements Initializable {
 		textPassword.setText(prefs.get("linkedinPassword", ""));
 
 		linkedinListMain = new LinkedinListMain();
-		/*
-		 * try { Parent parent =
-		 * FXMLLoader.load(getClass().getResource("/application/Login.fxml"));
-		 * Stage stage = new Stage(); stage.setTitle("Please login");
-		 * stage.setScene(new Scene(parent)); stage.setResizable(false);
-		 * stage.show(); } catch (Exception e) { e.printStackTrace(); }
-		 */
 		
-		String msg = loginDialoag();
+		String msg = authenticateUser();
 
 		//msg = "welcome test";
 		textMessage.setText(msg);
@@ -647,13 +640,23 @@ public class MainController  extends Service<String> implements Initializable {
 	}
 
 	
-	// source http://code.makery.ch/blog/javafx-dialogs-official/
-	// just copy pest
-
-	private String loginDialoag() {
+	
+	private String authenticateUser() {
+		
 		prefs = Preferences.userRoot().node("db");
 		apiClient = new ApiClient();
 		String msg = "";
+		
+		String user = prefs.get("user", "");
+		String pass = prefs.get("password", "");
+		//return loginDialoag(user, pass);
+		return msg = apiClient.userAuth(user, pass);
+	}
+	
+	// Not using loginDialoag box 13 April 2021
+	// source http://code.makery.ch/blog/javafx-dialogs-official/
+	// just copy pest
+	private String loginDialoag(String user, String pass) {
 
 		// Create the custom dialog.
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -668,7 +671,6 @@ public class MainController  extends Service<String> implements Initializable {
         lockView.setFitWidth(75);
         dialog.setGraphic(lockView);
 		
-		
 		// Set the button types.
 		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
@@ -681,10 +683,10 @@ public class MainController  extends Service<String> implements Initializable {
 
 		TextField username = new TextField();
 		username.setPromptText("Username");
-		username.setText(prefs.get("user", ""));
+		username.setText(user);
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
-		password.setText(prefs.get("password", ""));
+		password.setText(pass);
 
 		grid.add(new Label("Username:"), 0, 0);
 		grid.add(username, 1, 0);
@@ -721,7 +723,7 @@ public class MainController  extends Service<String> implements Initializable {
 			System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
 		});
 
-		return msg = apiClient.userAuth(username.getText(), password.getText());
+		return apiClient.userAuth(username.getText(), password.getText());
 
 	}
 
