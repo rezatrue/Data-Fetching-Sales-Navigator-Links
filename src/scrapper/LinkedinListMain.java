@@ -15,6 +15,8 @@ public class LinkedinListMain {
 	public LinkedList<?> list = null;
 	LocalDBHandler localDb;
 	CsvGenerator csv;
+	private String workMode;
+	private String taskType;
 	FireFoxOperator fireFoxOperator = new FireFoxOperator();
 	// old private BrowserHandler browser = null ;
 	//private Parser parser = null; // 1
@@ -23,6 +25,8 @@ public class LinkedinListMain {
 	//int unUpdatedListCount = 0;
 	
 	public LinkedinListMain() {
+		this.workMode = "modelist";
+		this.taskType = "";
 		list = new LinkedList<Info>();
 		localDb = new DbProfile();
 		csv = new ProfileCsv();
@@ -34,12 +38,18 @@ public class LinkedinListMain {
 
 	}
 
+	public void setWorkMode(String mtype) {
+		System.out.println("Mode: " + mtype);
+		this.workMode = mtype;
+	}
+	public void setTaskType(String type) {
+		System.out.println("Task: " + type);
+		this.taskType = type;
+	}
+	
 	public void setProfileMode(String type) { // 1
 		fireFoxOperator.setProfileMode(type);
 		
-//		if(type.equalsIgnoreCase("salesnavleads")) {
-//			
-//		}
 		if(type.equalsIgnoreCase("convert")) {	
 			return;
 		}

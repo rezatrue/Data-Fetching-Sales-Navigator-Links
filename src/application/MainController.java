@@ -270,6 +270,9 @@ public class MainController  extends Service<String> implements Initializable {
 	//..............................
 	
 
+	@FXML
+	private ChoiceBox<String> modeChoiceBox = new ChoiceBox<>();
+	private String[] modeChoiceBoxItems = {"List", "Convert"};
 	// private LinkedList<Info> list = null;
 	@FXML
 	private ChoiceBox<String> choiceBox = new ChoiceBox<>();
@@ -615,7 +618,9 @@ public class MainController  extends Service<String> implements Initializable {
 		tfLimits.setDisable(true);
 		
 		
-		
+		modeChoiceBox.getItems().addAll(modeChoiceBoxItems);
+		modeChoiceBox.setValue(modeChoiceBoxItems[0]);
+		modeChoiceBox.setOnAction(e -> modeChoiceBoxSetup(modeChoiceBox));
 		
 		choiceBox.getItems().addAll(choiceBoxItems);
 		choiceBox.setValue(choiceBoxItems[0]);
@@ -649,7 +654,7 @@ public class MainController  extends Service<String> implements Initializable {
 		
 		String user = prefs.get("user", "");
 		String pass = prefs.get("password", "");
-		//return loginDialoag(user, pass);
+		//return loginDialoag(user, pass); // deprecate
 		return msg = apiClient.userAuth(user, pass);
 	}
 	
@@ -727,6 +732,18 @@ public class MainController  extends Service<String> implements Initializable {
 
 	}
 
+	private void modeChoiceBoxSetup(ChoiceBox<String> mChoiceBox) {
+		String item = mChoiceBox.getValue();
+		String type = "modelist";
+		if (item.equalsIgnoreCase(modeChoiceBoxItems[0])) {
+			type = "modelist";
+			}
+		if (item.equalsIgnoreCase(modeChoiceBoxItems[1])) {
+			type = "modeconvert";
+			}
+		linkedinListMain.setWorkMode(type);
+	}
+	
 	private Object choiceBoxSetup(ChoiceBox<String> choiceBox) {
 		String item = choiceBox.getValue();
 		System.out.println(item);
