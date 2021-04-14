@@ -1,4 +1,4 @@
-package scrapper;
+package pojo;
 
 public class Info {
 	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany,companySize;

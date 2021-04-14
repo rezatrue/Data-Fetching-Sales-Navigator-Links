@@ -5,10 +5,15 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import application.MainController;
+import csvhandler.CSV_Scanner;
+import csvhandler.CsvGenerator;
+import csvhandler.ProfileCsv;
 import db.DBHandler;
 import db.DbCompany;
 import db.DbProfile;
 import db.LocalDBHandler;
+import pojo.Company;
+import pojo.Info;
 import webhandler.FireFoxOperator;
 
 public class LinkedinListMain {

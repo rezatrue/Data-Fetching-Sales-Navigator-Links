@@ -1,4 +1,4 @@
-package scrapper;
+package csvhandler;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import db.LocalDBHandler;
+import pojo.Company;
 
 public class CompanyCsv implements CsvGenerator{
 

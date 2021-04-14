@@ -16,6 +16,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import application.MainController;
+import pojo.Info;
 import webhandler.FireFoxOperator;
 
 public class HtmlParser implements Parser  {

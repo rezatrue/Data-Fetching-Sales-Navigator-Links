@@ -1,7 +1,7 @@
 package db;
 
-import scrapper.Company;
-import scrapper.Info;
+import pojo.Company;
+import pojo.Info;
 
 public class DBTester {
 

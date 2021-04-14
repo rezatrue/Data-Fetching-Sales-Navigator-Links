@@ -1,4 +1,4 @@
-package scrapper;
+package csvhandler;
 
 import java.io.FileWriter;
 import java.io.IOException;

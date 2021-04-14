@@ -23,8 +23,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
-import scrapper.Info;
-import scrapper.Company;
+import pojo.Company;
+import pojo.Info;
 import scrapper.HtmlParser;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;

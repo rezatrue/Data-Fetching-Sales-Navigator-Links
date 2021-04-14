@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-import scrapper.Info;
+import pojo.Info;
 
 public class DbProfile implements LocalDBHandler{
 	

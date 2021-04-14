@@ -1,4 +1,4 @@
-package scrapper;
+package pojo;
 
 public class Company {
 	private String comUrl, comName, comHeadquarters, comWebsite, comFounded, comSize ,comIndustry, comType;
