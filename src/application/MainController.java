@@ -273,14 +273,13 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private ChoiceBox<String> modeChoiceBox = new ChoiceBox<>();
 	private String[] modeChoiceBoxItems = {"List", "Convert"};
-	// private LinkedList<Info> list = null;
 	@FXML
-	private ChoiceBox<String> choiceBox = new ChoiceBox<>();
-	private String[] choiceBoxItems = { "Profile Search", "Sales Nav", "Company Profile", "Lists", "Convert" };
+	private ChoiceBox<String> taskChoiceBox = new ChoiceBox<>();
+	private String[] taskChoiceBoxItems = {"People", "Companies", "Jobs", "Lead results", "Account results"};
 	private LinkedinListMain linkedinListMain;
 	private ApiClient apiClient; 
 	//private int listSize;
-	
+
 	@FXML
 	private Button settingBtn;
 
@@ -436,7 +435,6 @@ public class MainController  extends Service<String> implements Initializable {
 						startBtn.setDisable(false);
 						printListBtn.setDisable(false);
 						resetBtn.setDisable(false);
-						choiceBox.setDisable(false);
 					}
 				}
 			});	
@@ -461,7 +459,6 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setText("Open");
 			signInBtn.setDisable(true);
 			startBtn.setDisable(true);
-			choiceBox.setDisable(true);
 			textMessage.setText("Browser is Closed");
 		}
 		
@@ -541,8 +538,6 @@ public class MainController  extends Service<String> implements Initializable {
 				textListSize.setText(String.valueOf(listSize));
 			textCurrentPage.setText("0");
 			textEndPage.setText("25");
-			choiceBox.setValue(choiceBoxItems[0]);
-			linkedinListMain.setProfileMode(choiceBoxItems[0]);
 			textMessage.setText("All data deleted & Profile reset");
 			guireset();
 		}else {
@@ -622,10 +617,9 @@ public class MainController  extends Service<String> implements Initializable {
 		modeChoiceBox.setValue(modeChoiceBoxItems[0]);
 		modeChoiceBox.setOnAction(e -> modeChoiceBoxSetup(modeChoiceBox));
 		
-		choiceBox.getItems().addAll(choiceBoxItems);
-		choiceBox.setValue(choiceBoxItems[0]);
-		choiceBox.setOnAction(e -> choiceBoxSetup(choiceBox));
-		choiceBox.setDisable(false);
+		taskChoiceBox.getItems().addAll(taskChoiceBoxItems);
+		taskChoiceBox.setValue(taskChoiceBoxItems[0]);
+		taskChoiceBox.setOnAction(e -> taskChoiceBoxSetup(taskChoiceBox));
 		guireset();
 
 		textUserId.setText(prefs.get("linkedinUser", ""));
@@ -744,32 +738,28 @@ public class MainController  extends Service<String> implements Initializable {
 		linkedinListMain.setWorkMode(type);
 	}
 	
-	private Object choiceBoxSetup(ChoiceBox<String> choiceBox) {
-		String item = choiceBox.getValue();
-		System.out.println(item);
-		String type = "";
+	private void taskChoiceBoxSetup(ChoiceBox<String> taskChoiceBox) {
+		String item = taskChoiceBox.getValue();
+		String type = "peoplesearch";
 		
-		if (item == choiceBoxItems[4]) {
-				type = "convert";
-				convertEnable();
-			}else {
-				convertDisable();	
+		if (item == taskChoiceBoxItems[0]) {
+			type = "peoplesearch";
 			}
-		if (item == choiceBoxItems[0]) {
-			type = "profilesearch";
+		if (item == taskChoiceBoxItems[1]) {
+			type = "companiessearch";
 			}
-		if (item == choiceBoxItems[1]) {
-			type = "salesnavleads";
+		if (item == taskChoiceBoxItems[2]) {
+			type = "jobssearch";
 			}
-		if (item == choiceBoxItems[2]) {
-			type = "salesnavaccounts";
+		if (item == taskChoiceBoxItems[3]) {
+			type = "leadsearch";
 			}
-		if (item == choiceBoxItems[3]) {
-			type = "salesnavlists";
+		if (item == taskChoiceBoxItems[4]) {
+			type = "acountsearch";
 			}
 		
-		linkedinListMain.setProfileMode(type);
-		return null;
+		linkedinListMain.setTaskType(type);
+		
 	}
 
 	private void guireset() {

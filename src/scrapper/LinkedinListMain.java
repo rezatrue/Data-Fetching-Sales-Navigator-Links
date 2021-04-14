@@ -26,7 +26,7 @@ public class LinkedinListMain {
 	
 	public LinkedinListMain() {
 		this.workMode = "modelist";
-		this.taskType = "";
+		this.taskType = "peoplesearch";
 		list = new LinkedList<Info>();
 		localDb = new DbProfile();
 		csv = new ProfileCsv();
@@ -47,24 +47,6 @@ public class LinkedinListMain {
 		this.taskType = type;
 	}
 	
-	public void setProfileMode(String type) { // 1
-		fireFoxOperator.setProfileMode(type);
-		
-		if(type.equalsIgnoreCase("convert")) {	
-			return;
-		}
-		list = new LinkedList<Info>();
-		localDb = new DbProfile();
-		csv = new ProfileCsv();
-		
-		if(type.equalsIgnoreCase("salesnavaccounts")) {			
-			list = new LinkedList<Company>();
-			localDb = new DbCompany();
-			//list = localDb.selectRows(countData());
-			csv = new CompanyCsv();
-		}
-		
-	}
 
 	// modified 11 mar 2018 // depricated in 12 Feb 21
 	public String searchItemOnPage() {
