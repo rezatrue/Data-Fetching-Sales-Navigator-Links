@@ -14,6 +14,6 @@ import db.LocalDBHandler;
 public interface CsvGenerator {
 
 
-	public int listtoCsv(String keyword, LinkedList<?> list);
+	public int listtoCsv(String keyword, int num);
 
 }

@@ -87,7 +87,7 @@ public class MainController  extends Service<String> implements Initializable {
 			System.out.println("Database");
 			btnBrowse.setDisable(true);
 			tfSelectedFilePath.setDisable(true);
-			int num = linkedinListMain.countData();
+			int num = linkedinListMain.countData(); 
 			tfLimits.setText(num+"");
 			if(num <= 0) {
 				btnRun.setDisable(true);
@@ -306,8 +306,6 @@ public class MainController  extends Service<String> implements Initializable {
 	public void startBtnAction(ActionEvent event) {
 		System.out.println("Start Button");
 
-		
-		
 		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
@@ -363,28 +361,42 @@ public class MainController  extends Service<String> implements Initializable {
 					boolean autoSelected;
 					int currentPage = 0;
 					int endPage;
-					linkedinListMain.fullPageScroll();
-					linkedinListMain.salesPageScroll();
+					
+					//linkedinListMain.fullPageScroll(); // ---
+					//linkedinListMain.salesPageScroll(); // ---
+					
 						do {
 							autoSelected = auto.isSelected();
 							textCurrentPage.setText(currentPage + "");
 							endPage = Integer.parseInt(textEndPage.getText());
 							if (currentPage <= endPage) {
-								int newadded = linkedinListMain.takeList();
+								
+								String result = linkedinListMain.startListing(); // "data:25"; // "page:10" // "error:msg"
+								int newadded = 0;
+								String msg = result.substring(result.indexOf(":"), result.length());
+								if(result.startsWith("data")) // newadded = 
+									newadded = Integer.parseInt(msg);
+								if(result.startsWith("page")) // currentPage = 
+									currentPage = Integer.parseInt(msg);
+								if(result.startsWith("error"))
+									{textMessage.setText(msg); break;}
+								
+								//int newadded = linkedinListMain.takeList();// ---
 								int previousListSize = Integer.parseInt(textListSize.getText());
 								listSize = previousListSize + newadded;
 								textListSize.setText( listSize + "");
-								textMessage.setText("Processing page " + currentPage);
+								textCurrentPage.setText(currentPage + "");
 								if (autoSelected && currentPage < endPage) {
-									currentPage = linkedinListMain.openNextPage();
-									textCurrentPage.setText(currentPage + "");
+									currentPage = linkedinListMain.openNextPage(); 
+									textMessage.setText("Processing page " + currentPage);
 								} else {
 									run = false;
 								}
+								
 							}
 						} while (autoSelected && startBtn.getText().contains("Pause") && run);
 					
-					textMessage.setText("Process stopped at page " + currentPage);
+					if(!run) textMessage.setText("Process stopped at page " + currentPage);
 					openBrowserBtn.setDisable(false);
 					textCurrentPage.setText(0 + "");
 					return "Start";
@@ -411,11 +423,6 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setText("Close");
 			openBrowserBtn.setDisable(true);
 
-			if(clearDataNotification()){
-				listSize = linkedinListMain.clearList();
-			}else {
-				listSize = linkedinListMain.countData();
-			}
 			//textListSize.setText(String.valueOf(listSize));
 			textListSize.setText(Integer.toString(listSize));
 			
@@ -611,7 +618,7 @@ public class MainController  extends Service<String> implements Initializable {
 		btnRun.setDisable(true);
 		tfSelectedFilePath.setDisable(true);
 		tfLimits.setDisable(true);
-		
+		guireset();
 		
 		modeChoiceBox.getItems().addAll(modeChoiceBoxItems);
 		modeChoiceBox.setValue(modeChoiceBoxItems[0]);
@@ -620,7 +627,6 @@ public class MainController  extends Service<String> implements Initializable {
 		taskChoiceBox.getItems().addAll(taskChoiceBoxItems);
 		taskChoiceBox.setValue(taskChoiceBoxItems[0]);
 		taskChoiceBox.setOnAction(e -> taskChoiceBoxSetup(taskChoiceBox));
-		guireset();
 
 		textUserId.setText(prefs.get("linkedinUser", ""));
 		textPassword.setText(prefs.get("linkedinPassword", ""));
@@ -755,7 +761,7 @@ public class MainController  extends Service<String> implements Initializable {
 			type = "leadsearch";
 			}
 		if (item == taskChoiceBoxItems[4]) {
-			type = "acountsearch";
+			type = "accountsearch";
 			}
 		
 		linkedinListMain.setTaskType(type);

@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 import application.MainController;
 import csvhandler.CSV_Scanner;
+import csvhandler.CompanyCsv;
 import csvhandler.CsvGenerator;
 import csvhandler.ProfileCsv;
 import db.DBHandler;
@@ -14,15 +15,15 @@ import db.DbProfile;
 import db.LocalDBHandler;
 import pojo.Company;
 import pojo.Info;
+import webhandler.AccountOperator;
 import webhandler.FireFoxOperator;
 
 public class LinkedinListMain {
-	public LinkedList<?> list = null;
+	CsvGenerator csvGenerator;
 	LocalDBHandler localDb;
-	CsvGenerator csv;
 	private String workMode;
 	private String taskType;
-	FireFoxOperator fireFoxOperator = new FireFoxOperator();
+	FireFoxOperator fireFoxOperator;
 	// old private BrowserHandler browser = null ;
 	//private Parser parser = null; // 1
 	private DBHandler dbHandler = null;
@@ -32,47 +33,39 @@ public class LinkedinListMain {
 	public LinkedinListMain() {
 		this.workMode = "modelist";
 		this.taskType = "peoplesearch";
-		list = new LinkedList<Info>();
-		localDb = new DbProfile();
-		csv = new ProfileCsv();
 		listSize = 0;
 		// browser = new BrowserHandler(); // create issue as resource location
 		// is not same in different PC
 		//parser = new NewHtmlParser(); // default selected // 1
 		dbHandler = new DBHandler(); // need to add param at last
-
 	}
 
+	// setting working object
+	private void setWorkType() {
+		
+		if(workMode == "modelist" && taskType == "accountsearch")
+			fireFoxOperator = new AccountOperator();
+	}
+	
 	public void setWorkMode(String mtype) {
 		System.out.println("Mode: " + mtype);
 		this.workMode = mtype;
+		setWorkType();
 	}
 	public void setTaskType(String type) {
 		System.out.println("Task: " + type);
 		this.taskType = type;
+		setWorkType();
 	}
 	
-
-	// modified 11 mar 2018 // depricated in 12 Feb 21
-	public String searchItemOnPage() {
-		return fireFoxOperator.currentPageStatus();
-	}
-
 	// modified 13 Feb 2021
 	public boolean login() {
 		return fireFoxOperator.linkedinLogin();
 	}
 
 	// modified 11 mar 2018
-	public boolean search(String keyword) {
-		return fireFoxOperator.linkedinSearch(keyword);
-	}
-
-	// modified 11 mar 2018
 	public boolean launcherBrowser() {
-		fireFoxOperator = new FireFoxOperator();
 		return fireFoxOperator.browserLauncher();
-
 	}
 
 	
@@ -162,12 +155,14 @@ public class LinkedinListMain {
 		return fireFoxOperator.openNextPage();
 	}
 	
-	public void fullPageScroll() {
-		fireFoxOperator.fullPageScroll();
+	public String startListing() {
+
+		String msg = fireFoxOperator.checkPageStatus();
+		if(!msg.contains("false")) return msg;
+		return fireFoxOperator.takeList();
+		// "data:10" // "page:10" // "error:msg"
 	}
-	public void salesPageScroll() {
-		fireFoxOperator.salesPageScroll();
-	}
+	
 	// modified 11 mar 2018
 	public int openPreviousPage() {
 		return fireFoxOperator.openPreviousPage();
@@ -177,11 +172,7 @@ public class LinkedinListMain {
 		return listSize;
 	}
 
-	// modified 28 July 2018
-	public int takeList() { // 1
-		LinkedList<?> currentlist = fireFoxOperator.takeList();
-		return addToDb(currentlist);
-	}
+
 
 	public int addToDb(LinkedList<?> parsedlist) {
 		int count = 0;
@@ -233,22 +224,18 @@ public class LinkedinListMain {
 	*/
 
 	public int clearList() {
-		if (localDb.createNewTable()) { // drop & create table
-			listSize = 0;
-			return 0;
-		} else {
-			return -1;
-		}
+		return fireFoxOperator.clearList();  // drop & create table
 	}
 	
 	public int countData() {
-		return localDb.countRecords();
+		//return localDb.countRecords();
+		return 0;
 	}
 	
 	public int printList(String keyword, int num) {
-		
-		list = localDb.selectRows(num);
-		int number = csv.listtoCsv(keyword, list);
+		if(workMode == "modelist" && taskType == "accountsearch")
+			csvGenerator = new CompanyCsv();
+		int number = csvGenerator.listtoCsv(keyword, num);
 		return number;
 	}
 

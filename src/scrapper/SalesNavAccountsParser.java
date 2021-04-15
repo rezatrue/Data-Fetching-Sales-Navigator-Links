@@ -13,20 +13,41 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
+import application.MainController;
+import db.DbCompany;
 import pojo.Company;
 import webhandler.FireFoxOperator;
 
 public class SalesNavAccountsParser implements Parser {
 
-	private String baseUrl = "https://www.linkedin.com/";
+	public String baseUrl = "https://www.linkedin.com/";	
 	private LinkedList<Company> comList = null;
-
+	DbCompany localDb;
 	
 	public SalesNavAccountsParser() {
+		localDb = new DbCompany();
 	}
 	
+	public int deleteAllData() {
+		localDb.createNewTable();
+		return 0;
+	}
 	
-	public LinkedList<?> parse(){
+	private int writeToDb(LinkedList<Company> parsedlist) {
+		int count = 0;
+		Iterator<Company> it = parsedlist.iterator();
+		localDb = new DbCompany();
+			while(it.hasNext()) {
+				Company com = (Company) it.next();
+				if(localDb.insert(com)) count++;
+			}
+			int num = MainController.prefs.getInt("unUpdatedListCount", 0);
+			MainController.prefs.putInt("unUpdatedListCount", (num + count));
+		return count;
+	}
+	
+	public int parse(){
+		
 		comList = new LinkedList<>();
 		String companiesXpath = "//ol[@class='search-results__result-list']//li//article";
 		String companyNameXpath = ".//dt[@class='result-lockup__name']/a";
@@ -71,7 +92,7 @@ public class SalesNavAccountsParser implements Parser {
 				comList.add(company);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
-		return comList;
+		return writeToDb(comList);
 	}
 
 

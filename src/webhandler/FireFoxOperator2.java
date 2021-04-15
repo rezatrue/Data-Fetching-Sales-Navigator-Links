@@ -31,11 +31,8 @@ import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 
-public abstract class FireFoxOperator {
+public  class FireFoxOperator2 {
 
-	public abstract String checkPageStatus();
-	public abstract String takeList();
-	public abstract int clearList();
 	
 	private String profileName = "default";
 	private String geckodriverdir;
@@ -50,20 +47,49 @@ public abstract class FireFoxOperator {
 	
 	private Preferences prefs;
 
-	public FireFoxOperator() {
+	private Parser parser = null; // changing
+	
+	public FireFoxOperator2() {
 		prefs = Preferences.userRoot().node("db");
 		this.profileName = prefs.get("profilename", "");
 		// this.filefoxdir = prefs.get("firefoxlocation", "");
 		this.geckodriverdir = prefs.get("geckodriverlocation", "");
+		parser = new HtmlParser(); // changing
 		// resource location explicitly stated for testing purpose
 		// this.profileName = "default";
 		// this.geckodriverdir = "Geckodriver\\v0.19.1\\32\\geckodriver.exe";
 
 	}
 	
-	// commom
+	public void setProfileMode(String type) {
+		System.out.println(" --- " + type);
+		parser = null;
+		if (type.toLowerCase().contains("salesnavleads")) {
+			parser = new SalesNavigatorParser();
+			this.setUrl("salesnavleads");
+		} else if (type.toLowerCase().contains("salesnavaccounts")) {
+			parser = new SalesNavAccountsParser();
+			this.setUrl("salesnavaccounts");
+		}  else if (type.toLowerCase().contains("salesnavlists")) {
+			parser = new SalesNavListsParser();
+			this.setUrl("salesnavlists");
+		} else {
+			parser = new HtmlParser(); // default selected
+			this.setUrl("profilesearch");
+		}
+
+	}
+	
+	public LinkedList<?> takeList() { // 1
+		LinkedList<?> currentlist = parser.parse();
+		return currentlist;
+	}
+	
+	
+	
+	
 	public boolean browserLauncher() {
-		/*
+		
 		ProfilesIni profile = new ProfilesIni();
 		FirefoxProfile myprofile = profile.getProfile(profileName);
 
@@ -75,11 +101,12 @@ public abstract class FireFoxOperator {
 
 		driver = new FirefoxDriver(capabilities);
 		
+		
 		driver.get(url);
-		*/
+		/*
 		System.setProperty("webdriver.gecko.driver", geckodriverdir);
 		driver = new FirefoxDriver();
-		
+		*/
 		return true;
 	}
 
@@ -107,7 +134,6 @@ public abstract class FireFoxOperator {
 		
 		return false;
 	}
-
 	
 	public boolean waitUntillVisible(By by) {
 		
@@ -120,7 +146,10 @@ public abstract class FireFoxOperator {
 		}
 		return true;
 	}
-
+	
+	private final String LOGINTAG = "login-email";
+	private final String PASSWORDTAG = "login-password";
+	private final String LOGINSUBMITTAG = "login-submit";
 
 	private boolean moveToSignInPage() {
 		
@@ -164,7 +193,30 @@ public abstract class FireFoxOperator {
 		return false;
 	}
 
-	protected boolean isElementPresent(By by) {
+	private final String SEARCHCSSTAG = "input.ember-text-field.ember-view";
+	private final String SEARCHBUTTONTAG = "button.nav-search-button";
+
+	public boolean linkedinSearch(String keyword) {
+		try {
+			if (isElementPresent(By.cssSelector(SEARCHCSSTAG))) {
+				// new version
+				driver.findElement(By.cssSelector(SEARCHCSSTAG)).clear();
+				driver.findElement(By.cssSelector(SEARCHCSSTAG)).sendKeys(keyword);
+				driver.findElement(By.cssSelector(SEARCHBUTTONTAG)).click();
+			} else if (isElementPresent(By.id("main-search-box"))) {
+				// old version
+				driver.findElement(By.id("main-search-box")).clear();
+				driver.findElement(By.id("main-search-box")).sendKeys(keyword);
+				driver.findElement(By.name("search")).click();
+			} else
+				return false;
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean isElementPresent(By by) {
 		try {
 			driver.findElement(by);
 			return true;
@@ -173,7 +225,17 @@ public abstract class FireFoxOperator {
 		}
 	}
 
+	// return which are is currently I am on
+	public final static String LOGINPAGE = "loginpage";
+	public final static String SEARCHPAGE = "searchpage";
 
+	public String currentPageStatus() {
+		if (isElementPresent(By.id(LOGINTAG)))
+			return LOGINPAGE;
+		if (isElementPresent(By.cssSelector(SEARCHCSSTAG)))
+			return SEARCHPAGE;
+		return null;
+	}
 
 	public boolean signOut() {
 		System.out.println("--sign out");
@@ -205,9 +267,6 @@ public abstract class FireFoxOperator {
 		return pageSource;
 	}
 
-////....................	
-
-	
 	public int currentPageNumber() {
 		String oldnCurrentSelector = "ul.pagination li.active"; // old
 		//String newCurrentSelector = "li.page-list li.active"; // new
@@ -262,6 +321,7 @@ public abstract class FireFoxOperator {
 		System.out.println(responsepage + " <- responsepage");
 
 		return responsepage;
+
 	}
 
 	public int openPreviousPage() {
@@ -294,8 +354,8 @@ public abstract class FireFoxOperator {
 		try {
 			driver.findElement(by).click();
 			fullPageScroll();
-			//if(parser instanceof SalesNavigatorParser) salesPageScroll();
-			//if(parser instanceof SalesNavAccountsParser) salesPageScroll();
+			if(parser instanceof SalesNavigatorParser) salesPageScroll();
+			if(parser instanceof SalesNavAccountsParser) salesPageScroll();
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());;
 		}
@@ -842,7 +902,79 @@ public abstract class FireFoxOperator {
 		return info;
 	}
 	
-	protected boolean findAndClick(String selector) {
+	// Company about tab info
+	public Company generalCompanyInfo(String link) {
+		
+		Company com = new Company();
+		
+		driver.get(link);
+		By aboutBtnBy = By.xpath("//a[contains(.,'About')]");
+		driver.findElement(aboutBtnBy).click();
+		
+		By titleBy = By.xpath("//h1[@title]");
+		By websiteBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Website')]]/a[1]");
+		By industryBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Industry')]][1]");
+		By comSizeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Company size')]][1]");
+		By headquartersBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Headquarters')]][1]");
+		By typeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Type')]][1]");
+		By foundedBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Founded')]][1]");
+		
+		com.setComUrl(link);
+		
+		try {
+			String title = driver.findElement(titleBy).getText();
+			com.setComName(title);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String website = driver.findElement(websiteBy).getText();
+			com.setComWebsite(website);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		try {
+			String industry = driver.findElement(industryBy).getText();
+			com.setComIndustry(industry);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String comSize = driver.findElement(comSizeBy).getText();
+			com.setComSize(comSize);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String headquarters = driver.findElement(headquartersBy).getText();
+			com.setComHeadquarters(headquarters);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String type = driver.findElement(typeBy).getText();
+			com.setComType(type);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String founded = driver.findElement(foundedBy).getText();
+			com.setComFounded(founded);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		return com;
+	}
+
+	
+	private boolean findAndClick(String selector) {
 		try {
 			//By by = By.cssSelector(selector);
 			By by = By.xpath(selector);

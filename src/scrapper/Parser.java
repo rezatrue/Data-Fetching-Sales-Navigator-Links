@@ -6,7 +6,9 @@ public interface Parser {
 
 	public LinkedList<?> parse(String html);
 	
-	public LinkedList<?> parse();
+	public int parse();
+	
+	public int deleteAllData();
 	
 
 }

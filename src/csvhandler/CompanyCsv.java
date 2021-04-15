@@ -9,19 +9,24 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import db.DbCompany;
 import db.LocalDBHandler;
 import pojo.Company;
 
 public class CompanyCsv implements CsvGenerator{
-
+	LinkedList<Company> clist;
+	DbCompany dbCompany;
+	
 	public CompanyCsv() {
+		this.clist = new LinkedList<>();
+		dbCompany = new DbCompany();
 	}
 
-	public int listtoCsv(String keyword, LinkedList<?> clist) {
-		LinkedList<Company> list = (LinkedList<Company>)clist; 
+	public int listtoCsv(String keyword, int num) {
+		clist = dbCompany.selectRows(num); 
 		int count = 0;
 		
-		System.out.println("list size cg: " + list.size());
+		System.out.println("list size cg: " + clist.size());
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Calendar cal = Calendar.getInstance();
@@ -49,9 +54,9 @@ public class CompanyCsv implements CsvGenerator{
 			writer.append(",");
 			writer.append("\n");
 
-			System.out.println(" -- out size-- "+ list.size());
-			if(list.size() > 0) {
-				Iterator<Company> it = list.iterator();
+			System.out.println(" -- out size-- "+ clist.size());
+			if(clist.size() > 0) {
+				Iterator<Company> it = clist.iterator();
 	
 				while (it.hasNext()) {
 					Company com = it.next();
