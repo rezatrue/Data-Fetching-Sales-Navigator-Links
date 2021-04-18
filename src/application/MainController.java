@@ -39,7 +39,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
+import pojo.SearchType;
+import pojo.WorkType;
 import scrapper.LinkedinListMain;
 import webhandler.FireFoxOperator;
 
@@ -119,7 +122,7 @@ public class MainController  extends Service<String> implements Initializable {
 		btnRun.setDisable(true);
 		tfLimits.setDisable(true);
 	}
-	
+		
 	//@FXML
 	//private PasswordField pfPassword;
 	private int converted = 0;
@@ -411,14 +414,15 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private Button openBrowserBtn;
 
+	
+	
 	@FXML
 	public void openBrowserBtnAction(ActionEvent event) {
+		
+		
 		System.out.println("Open Browser Button");
 		String buttonText = openBrowserBtn.getText();
-
-		System.out.println(buttonText);
-
-		
+	
 		if (buttonText.toLowerCase().contains("open")) {
 			openBrowserBtn.setText("Close");
 			openBrowserBtn.setDisable(true);
@@ -440,7 +444,6 @@ public class MainController  extends Service<String> implements Initializable {
 						openBrowserBtn.setDisable(false);
 						signInBtn.setDisable(false);
 						startBtn.setDisable(false);
-						printListBtn.setDisable(false);
 						resetBtn.setDisable(false);
 					}
 				}
@@ -468,6 +471,8 @@ public class MainController  extends Service<String> implements Initializable {
 			startBtn.setDisable(true);
 			textMessage.setText("Browser is Closed");
 		}
+		
+
 		
 	}
 
@@ -596,7 +601,9 @@ public class MainController  extends Service<String> implements Initializable {
 		System.out.println("Next Page");
 		linkedinListMain.openNextPage();
 	}
+	
 
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
@@ -606,7 +613,6 @@ public class MainController  extends Service<String> implements Initializable {
 		prefs = Preferences.userRoot().node("db");
 		signInBtn.setDisable(true);
 		startBtn.setDisable(true);
-		printListBtn.setDisable(true);
 		resetBtn.setDisable(true); 
 		openBrowserBtn.setDisable(true);
 		
@@ -632,6 +638,13 @@ public class MainController  extends Service<String> implements Initializable {
 		textPassword.setText(prefs.get("linkedinPassword", ""));
 
 		linkedinListMain = new LinkedinListMain();
+		
+//		Stage stage = (Stage) openBrowserBtn.getScene().getWindow();
+//	    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//	          public void handle(WindowEvent we) {
+//	              System.out.println("Stage is closing");
+//	          }
+//	      }); 
 		
 		String msg = authenticateUser();
 
@@ -734,34 +747,34 @@ public class MainController  extends Service<String> implements Initializable {
 
 	private void modeChoiceBoxSetup(ChoiceBox<String> mChoiceBox) {
 		String item = mChoiceBox.getValue();
-		String type = "modelist";
+		WorkType type = WorkType.LIST;
 		if (item.equalsIgnoreCase(modeChoiceBoxItems[0])) {
-			type = "modelist";
+			type = WorkType.LIST;
 			}
 		if (item.equalsIgnoreCase(modeChoiceBoxItems[1])) {
-			type = "modeconvert";
+			type = WorkType.CONVERT;
 			}
 		linkedinListMain.setWorkMode(type);
 	}
 	
 	private void taskChoiceBoxSetup(ChoiceBox<String> taskChoiceBox) {
 		String item = taskChoiceBox.getValue();
-		String type = "peoplesearch";
+		SearchType type = SearchType.PEOPLESEARCH;
 		
 		if (item == taskChoiceBoxItems[0]) {
-			type = "peoplesearch";
+			type = SearchType.PEOPLESEARCH;
 			}
 		if (item == taskChoiceBoxItems[1]) {
-			type = "companiessearch";
+			type = SearchType.COMPANIESSEARCH;
 			}
 		if (item == taskChoiceBoxItems[2]) {
-			type = "jobssearch";
+			type = SearchType.JOBSEARCH; 
 			}
 		if (item == taskChoiceBoxItems[3]) {
-			type = "leadsearch";
+			type = SearchType.LEADSEARCH; 
 			}
 		if (item == taskChoiceBoxItems[4]) {
-			type = "accountsearch";
+			type = SearchType.ACCOUNTSEARCH; 
 			}
 		
 		linkedinListMain.setTaskType(type);

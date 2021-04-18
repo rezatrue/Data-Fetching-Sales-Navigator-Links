@@ -15,23 +15,44 @@ import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import csvhandler.PeopleCsv;
+import db.DbPeople;
+
 public class Run {
 	static WebDriver driver;
 
+	public static void testOneSection() {
+		DbPeople db = new DbPeople();
+		db.createNewTable();
+		System.out.println(db.countRecords());
+		PeopleOperator operator = new PeopleOperator();
+		operator.browserLauncher();
+		operator.openUrl("file:///C:/Users/JAVA_USER/Downloads/People_list/2.html");
+		operator.takeList();
+		System.out.println(db.countRecords());
+		operator.openUrl("file:///C:/Users/JAVA_USER/Downloads/People_list/1.html");
+		operator.takeList();
+		System.out.println(db.countRecords());
+		operator.closeBrowser();
+		
+		PeopleCsv csv = new PeopleCsv();
+		csv.listtoCsv("Test", 20);
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Hello:");
 		
-		FireFoxOperator fireFoxOperator = new FireFoxOperator();
+		testOneSection();
 		
-		fireFoxOperator.browserLauncher();
+		
 		
 		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/eset.html");
 		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/ergo.html");
 		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/HRejterzy.html");
 		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/424770");
-		fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28967");
-		fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28652475");
+		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28967");
+		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28652475");
 		
 		//alertTest();
 		

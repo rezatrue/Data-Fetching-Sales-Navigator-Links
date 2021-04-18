@@ -1,0 +1,11 @@
+package pojo;
+
+public enum SearchType {
+	
+	PEOPLESEARCH,
+	COMPANIESSEARCH,
+	JOBSEARCH,
+	LEADSEARCH,
+	ACCOUNTSEARCH
+
+}

@@ -7,10 +7,9 @@ public class DBTester {
 
 	public static void main(String[] args) {
 		
-		
-		
 		LocalDBHandler dbHandler = new DbCompany();
-		dbHandler.createNewTable();
+		System.out.println(dbHandler.countRecords());
+		//dbHandler.createNewTable();
 		/*
 		Company com = new Company("Linkedin_Company_URL1", "Company_Name", "Headquarters", "Website", "Founded",	"Company_Size", "Industry", "Company_Type");
 		dbHandler.insert(com);

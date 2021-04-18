@@ -14,8 +14,8 @@ import db.LocalDBHandler;
 import pojo.Company;
 
 public class CompanyCsv implements CsvGenerator{
-	LinkedList<Company> clist;
-	DbCompany dbCompany;
+	private LinkedList<Company> clist;
+	private DbCompany dbCompany;
 	
 	public CompanyCsv() {
 		this.clist = new LinkedList<>();
@@ -23,6 +23,7 @@ public class CompanyCsv implements CsvGenerator{
 	}
 
 	public int listtoCsv(String keyword, int num) {
+		System.out.println("number " + num);
 		clist = dbCompany.selectRows(num); 
 		int count = 0;
 		

@@ -96,11 +96,6 @@ public class SalesNavAccountsParser implements Parser {
 	}
 
 
-	@Override
-	public LinkedList<?> parse(String html) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 	
 }

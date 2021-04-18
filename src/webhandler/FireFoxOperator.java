@@ -25,7 +25,6 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import pojo.Company;
 import pojo.Info;
-import scrapper.HtmlParser;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
@@ -79,7 +78,7 @@ public abstract class FireFoxOperator {
 		*/
 		System.setProperty("webdriver.gecko.driver", geckodriverdir);
 		driver = new FirefoxDriver();
-		
+
 		return true;
 	}
 
@@ -139,11 +138,12 @@ public abstract class FireFoxOperator {
 	// modified 12 feb 2021
 	public boolean linkedinLogin() {
 		if(isLoginPage()) return true;
-			
-		String name = prefs.get("linkedinUser", "");
-		String password = prefs.get("linkedinPassword", "");
-		
+
+		driver.get(url);	
 		moveToSignInPage();
+		
+		String password = prefs.get("linkedinPassword", "");
+		String name = prefs.get("linkedinUser", "");
 		
 		By userNameBy = By.xpath("//form//input[contains(@id,'user')]");
 		By passwordBy = By.xpath("//form//input[contains(@id,'pass')]");
@@ -205,6 +205,60 @@ public abstract class FireFoxOperator {
 		return pageSource;
 	}
 
+	public int switchingPage(By by) {
+		//int switchedpage = 0;
+		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		try {
+			driver.findElement(by).click();
+			fullPageScroll();
+		} catch (NoSuchElementException e) {
+			System.out.println(e.getMessage());;
+		}
+		System.out.println(currentPageNumber() + " <- currentPageNumber");
+		return currentPageNumber();
+	}
+
+	public void fullPageScroll() {
+		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		try {
+			jse.executeScript("scroll(0, 250);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 550);");
+			Thread.sleep(1000);
+			jse.executeScript("scroll(0, 750);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 950);");
+			Thread.sleep(5000);
+			jse.executeScript("scroll(0, 1200);");
+			Thread.sleep(1000);
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// if I direct go to bottom of the page page full content don't load
+		// jse.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+	}
+
+	public void salesPageScroll() {
+		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		try {
+			jse.executeScript("scroll(0, 1450);");
+			Thread.sleep(1000);
+			jse.executeScript("scroll(0, 1950);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 2450);");
+			Thread.sleep(1000);
+			jse.executeScript("scroll(0, 2950);");
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 ////....................	
 
 	
@@ -288,30 +342,8 @@ public abstract class FireFoxOperator {
 
 	}
 
-	public int switchingPage(By by) {
-		//int switchedpage = 0;
-		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		try {
-			driver.findElement(by).click();
-			fullPageScroll();
-			//if(parser instanceof SalesNavigatorParser) salesPageScroll();
-			//if(parser instanceof SalesNavAccountsParser) salesPageScroll();
-		} catch (NoSuchElementException e) {
-			System.out.println(e.getMessage());;
-		}
-		/*
-		int limits = 5;
-		do {
-			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-			switchedpage = currentPageNumber();
-			limits--;
-		} while ((switchedpage == 0) && limits > 0);
-		*/
-		System.out.println(currentPageNumber() + " <- currentPageNumber");
 
-		return currentPageNumber();
-	}
-
+	
 	public boolean setUrl(String type) {
 		String urlString = url;
 		if(type.toLowerCase().contains("salesnavleads")) urlString = salesNavUrl;
@@ -322,48 +354,6 @@ public abstract class FireFoxOperator {
 		
 		return true;
 	}
-
-	public void fullPageScroll() {
-		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
-		JavascriptExecutor jse = (JavascriptExecutor) driver;
-		try {
-			jse.executeScript("scroll(0, 250);");
-			Thread.sleep(500);
-			jse.executeScript("scroll(0, 550);");
-			Thread.sleep(1000);
-			jse.executeScript("scroll(0, 750);");
-			Thread.sleep(500);
-			jse.executeScript("scroll(0, 950);");
-			Thread.sleep(5000);
-			jse.executeScript("scroll(0, 1200);");
-			Thread.sleep(1000);
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// if I direct go to bottom of the page page full content don't load
-		// jse.executeScript("window.scrollTo(0, document.body.scrollHeight)");
-	}
-
-	public void salesPageScroll() {
-		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
-		JavascriptExecutor jse = (JavascriptExecutor) driver;
-		try {
-			jse.executeScript("scroll(0, 1450);");
-			Thread.sleep(1000);
-			jse.executeScript("scroll(0, 1950);");
-			Thread.sleep(500);
-			jse.executeScript("scroll(0, 2450);");
-			Thread.sleep(1000);
-			jse.executeScript("scroll(0, 2950);");
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	
 	
 	// For public profile link

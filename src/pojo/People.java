@@ -1,10 +1,10 @@
 package pojo;
 
-public class Info {
+public class People {
 	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany,companySize;
-	public Info() {
+	public People() {
 	}
-	public Info(String link, String first_name, String second_name, String email,
+	public People(String link, String first_name, String second_name, String email,
 			String phone, String location, String industry,
 			String currentJobTitle, String currentCompany,String companySize) {
 		super();

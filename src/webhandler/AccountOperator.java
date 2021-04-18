@@ -105,7 +105,7 @@ public class AccountOperator extends FireFoxOperator{
 		return responsepage;
 
 	}
-
+	@Override
 	public int switchingPage(By by) {
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		try {

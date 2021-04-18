@@ -8,52 +8,50 @@ import application.MainController;
 import csvhandler.CSV_Scanner;
 import csvhandler.CompanyCsv;
 import csvhandler.CsvGenerator;
-import csvhandler.ProfileCsv;
+import csvhandler.PeopleCsv;
 import db.DBHandler;
 import db.DbCompany;
-import db.DbProfile;
+import db.DbPeople;
 import db.LocalDBHandler;
+import pojo.SearchType;
+import pojo.WorkType;
 import pojo.Company;
-import pojo.Info;
 import webhandler.AccountOperator;
 import webhandler.FireFoxOperator;
+import webhandler.PeopleOperator;
 
 public class LinkedinListMain {
 	CsvGenerator csvGenerator;
-	LocalDBHandler localDb;
-	private String workMode;
-	private String taskType;
-	FireFoxOperator fireFoxOperator;
-	// old private BrowserHandler browser = null ;
-	//private Parser parser = null; // 1
-	private DBHandler dbHandler = null;
+	private WorkType workMode;
+	private SearchType taskType;
+	private FireFoxOperator fireFoxOperator;
+	private DBHandler dbHandler = null; // server api
 	int listSize = 0;
 	//int unUpdatedListCount = 0;
 	
 	public LinkedinListMain() {
-		this.workMode = "modelist";
-		this.taskType = "peoplesearch";
-		listSize = 0;
-		// browser = new BrowserHandler(); // create issue as resource location
-		// is not same in different PC
-		//parser = new NewHtmlParser(); // default selected // 1
 		dbHandler = new DBHandler(); // need to add param at last
+		this.workMode = WorkType.LIST;
+		this.taskType = SearchType.PEOPLESEARCH;
+		listSize = 0;
+		setWorkType();
 	}
 
 	// setting working object
 	private void setWorkType() {
-		
-		if(workMode == "modelist" && taskType == "accountsearch")
+		if(workMode == WorkType.LIST && taskType == SearchType.PEOPLESEARCH)
+			fireFoxOperator = new PeopleOperator();
+		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH)
 			fireFoxOperator = new AccountOperator();
 	}
 	
-	public void setWorkMode(String mtype) {
-		System.out.println("Mode: " + mtype);
+	public void setWorkMode(WorkType mtype) {
+		System.out.println("Mode: " + mtype.toString());
 		this.workMode = mtype;
 		setWorkType();
 	}
-	public void setTaskType(String type) {
-		System.out.println("Task: " + type);
+	public void setTaskType(SearchType type) {
+		System.out.println("Task: " + type.toString());
 		this.taskType = type;
 		setWorkType();
 	}
@@ -72,8 +70,10 @@ public class LinkedinListMain {
 	private String salesLinkTemp = "linkedin.com/sales";
 	private String publicLinkTemp = "linkedin.com/in";
 	
+	// ata ki?
 	public int getPublicLinkDetails(int index) {
-		
+		// dummy
+		LocalDBHandler localDb = null;
 		//String salesLink = list.get(index).getLink();
 		String salesLink = localDb.selectAtIndex(index);
 		System.out.println("salesLink : " + salesLink);
@@ -102,8 +102,10 @@ public class LinkedinListMain {
 	private String salesComLinkTemp = "linkedin.com/sales/company";
 	private String publicComLinkTemp = "linkedin.com/company";
 	
+	// ata ki?
 	public int getCompanyLinkDetails(int index) {
-		
+		// dummy
+		LocalDBHandler localDb = null;
 		String salesComLink = localDb.selectAtIndex(index);
 		
 		System.out.println("salesComLink : " + salesComLink);
@@ -172,57 +174,6 @@ public class LinkedinListMain {
 		return listSize;
 	}
 
-
-
-	public int addToDb(LinkedList<?> parsedlist) {
-		int count = 0;
-		ListIterator<?> it = parsedlist.listIterator();
-		if(localDb instanceof DbProfile) {
-			while(it.hasNext()) {
-				Info info = (Info) it.next();
-				if(localDb.insert(info)) count++;
-			}			
-		}
-		if(localDb instanceof DbCompany) {
-			while(it.hasNext()) {
-				Company com = (Company) it.next();
-				if(localDb.insert(com)) count++;
-			}			
-		}
-		listSize += count;
-		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
-		MainController.prefs.putInt("unUpdatedListCount", (num + count));
-		return count;
-	}
-	
-	/*
-	// comparing links only, this might make the process slow
-	public LinkedList<Info> removeDuplicate(LinkedList<Info> parsedlist) {
-		LinkedList<Info> uniquelist = new LinkedList<Info>();
-		ListIterator<Info> it = parsedlist.listIterator();
-		while (it.hasNext()) {
-			Info info = (Info) it.next();
-			String newLink = info.getLink();
-			System.out.println(newLink);
-			ListIterator<Info> mainit = list.listIterator();
-			boolean add = true;
-			while (mainit.hasNext()) {
-				String link = (String) mainit.next().getLink();
-				if (link.equals(newLink)) {
-					add = false;
-					System.out.println((add ? "New" : "Duplicate") + "---" + link);
-					break;
-				}
-			}
-			if (add)
-				uniquelist.add(info);
-		}
-		System.out.println("unique list size -- " + uniquelist.size());
-
-		return uniquelist;
-	}
-	*/
-
 	public int clearList() {
 		return fireFoxOperator.clearList();  // drop & create table
 	}
@@ -233,7 +184,7 @@ public class LinkedinListMain {
 	}
 	
 	public int printList(String keyword, int num) {
-		if(workMode == "modelist" && taskType == "accountsearch")
+		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH)
 			csvGenerator = new CompanyCsv();
 		int number = csvGenerator.listtoCsv(keyword, num);
 		return number;
@@ -261,11 +212,12 @@ public class LinkedinListMain {
 	
 	//.....
 	public int readCsvFile(String filepath) {
-		CSV_Scanner csv_Scanner = new CSV_Scanner();
+		//CSV_Scanner csv_Scanner = new CSV_Scanner();
 		
 //		list = csv_Scanner.dataScan(filepath);
 //		return list.size();
-		return addToDb(csv_Scanner.dataScan(filepath));
+		//return addToDb(csv_Scanner.dataScan(filepath));
+		return 0;
 	}
 
 	

@@ -12,14 +12,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-import pojo.Info;
+import pojo.People;
 
-public class DbProfile implements LocalDBHandler{
+
+public class DbPeople implements LocalDBHandler{
 	
-	private String TABLE_NAME = "profile";
+	private String TABLE_NAME = "people";
 	private Connection conn = null;
 
-	public DbProfile() {
+	public DbPeople() {
 	}
 		
 	public void connect() {
@@ -174,8 +175,8 @@ public class DbProfile implements LocalDBHandler{
         }
 		return salesLink;
 	}
-	public LinkedList<Info> selectRows(int num){
-		LinkedList<Info> list  = new LinkedList<>();
+	public LinkedList<People> selectRows(int num){
+		LinkedList<People> list  = new LinkedList<>();
 		
         String sql = "SELECT * FROM " + TABLE_NAME + " LIMIT " + num;
         if(conn == null)
@@ -190,7 +191,7 @@ public class DbProfile implements LocalDBHandler{
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
-					Info info = new Info(
+					People people = new People(
 				                       rs.getString("Linkedin_Profile_URL"),
 				                       rs.getString("First_Name"), 
 				                       rs.getString("Last_Name"),
@@ -202,7 +203,7 @@ public class DbProfile implements LocalDBHandler{
 				                       rs.getString("Company_Name"),
 				                       rs.getString("Company_Size")
 							);
-					list.add(info);
+					list.add(people);
 					
 				    System.out.println( 
 				                       rs.getString("Linkedin_Profile_URL") + "\t" +
@@ -233,7 +234,7 @@ public class DbProfile implements LocalDBHandler{
 	}
 
 	public boolean insert(Object obj) {
-		Info info = (Info)obj;
+		People people = (People)obj;
 		String sql = "INSERT INTO " 
 					+ TABLE_NAME 
 					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
@@ -246,19 +247,20 @@ public class DbProfile implements LocalDBHandler{
         if(conn != null) {
 	        try {
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, info.getLink());
-				pstmt.setString(2, info.getFirstName());
-				pstmt.setString(3, info.getSecondName());
-				pstmt.setString(4, info.getEmail());
-				pstmt.setString(5, info.getPhone());
-				pstmt.setString(6, info.getLocation());
-				pstmt.setString(7, info.getIndustry());
-				pstmt.setString(8, info.getCurrentJobTitle());
-				pstmt.setString(9, info.getCurrentCompany());
-				pstmt.setString(10, info.getCompanySize());
+				pstmt.setString(1, people.getLink());
+				pstmt.setString(2, people.getFirstName());
+				pstmt.setString(3, people.getSecondName());
+				pstmt.setString(4, people.getEmail());
+				pstmt.setString(5, people.getPhone());
+				pstmt.setString(6, people.getLocation());
+				pstmt.setString(7, people.getIndustry());
+				pstmt.setString(8, people.getCurrentJobTitle());
+				pstmt.setString(9, people.getCurrentCompany());
+				pstmt.setString(10, people.getCompanySize());
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
+				e.printStackTrace();
 				return false;
 			}finally {
 				try {
@@ -272,7 +274,7 @@ public class DbProfile implements LocalDBHandler{
 	}
 	
 	public boolean update(Object obj, String salesLink) {
-		Info info = (Info) obj;
+		People people = (People) obj;
 		String sql = "UPDATE " 
 					+ TABLE_NAME 
 					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, Email_ID = ?, Contact_Number = ?,"
@@ -285,16 +287,16 @@ public class DbProfile implements LocalDBHandler{
         if(conn != null) {
 	        try {
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, info.getLink());
-				pstmt.setString(2, info.getFirstName());
-				pstmt.setString(3, info.getSecondName());
-				pstmt.setString(4, info.getEmail());
-				pstmt.setString(5, info.getPhone());
-				pstmt.setString(6, info.getLocation());
-				pstmt.setString(7, info.getIndustry());
-				pstmt.setString(8, info.getCurrentJobTitle());
-				pstmt.setString(9, info.getCurrentCompany());
-				pstmt.setString(10, info.getCompanySize());
+				pstmt.setString(1, people.getLink());
+				pstmt.setString(2, people.getFirstName());
+				pstmt.setString(3, people.getSecondName());
+				pstmt.setString(4, people.getEmail());
+				pstmt.setString(5, people.getPhone());
+				pstmt.setString(6, people.getLocation());
+				pstmt.setString(7, people.getIndustry());
+				pstmt.setString(8, people.getCurrentJobTitle());
+				pstmt.setString(9, people.getCurrentCompany());
+				pstmt.setString(10, people.getCompanySize());
 				pstmt.setString(11, salesLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {

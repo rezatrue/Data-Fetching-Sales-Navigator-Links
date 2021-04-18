@@ -9,19 +9,28 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import db.DbCompany;
+import db.DbPeople;
 import db.LocalDBHandler;
-import pojo.Info;
+import pojo.Company;
+import pojo.People;
 
-public class ProfileCsv implements CsvGenerator{
-
-	public ProfileCsv() {
+public class PeopleCsv implements CsvGenerator{
+	private LinkedList<People> plist;
+	private DbPeople dbPeople;
+	
+	public PeopleCsv() {
+		this.plist = new LinkedList<>();
+		dbPeople = new DbPeople();
 	}
 
-	public int listtoCsv(String keyword, LinkedList<?> plist) {
-		LinkedList<Info> list = (LinkedList<Info>) plist;
+	@Override
+	public int listtoCsv(String keyword, int num) {
 		int count = 0;
 		
-		System.out.println("list size cg: " + list.size());
+		plist = dbPeople.selectRows(num); 
+		 
+		System.out.println("list size cg: " + plist.size());
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Calendar cal = Calendar.getInstance();
@@ -53,12 +62,11 @@ public class ProfileCsv implements CsvGenerator{
 			writer.append(",");
 			writer.append("\n");
 
-			System.out.println(" -- out size-- "+ list.size());
-			if(list.size() > 0) {
-				Iterator<Info> it = list.iterator();
+			if(plist.size() > 0) {
+				Iterator<People> it = plist.iterator();
 	
 				while (it.hasNext()) {
-					Info info = (Info) it.next();
+					People info = it.next();
 					System.out.println(" --data -- "+ 
 							info.getLink() + " getLink " + 
 							info.getFirstName() + " getFirstName " + 
@@ -106,7 +114,8 @@ public class ProfileCsv implements CsvGenerator{
 			}
         }
 		return count;
-	} 
+	}
+	
 
 	private String commaSkiping(String text) {
 		try {
@@ -119,5 +128,7 @@ public class ProfileCsv implements CsvGenerator{
 			return "";
 		}
 	}
+
+
 
 }
