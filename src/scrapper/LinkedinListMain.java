@@ -38,11 +38,12 @@ public class LinkedinListMain {
 	}
 
 	// setting working object
-	private void setWorkType() {
+	private int setWorkType() {
 		if(workMode == WorkType.LIST && taskType == SearchType.PEOPLESEARCH)
 			fireFoxOperator = new PeopleOperator();
-		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH)
-			fireFoxOperator = new AccountOperator();
+		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH) 
+			fireFoxOperator = new AccountOperator();			
+		return fireFoxOperator.getTotalCounts();
 	}
 	
 	public void setWorkMode(WorkType mtype) {
@@ -50,10 +51,14 @@ public class LinkedinListMain {
 		this.workMode = mtype;
 		setWorkType();
 	}
-	public void setTaskType(SearchType type) {
+	public int setTaskType(SearchType type) {
 		System.out.println("Task: " + type.toString());
 		this.taskType = type;
-		setWorkType();
+		return setWorkType();
+	}
+	
+	public String getTaskType() {
+		return this.taskType.toString();
 	}
 	
 	// modified 13 Feb 2021
@@ -66,10 +71,15 @@ public class LinkedinListMain {
 		return fireFoxOperator.browserLauncher();
 	}
 
+	public int clearList() {
+		return fireFoxOperator.clearList();  // drop & create table
+	}
 	
+	
+////.............................................	
 	private String salesLinkTemp = "linkedin.com/sales";
 	private String publicLinkTemp = "linkedin.com/in";
-	
+/*	
 	// ata ki?
 	public int getPublicLinkDetails(int index) {
 		// dummy
@@ -98,7 +108,7 @@ public class LinkedinListMain {
 		return 0;
 
 	}
-	
+*/	
 	private String salesComLinkTemp = "linkedin.com/sales/company";
 	private String publicComLinkTemp = "linkedin.com/company";
 	
@@ -174,9 +184,7 @@ public class LinkedinListMain {
 		return listSize;
 	}
 
-	public int clearList() {
-		return fireFoxOperator.clearList();  // drop & create table
-	}
+
 	
 	public int countData() {
 		//return localDb.countRecords();
@@ -193,7 +201,7 @@ public class LinkedinListMain {
 	public String userAuthCheck(String user, String password) {
 		return dbHandler.userAuth(user, password);
 	}
-
+/*
 	private LinkedList<Info> upLoadedList = null;
 
 	public String scanCSV(String filePath) {
@@ -209,7 +217,7 @@ public class LinkedinListMain {
 		// wrong file
 		// null file / no data
 	}
-	
+*/	
 	//.....
 	public int readCsvFile(String filepath) {
 		//CSV_Scanner csv_Scanner = new CSV_Scanner();

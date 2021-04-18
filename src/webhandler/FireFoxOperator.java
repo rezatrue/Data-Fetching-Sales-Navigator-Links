@@ -35,6 +35,7 @@ public abstract class FireFoxOperator {
 	public abstract String checkPageStatus();
 	public abstract String takeList();
 	public abstract int clearList();
+	public abstract int getTotalCounts();
 	
 	private String profileName = "default";
 	private String geckodriverdir;

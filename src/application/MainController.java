@@ -50,7 +50,7 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private TextField textMessage;
 	@FXML
-	private TextField textUserId;
+	private TextField textUserId, textDbData;
 	@FXML
 	private PasswordField textPassword;
 	@FXML
@@ -538,31 +538,27 @@ public class MainController  extends Service<String> implements Initializable {
 	}
 
 	@FXML
-	private Button resetBtn;
+	private Button resetBtn; // db data reset
 
 	@FXML
 	public void resetBtnAction(ActionEvent event) {
-		System.out.println("Reset");
-
-		if (clearDataNotification()) {
-			listSize = linkedinListMain.clearList();
-			if (listSize == 0)
-				textListSize.setText(String.valueOf(listSize));
-			textCurrentPage.setText("0");
-			textEndPage.setText("25");
-			textMessage.setText("All data deleted & Profile reset");
-			guireset();
+		System.out.println("DB Reset");
+		String takatype = linkedinListMain.getTaskType();
+		if (clearDataNotification(takatype)) {
+			linkedinListMain.clearList();
+			textDbData.setText(0+"");
+			textMessage.setText("All "+ takatype +" data have been deleted");
 		}else {
-			textMessage.setText("Unable to clear previous Data");
+			textMessage.setText(takatype + " Data remains in Database");
 		}
 
 	}
 
-	private boolean clearDataNotification() {
+	private boolean clearDataNotification(String takatype) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Please Confirmation");
-		alert.setHeaderText("Previously collected all data will be removed.");
-		alert.setContentText("Do you want to delete all previously data?");
+		alert.setTitle("Please Confirm");
+		alert.setHeaderText(takatype + " all data will be removed From Database.");
+		alert.setContentText("Do you want to delete?");
 
 		java.util.Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
@@ -613,7 +609,6 @@ public class MainController  extends Service<String> implements Initializable {
 		prefs = Preferences.userRoot().node("db");
 		signInBtn.setDisable(true);
 		startBtn.setDisable(true);
-		resetBtn.setDisable(true); 
 		openBrowserBtn.setDisable(true);
 		
 		
@@ -638,7 +633,8 @@ public class MainController  extends Service<String> implements Initializable {
 		textPassword.setText(prefs.get("linkedinPassword", ""));
 
 		linkedinListMain = new LinkedinListMain();
-		
+		int dbCount = linkedinListMain.setTaskType(SearchType.PEOPLESEARCH);
+		textDbData.setText(dbCount+"");
 //		Stage stage = (Stage) openBrowserBtn.getScene().getWindow();
 //	    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 //	          public void handle(WindowEvent we) {
@@ -777,7 +773,8 @@ public class MainController  extends Service<String> implements Initializable {
 			type = SearchType.ACCOUNTSEARCH; 
 			}
 		
-		linkedinListMain.setTaskType(type);
+		int dbCount = linkedinListMain.setTaskType(type);
+		textDbData.setText(dbCount+"");
 		
 	}
 

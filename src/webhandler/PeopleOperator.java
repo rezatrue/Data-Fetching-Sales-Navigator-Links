@@ -45,6 +45,8 @@ public class PeopleOperator extends FireFoxOperator{
 		By pageElementBy = By.xpath("//button[@id=\"ember296\" and contains(., '+ type +')]");
 		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
 	}
+	
+	
 	@Override
 	public String takeList() {
 		fullPageScroll();
@@ -57,6 +59,10 @@ public class PeopleOperator extends FireFoxOperator{
 	public int clearList() {
 		parser.deleteAllData();
 		return 0;
+	}
+	@Override
+	public int getTotalCounts() {
+		return parser.getTotalCounts();
 	}
 	
 	public int currentPageNumber() {

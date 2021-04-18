@@ -29,6 +29,12 @@ public class PeopleParser implements Parser {
 		localDb = new DbPeople();
 	}
 	
+	@Override
+	public int getTotalCounts() {
+		return localDb.countRecords();
+	}
+	
+	@Override
 	public int deleteAllData() {
 		localDb.createNewTable();
 		return 0;
@@ -46,7 +52,7 @@ public class PeopleParser implements Parser {
 			//MainController.prefs.putInt("unUpdatedListCount", (num + count));
 		return count;
 	}
-	
+	@Override
 	public int parse(){
 		
 		peopleList = new LinkedList<>();
