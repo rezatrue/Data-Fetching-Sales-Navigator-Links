@@ -7,13 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import pojo.Info;
+import pojo.People;
 
-public class CSV_Scanner {
+public class CsvScanner {
 
 	//........
-	private String location = null;
-	public CSV_Scanner() {
+	protected String location = null;
+	public CsvScanner() {
 		// default location present directory
 		location = "";
 	}
@@ -33,7 +33,7 @@ public class CSV_Scanner {
 	}
 	//......................
 	
-	private LinkedList<Info> list = null;
+
 
 	// use third party OpenCSV library
 	// source :
@@ -41,6 +41,13 @@ public class CSV_Scanner {
 	private static final char DEFAULT_SEPARATOR = ',';
 	private static final char DEFAULT_QUOTE = '"';
 
+	
+	public LinkedList<?> dataScan(String filePath){
+		return new LinkedList<>();
+	}
+	
+/*	
+	private LinkedList<Info> list = null;	
 	public LinkedList<Info> dataScan(String filePath) {
 		location = filePath.substring(0, filePath.lastIndexOf("\\")+1);
 		list = new LinkedList<>();
@@ -87,7 +94,8 @@ public class CSV_Scanner {
 		scanner.close();
 		return list;
 	}
-
+*/
+	
 	public List<String> parseLine(String cvsLine) {
 		return parseLine(cvsLine, DEFAULT_SEPARATOR, DEFAULT_QUOTE);
 	}

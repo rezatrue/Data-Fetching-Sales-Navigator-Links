@@ -25,6 +25,7 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import pojo.Company;
 import pojo.Info;
+import pojo.WorkType;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
@@ -36,6 +37,8 @@ public abstract class FireFoxOperator {
 	public abstract String takeList();
 	public abstract int clearList();
 	public abstract int getTotalCounts();
+	public abstract void setWorkType(WorkType workMode);
+	public abstract int scanCsv(String filepath);
 	
 	private String profileName = "default";
 	private String geckodriverdir;

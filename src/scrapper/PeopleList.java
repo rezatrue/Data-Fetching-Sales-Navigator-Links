@@ -19,13 +19,13 @@ import pojo.Company;
 import pojo.People;
 import webhandler.FireFoxOperator;
 
-public class PeopleParser implements Parser {
+public class PeopleList implements Parser {
 
 	public String baseUrl = "https://www.linkedin.com/";	
 	private LinkedList<People> peopleList = null;
 	DbPeople localDb;
 	
-	public PeopleParser() {
+	public PeopleList() {
 		localDb = new DbPeople();
 	}
 	
@@ -39,8 +39,9 @@ public class PeopleParser implements Parser {
 		localDb.createNewTable();
 		return 0;
 	}
-	
-	private int writeToDb(LinkedList<People> parsedlist) {
+	@Override
+	public int writeToDb(LinkedList<?> list) {
+		LinkedList<People> peopleList = (LinkedList<People>) list;
 		int count = 0;
 		Iterator<People> it = peopleList.iterator();
 		localDb = new DbPeople();

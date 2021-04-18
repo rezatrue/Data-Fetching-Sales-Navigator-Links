@@ -1,7 +1,6 @@
 package db;
 
 import pojo.Company;
-import pojo.Info;
 import pojo.People;
 
 public class DBTester {
@@ -11,7 +10,7 @@ public class DBTester {
 		LocalDBHandler dbHandler = new DbPeople();
 		System.out.println(dbHandler.countRecords());
 		//dbHandler.createNewTable();
-		
+		/*
 		People people = new People("https://www.linkedin.com/in/akila-akter-473605b5", "first_name", "second_name", "email", "phone", "location", "industry", "currentJobTitle", "currentCompany", "companySize");
 		dbHandler.insert(people);
 		people = new People("https://www.linkedin.com/in/sakilahmed-net", "first_name", "second_name", "email", "phone", "location", "industry", "currentJobTitle", "currentCompany", "companySize");
@@ -32,7 +31,7 @@ public class DBTester {
 		System.out.println(dbHandler.selectAtIndex(0));
 		//dbHandler.createNewTable();
 		dbHandler.closeConnection();
-		
+		*/
 	}
 
 }

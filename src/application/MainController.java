@@ -102,10 +102,14 @@ public class MainController  extends Service<String> implements Initializable {
 			System.out.println("CSV file");
 			btnBrowse.setDisable(false);
 			tfSelectedFilePath.setDisable(false);
+			btnRun.setDisable(true);
+			tfLimits.setText(0+"");
 		}
 	}
 
+
 	private void convertEnable() {
+		startBtn.setDisable(true);
 		dbRadioBtn.setDisable(false);
 		csvRadioBtn.setDisable(false);
 		btnBrowse.setDisable(true);
@@ -114,7 +118,8 @@ public class MainController  extends Service<String> implements Initializable {
 		tfLimits.setDisable(false);		
 		covertSource("db");	
 	}
-	private void convertDisable() {
+	private void listEnable() {
+		startBtn.setDisable(false);
 		dbRadioBtn.setDisable(true);
 		csvRadioBtn.setDisable(true);
 		btnBrowse.setDisable(true);
@@ -131,6 +136,16 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private void browseBtnAction(ActionEvent event) {
 		System.out.println("Browse Button");
+		
+		String takatype = linkedinListMain.getTaskType();
+		if (clearDataNotification(takatype)) {
+			linkedinListMain.clearList();
+			textDbData.setText(0+"");
+			textMessage.setText("All "+ takatype +" data have been deleted");
+		}else {
+			textMessage.setText(takatype + " Data remains in Database");
+		}
+		
 		//stackoverflow.com/questions/25491732/how-do-i-open-the-javafx-filechooser-from-a-controller-class/25491787
 		FileChooser fileChooser = new FileChooser();
 		
@@ -155,7 +170,7 @@ public class MainController  extends Service<String> implements Initializable {
     				btnRun.setDisable(false);
     				textMessage.setText("List size : "+ listSize);
     				textListSize.setText(listSize+"");
-    				tfLimits.setText(100+"");
+    				tfLimits.setText(number+"");
     			}
     		}
     		tfSelectedFilePath.setText(filepath);
@@ -419,7 +434,6 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	public void openBrowserBtnAction(ActionEvent event) {
 		
-		
 		System.out.println("Open Browser Button");
 		String buttonText = openBrowserBtn.getText();
 	
@@ -551,7 +565,7 @@ public class MainController  extends Service<String> implements Initializable {
 		}else {
 			textMessage.setText(takatype + " Data remains in Database");
 		}
-
+		
 	}
 
 	private boolean clearDataNotification(String takatype) {
@@ -608,17 +622,8 @@ public class MainController  extends Service<String> implements Initializable {
 		linkConversionService = new LinkConversionService();
 		prefs = Preferences.userRoot().node("db");
 		signInBtn.setDisable(true);
-		startBtn.setDisable(true);
 		openBrowserBtn.setDisable(true);
 		
-		
-		dbRadioBtn.setDisable(true);
-		csvRadioBtn.setDisable(true);
-		//cbConvertSalesLink.setDisable(false);
-		btnBrowse.setDisable(true);
-		btnRun.setDisable(true);
-		tfSelectedFilePath.setDisable(true);
-		tfLimits.setDisable(true);
 		guireset();
 		
 		modeChoiceBox.getItems().addAll(modeChoiceBoxItems);
@@ -635,13 +640,7 @@ public class MainController  extends Service<String> implements Initializable {
 		linkedinListMain = new LinkedinListMain();
 		int dbCount = linkedinListMain.setTaskType(SearchType.PEOPLESEARCH);
 		textDbData.setText(dbCount+"");
-//		Stage stage = (Stage) openBrowserBtn.getScene().getWindow();
-//	    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//	          public void handle(WindowEvent we) {
-//	              System.out.println("Stage is closing");
-//	          }
-//	      }); 
-		
+
 		String msg = authenticateUser();
 
 		//msg = "welcome test";
@@ -650,7 +649,7 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setDisable(false);
 		else
 			openBrowserBtn.setDisable(true);
-
+		listEnable();
 	}
 
 	
@@ -744,11 +743,14 @@ public class MainController  extends Service<String> implements Initializable {
 	private void modeChoiceBoxSetup(ChoiceBox<String> mChoiceBox) {
 		String item = mChoiceBox.getValue();
 		WorkType type = WorkType.LIST;
+		
 		if (item.equalsIgnoreCase(modeChoiceBoxItems[0])) {
 			type = WorkType.LIST;
+			listEnable();
 			}
 		if (item.equalsIgnoreCase(modeChoiceBoxItems[1])) {
 			type = WorkType.CONVERT;
+			convertEnable();
 			}
 		linkedinListMain.setWorkMode(type);
 	}

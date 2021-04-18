@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import application.MainController;
-import csvhandler.CSV_Scanner;
+import csvhandler.CsvScanner;
 import csvhandler.CompanyCsv;
 import csvhandler.CsvGenerator;
 import csvhandler.PeopleCsv;
@@ -39,17 +39,18 @@ public class LinkedinListMain {
 
 	// setting working object
 	private int setWorkType() {
-		if(workMode == WorkType.LIST && taskType == SearchType.PEOPLESEARCH)
+		if(taskType == SearchType.PEOPLESEARCH)
 			fireFoxOperator = new PeopleOperator();
-		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH) 
-			fireFoxOperator = new AccountOperator();			
+		if(taskType == SearchType.ACCOUNTSEARCH) 
+			fireFoxOperator = new AccountOperator();
+		fireFoxOperator.setWorkType(this.workMode);
 		return fireFoxOperator.getTotalCounts();
 	}
 	
-	public void setWorkMode(WorkType mtype) {
+	public int setWorkMode(WorkType mtype) {
 		System.out.println("Mode: " + mtype.toString());
 		this.workMode = mtype;
-		setWorkType();
+		return setTaskType(this.taskType);
 	}
 	public int setTaskType(SearchType type) {
 		System.out.println("Task: " + type.toString());
@@ -184,11 +185,8 @@ public class LinkedinListMain {
 		return listSize;
 	}
 
-
-	
 	public int countData() {
-		//return localDb.countRecords();
-		return 0;
+		return fireFoxOperator.getTotalCounts();
 	}
 	
 	public int printList(String keyword, int num) {
@@ -220,6 +218,8 @@ public class LinkedinListMain {
 */	
 	//.....
 	public int readCsvFile(String filepath) {
+		if(this.taskType == SearchType.PEOPLESEARCH)
+			return fireFoxOperator.scanCsv(filepath);
 		//CSV_Scanner csv_Scanner = new CSV_Scanner();
 		
 //		list = csv_Scanner.dataScan(filepath);

@@ -23,29 +23,49 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
+import csvhandler.CsvScanner;
+import csvhandler.PeopleScanner;
 import pojo.Company;
+import pojo.People;
+import pojo.WorkType;
 import scrapper.Parser;
-import scrapper.PeopleParser;
+import scrapper.PeopleConvert;
+import scrapper.PeopleList;
 import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 
 public class PeopleOperator extends FireFoxOperator{
-
-	private Parser parser = null; 
+	
 	private String type = "People";
+	private Parser parser = null; 
+	private CsvScanner scanner = null; 
+	
 	public PeopleOperator() {
-		parser = new PeopleParser(); // changing
+		parser = new PeopleList();
+		scanner = new PeopleScanner();
 	}
 	
+	public void setWorkType(WorkType mode) {
+		if(mode == WorkType.LIST)
+			parser = new PeopleList();
+		if(mode == WorkType.CONVERT)
+			parser = new PeopleConvert();
+	}
 	
+	public int scanCsv(String path) {
+		LinkedList<?> list = scanner.dataScan(path);
+		System.out.println("list -- "+ list.size());
+		return parser.writeToDb(list);
+	}
+	
+/// ----------------------- List ---------------------------------- ///	
 	@Override
 	public String checkPageStatus() {
 		//button[@id="ember296" and contains(., 'People')]
 		By pageElementBy = By.xpath("//button[@id=\"ember296\" and contains(., '+ type +')]");
 		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
 	}
-	
 	
 	@Override
 	public String takeList() {
@@ -141,6 +161,8 @@ public class PeopleOperator extends FireFoxOperator{
 		
 		return "";
 	}
+	
+/// ----------------------- Convert ---------------------------------- ///	
 	
 	
 
