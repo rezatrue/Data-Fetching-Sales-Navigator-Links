@@ -26,14 +26,12 @@ public class LinkedinListMain {
 	private SearchType taskType;
 	private FireFoxOperator fireFoxOperator;
 	private DBHandler dbHandler = null; // server api
-	int listSize = 0;
 	//int unUpdatedListCount = 0;
 	
 	public LinkedinListMain() {
 		dbHandler = new DBHandler(); // need to add param at last
 		this.workMode = WorkType.LIST;
 		this.taskType = SearchType.PEOPLESEARCH;
-		listSize = 0;
 		setWorkType();
 	}
 
@@ -173,7 +171,7 @@ public class LinkedinListMain {
 		String msg = fireFoxOperator.checkPageStatus();
 		if(!msg.contains("false")) return msg;
 		return fireFoxOperator.takeList();
-		// "data:10" // "page:10" // "error:msg"
+		// "data:10" // "error:msg"
 	}
 	
 	// modified 11 mar 2018
@@ -181,18 +179,16 @@ public class LinkedinListMain {
 		return fireFoxOperator.openPreviousPage();
 	}
 
-	public int getTotalSize() {
-		return listSize;
-	}
-
 	public int countData() {
 		return fireFoxOperator.getTotalCounts();
 	}
 	
-	public int printList(String keyword, int num) {
-		if(workMode == WorkType.LIST && taskType == SearchType.ACCOUNTSEARCH)
+	public int printList(String keyword, int renum) {
+		if(taskType == SearchType.ACCOUNTSEARCH)
 			csvGenerator = new CompanyCsv();
-		int number = csvGenerator.listtoCsv(keyword, num);
+		if(taskType == SearchType.PEOPLESEARCH)
+			csvGenerator = new PeopleCsv();
+		int number = csvGenerator.listtoCsv(keyword, renum);
 		return number;
 	}
 

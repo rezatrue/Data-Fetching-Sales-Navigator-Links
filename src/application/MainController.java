@@ -325,7 +325,6 @@ public class MainController  extends Service<String> implements Initializable {
 	private String[] taskChoiceBoxItems = {"People", "Companies", "Jobs", "Lead results", "Account results"};
 	private LinkedinListMain linkedinListMain;
 	private ApiClient apiClient; 
-	//private int listSize;
 
 	@FXML
 	private Button settingBtn;
@@ -409,28 +408,21 @@ public class MainController  extends Service<String> implements Initializable {
 					int currentPage = 0;
 					int endPage;
 					
-					//linkedinListMain.fullPageScroll(); // ---
-					//linkedinListMain.salesPageScroll(); // ---
-					
 						do {
 							autoSelected = auto.isSelected();
 							textCurrentPage.setText(currentPage + "");
 							endPage = Integer.parseInt(textEndPage.getText());
 							if (currentPage <= endPage) {
 								
-								String result = linkedinListMain.startListing(); // "data:25"; // "page:10" // "error:msg"
+								String result = linkedinListMain.startListing(); // "data:25"; //"error:msg"
+								String msg = result.substring(result.indexOf(":")+1, result.length()).trim();
+								if(result.startsWith("error"))
+								{textMessage.setText(msg); break;}
 								int newadded = 0;
-								String msg = result.substring(result.indexOf(":"), result.length());
 								if(result.startsWith("data")) // newadded = 
 									newadded = Integer.parseInt(msg);
-								if(result.startsWith("page")) // currentPage = 
-									currentPage = Integer.parseInt(msg);
-								if(result.startsWith("error"))
-									{textMessage.setText(msg); break;}
-								
-								//int newadded = linkedinListMain.takeList();// ---
-								int previousListSize = Integer.parseInt(textListSize.getText());
-								listSize = previousListSize + newadded;
+
+								listSize += newadded;
 								textListSize.setText( listSize + "");
 								textCurrentPage.setText(currentPage + "");
 								if (autoSelected && currentPage < endPage) {
@@ -590,6 +582,8 @@ public class MainController  extends Service<String> implements Initializable {
 		if (clearDataNotification(takatype)) {
 			linkedinListMain.clearList();
 			textDbData.setText(0+"");
+			textListSize.setText(0+"");
+			listSize = 0;
 			textMessage.setText("All "+ takatype +" data have been deleted");
 		}else {
 			textMessage.setText(takatype + " Data remains in Database");

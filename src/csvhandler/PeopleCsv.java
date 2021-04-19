@@ -25,10 +25,13 @@ public class PeopleCsv implements CsvGenerator{
 	}
 
 	@Override
-	public int listtoCsv(String keyword, int num) {
+	public int listtoCsv(String keyword, int remaining) {
+		// if number is greater than 0 then you can print full list
 		int count = 0;
-		
-		plist = dbPeople.selectRows(num); 
+		int permitableNumber = 0;
+		if(remaining >= 0 ) permitableNumber = dbPeople.countRecords();
+		else permitableNumber = dbPeople.countRecords() + remaining;
+		this.plist = dbPeople.selectRows(permitableNumber); 
 		 
 		System.out.println("list size cg: " + plist.size());
 		

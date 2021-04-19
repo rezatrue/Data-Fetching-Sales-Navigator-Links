@@ -232,8 +232,10 @@ public abstract class FireFoxOperator {
 			jse.executeScript("scroll(0, 750);");
 			Thread.sleep(500);
 			jse.executeScript("scroll(0, 950);");
-			Thread.sleep(5000);
+			Thread.sleep(500);
 			jse.executeScript("scroll(0, 1200);");
+			Thread.sleep(500);
+			jse.executeScript("scroll(0, 1500);");
 			Thread.sleep(1000);
 			
 		} catch (InterruptedException e) {

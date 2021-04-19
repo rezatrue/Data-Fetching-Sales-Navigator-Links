@@ -49,8 +49,8 @@ public class PeopleList implements Parser {
 				People people = (People) it.next();
 				if(localDb.insert(people)) count++;
 			}
-			//int num = MainController.prefs.getInt("unUpdatedListCount", 0);
-			//MainController.prefs.putInt("unUpdatedListCount", (num + count));
+		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
+		MainController.prefs.putInt("unUpdatedListCount", (num + count));
 		return count;
 	}
 	@Override

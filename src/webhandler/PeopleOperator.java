@@ -62,9 +62,10 @@ public class PeopleOperator extends FireFoxOperator{
 /// ----------------------- List ---------------------------------- ///	
 	@Override
 	public String checkPageStatus() {
+		//button[contains(@class,'selected') and contains(., 'People')] // good one
 		//button[contains(@class,'search-reusables__filter') and contains(., 'People')]
-		By pageElementBy = By.xpath("//button[contains(@class,'search-reusables__filter') and contains(., '+ type +')]");
-		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
+		By pageElementBy = By.xpath("//button[contains(@class,'selected') and contains(., '"+ type +"')]");
+		return isElementPresent(pageElementBy) ? "error:false" : "error:OPPS! You are in wrong page";
 	}
 	
 	@Override
@@ -72,7 +73,7 @@ public class PeopleOperator extends FireFoxOperator{
 		fullPageScroll();
 		//salesPageScroll();
 		int count = parser.parse();
-		return "data:"+count;  //"page:10" // "error:msg"
+		return "data:"+count;  //"data:10" // "error:msg"
 	}
 		
 	@Override
@@ -99,35 +100,22 @@ public class PeopleOperator extends FireFoxOperator{
 		//button[contains(@class,'button--next')]
 		System.out.println(" <- openNextPage clicked");
 		int responsepage = 0;
-		String nextPageSelectorDisabled = "//button[contains(@class,'button--next') and contains(@disabled,'')]";
-		boolean isNextDisabled = isElementPresent(By.xpath(nextPageSelectorDisabled));
-		if(isNextDisabled) return responsepage;
-		
-		String nextPageSelector = "//button[contains(@class,'button--next')]";
-		boolean isNextPresent = isElementPresent(By.xpath(nextPageSelector));
-
-		if (isNextPresent) {
-			responsepage = switchingPage(By.xpath(nextPageSelector));
-		}
-		System.out.println(responsepage + " <- responsepage");
-
+		By nextPageSelectorBy = By.xpath("//button[contains(@class,'button--next')]");
+		if(isElementPresent(nextPageSelectorBy) && driver.findElement(nextPageSelectorBy).isEnabled()) {
+			driver.findElement(nextPageSelectorBy).click();
+			responsepage = switchingPage(nextPageSelectorBy);
+		}			
 		return responsepage;
 
 	}
 
 	public int openPreviousPage() {
 		int responsepage = 0;
-		String previousPageSelectorDisabled = "//button[contains(@class,'button--previous') and contains(@disabled,'')]";
-		boolean isPrevDisabled = isElementPresent(By.xpath(previousPageSelectorDisabled));
-		if(isPrevDisabled) return responsepage;
+		By prevPageSelectorBy = By.xpath("//button[contains(@class,'button--previous')]");
+		if(isElementPresent(prevPageSelectorBy) && driver.findElement(prevPageSelectorBy).isEnabled()) {
+			responsepage = switchingPage(prevPageSelectorBy);
+		}	
 		
-		String prevPageSelector = "//button[contains(@class,'button--previous')]"; 
-		boolean isPrevPresent = isElementPresent(By.xpath(prevPageSelector));
-
-		if (isPrevPresent) {
-			responsepage = switchingPage(By.xpath(prevPageSelector));
-		}
-
 		return responsepage;
 
 	}
@@ -137,7 +125,6 @@ public class PeopleOperator extends FireFoxOperator{
 		try {
 			driver.findElement(by).click();
 			fullPageScroll();
-			salesPageScroll();
 			
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());;
