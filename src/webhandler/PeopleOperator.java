@@ -62,8 +62,8 @@ public class PeopleOperator extends FireFoxOperator{
 /// ----------------------- List ---------------------------------- ///	
 	@Override
 	public String checkPageStatus() {
-		//button[@id="ember296" and contains(., 'People')]
-		By pageElementBy = By.xpath("//button[@id=\"ember296\" and contains(., '+ type +')]");
+		//button[contains(@class,'search-reusables__filter') and contains(., 'People')]
+		By pageElementBy = By.xpath("//button[contains(@class,'search-reusables__filter') and contains(., '+ type +')]");
 		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
 	}
 	

@@ -24,7 +24,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import pojo.Company;
-import pojo.Info;
 import pojo.WorkType;
 import scrapper.Parser;
 import scrapper.SalesNavAccountsParser;
@@ -66,7 +65,7 @@ public abstract class FireFoxOperator {
 	
 	// commom
 	public boolean browserLauncher() {
-		/*
+		
 		ProfilesIni profile = new ProfilesIni();
 		FirefoxProfile myprofile = profile.getProfile(profileName);
 
@@ -79,10 +78,10 @@ public abstract class FireFoxOperator {
 		driver = new FirefoxDriver(capabilities);
 		
 		driver.get(url);
-		*/
+		/*
 		System.setProperty("webdriver.gecko.driver", geckodriverdir);
 		driver = new FirefoxDriver();
-
+		*/
 		return true;
 	}
 
