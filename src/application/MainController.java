@@ -421,12 +421,11 @@ public class MainController  extends Service<String> implements Initializable {
 								int newadded = 0;
 								if(result.startsWith("data")) // newadded = 
 									newadded = Integer.parseInt(msg);
-
 								listSize += newadded;
 								textListSize.setText( listSize + "");
+								currentPage = linkedinListMain.openNextPage(); 
 								textCurrentPage.setText(currentPage + "");
-								if (autoSelected && currentPage < endPage) {
-									currentPage = linkedinListMain.openNextPage(); 
+								if (autoSelected && currentPage <= endPage) {
 									textMessage.setText("Processing page " + currentPage);
 								} else {
 									run = false;

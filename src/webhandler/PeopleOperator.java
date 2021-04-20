@@ -102,7 +102,6 @@ public class PeopleOperator extends FireFoxOperator{
 		int responsepage = 0;
 		By nextPageSelectorBy = By.xpath("//button[contains(@class,'button--next')]");
 		if(isElementPresent(nextPageSelectorBy) && driver.findElement(nextPageSelectorBy).isEnabled()) {
-			driver.findElement(nextPageSelectorBy).click();
 			responsepage = switchingPage(nextPageSelectorBy);
 		}			
 		return responsepage;
