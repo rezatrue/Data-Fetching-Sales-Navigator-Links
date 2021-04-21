@@ -49,7 +49,7 @@ public class AccountOperator extends FireFoxOperator{
 	public String takeList() {
 		fullPageScroll();
 		salesPageScroll();
-		int count = parser.parse();
+		int count = parser.parseList();
 		return "data:"+count;  //"page:10" // "error:msg"
 	}
 		

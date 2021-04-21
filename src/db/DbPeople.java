@@ -142,9 +142,9 @@ public class DbPeople implements LocalDBHandler{
 		return count;
 	}
 	
-	public String selectAtIndex(int num) {
-		String salesLink = "";
-		String sql = "SELECT Linkedin_Profile_URL FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
+	public People selectAtIndex(int num) {
+		People people = null;
+		String sql = "SELECT * FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
 		if(conn == null)
         	connect();
 		
@@ -157,8 +157,19 @@ public class DbPeople implements LocalDBHandler{
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
-					salesLink =  rs.getString("Linkedin_Profile_URL");
-				    System.out.println(salesLink);
+					System.out.println(rs.getString("Linkedin_Profile_URL"));
+				    people = new People(
+		                       rs.getString("Linkedin_Profile_URL"),
+		                       rs.getString("First_Name"), 
+		                       rs.getString("Last_Name"),
+		                       rs.getString("Email_ID"), 
+		                       rs.getString("Contact_Number"),
+		                       rs.getString("Location"), 
+		                       rs.getString("Industry"),
+		                       rs.getString("Designation"),
+		                       rs.getString("Company_Name"),
+		                       rs.getString("Company_Size")
+					);
 				}
 			} catch (SQLException e) {
 				System.out.println("5"+e.getMessage());
@@ -173,7 +184,7 @@ public class DbPeople implements LocalDBHandler{
 			}
 			
         }
-		return salesLink;
+		return people;
 	}
 	public LinkedList<People> selectRows(int num){
 		LinkedList<People> list  = new LinkedList<>();

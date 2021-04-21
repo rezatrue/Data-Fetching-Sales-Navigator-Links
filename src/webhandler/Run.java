@@ -39,13 +39,23 @@ public class Run {
 		csv.listtoCsv("Test", 20);
 	}
 	
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Hello:");
 		
-		testOneSection();
+		//testOneSection();
+		PeopleOperator operator = new PeopleOperator();
+		operator.browserLauncher();
+		operator.openUrl("file:///F:/development/People_list/Terry-Antony.html");
 		
+		By jobTitleBy = By.xpath("//section[@id='experience-section']/ul/li[1]//h3");
+		try {String jobTitle = FireFoxOperator.driver.findElement(jobTitleBy).getText().trim();
+		System.out.println(jobTitle);
 		
+		System.out.println(jobTitle.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " "));
+		}catch (Exception e1) {;}
 		
 		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/eset.html");
 		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/ergo.html");

@@ -46,7 +46,7 @@ public class SalesNavAccountsParser implements Parser {
 		return count;
 	}
 	
-	public int parse(){
+	public int parseList(){
 		
 		comList = new LinkedList<>();
 		String companiesXpath = "//ol[@class='search-results__result-list']//li//article";

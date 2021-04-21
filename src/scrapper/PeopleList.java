@@ -54,7 +54,7 @@ public class PeopleList implements Parser {
 		return count;
 	}
 	@Override
-	public int parse(){
+	public int parseList(){
 		
 		peopleList = new LinkedList<>();
 		String peopleXpath = "//div[contains(@class,'artdeco-card')]/ul//div[@class='entity-result__item']";
@@ -102,6 +102,12 @@ public class PeopleList implements Parser {
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
 		return writeToDb(peopleList);
+	}
+
+	@Override
+	public boolean parseData() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

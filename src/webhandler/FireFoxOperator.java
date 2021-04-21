@@ -38,6 +38,7 @@ public abstract class FireFoxOperator {
 	public abstract int getTotalCounts();
 	public abstract void setWorkType(WorkType workMode);
 	public abstract int scanCsv(String filepath);
+	public abstract int getDetailsInfo(int index);
 	
 	private String profileName = "default";
 	private String geckodriverdir;
@@ -65,7 +66,7 @@ public abstract class FireFoxOperator {
 	
 	// commom
 	public boolean browserLauncher() {
-		
+		/*
 		ProfilesIni profile = new ProfilesIni();
 		FirefoxProfile myprofile = profile.getProfile(profileName);
 
@@ -78,10 +79,11 @@ public abstract class FireFoxOperator {
 		driver = new FirefoxDriver(capabilities);
 		
 		driver.get(url);
-		/*
+		*/
+		
 		System.setProperty("webdriver.gecko.driver", geckodriverdir);
 		driver = new FirefoxDriver();
-		*/
+		
 		return true;
 	}
 
@@ -221,7 +223,7 @@ public abstract class FireFoxOperator {
 		return currentPageNumber();
 	}
 
-	public void fullPageScroll() {
+	public static void fullPageScroll() {
 		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
 		try {

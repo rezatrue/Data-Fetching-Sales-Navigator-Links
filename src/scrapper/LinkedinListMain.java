@@ -74,77 +74,12 @@ public class LinkedinListMain {
 		return fireFoxOperator.clearList();  // drop & create table
 	}
 	
+	public int getLinkDetails(int index) {		
+		return fireFoxOperator.getDetailsInfo(index);
+	}
 	
 ////.............................................	
-	private String salesLinkTemp = "linkedin.com/sales";
-	private String publicLinkTemp = "linkedin.com/in";
-/*	
-	// ata ki?
-	public int getPublicLinkDetails(int index) {
-		// dummy
-		LocalDBHandler localDb = null;
-		//String salesLink = list.get(index).getLink();
-		String salesLink = localDb.selectAtIndex(index);
-		System.out.println("salesLink : " + salesLink);
-		if (salesLink.contains(publicLinkTemp)) return 0;
-		if (salesLink.contains(salesLinkTemp)) {
-			Info newInfo = fireFoxOperator.getPublicLinkDetails(salesLink);
-			String publicProfileLink = newInfo.getLink();
-			System.out.println("set in list -->>" + publicProfileLink);
-			if(publicProfileLink == null || publicProfileLink.length() == 0){
-				System.out.println("return -->> -1");
-				return 0;
-			}
-			if(newInfo.getLink().contains("linkedin.com/in")) {
-				//converted += 1;
-				//list.set(index, newInfo);
-				localDb.update(newInfo, salesLink);
-				return 1;
-			}else {
-				return 0;
-			}
-		}
-		return 0;
 
-	}
-*/	
-	private String salesComLinkTemp = "linkedin.com/sales/company";
-	private String publicComLinkTemp = "linkedin.com/company";
-	
-	// ata ki?
-	public int getCompanyLinkDetails(int index) {
-		// dummy
-		LocalDBHandler localDb = null;
-		String salesComLink = localDb.selectAtIndex(index);
-		
-		System.out.println("salesComLink : " + salesComLink);
-		if (salesComLink.contains(publicComLinkTemp)) return 0;
-		if (salesComLink.contains(salesComLinkTemp)) {
-			Company newCompany = fireFoxOperator.getCompanyLinkDetails(salesComLink); 
-			/*
-			String publicCompanyLink = newCompany.getComUrl();
-			System.out.println("set in list -->>" + publicCompanyLink);
-			if(publicCompanyLink == null || publicCompanyLink.length() == 0){
-			*/
-			if(newCompany == null){
-				System.out.println("return -->> -1");
-				return 0;
-			}
-			System.out.println(newCompany.getComUrl() + " -- :: --");
-			if(newCompany.getComUrl() != null && newCompany.getComUrl().contains(publicComLinkTemp)) {
-				//converted += 1;
-				//list.set(index, newInfo);
-				localDb.update(newCompany, salesComLink);
-				return 1;
-			}else {
-				return 0;
-			}
-		}
-		return 0;
-
-	}
-	
-	
 	
 	// modified 11 mar 2018
 	public boolean signedOut() {

@@ -22,8 +22,7 @@ public interface LocalDBHandler {
 	
 	public int countRecords(); // { return 0;}
 	
-	public String selectAtIndex(int num); // {return "";}
-	
+	public Object selectAtIndex(int num); // {return "";}
 	
 	public LinkedList<?> selectRows(int num); //{ return new LinkedList<>();}
 	

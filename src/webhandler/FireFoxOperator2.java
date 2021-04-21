@@ -81,7 +81,7 @@ public  class FireFoxOperator2 {
 	}
 	
 	public LinkedList<?> takeList() { // 1
-		LinkedList<?> currentlist = parser.parse();
+		LinkedList<?> currentlist = parser.parseList();
 		return currentlist;
 	}
 	

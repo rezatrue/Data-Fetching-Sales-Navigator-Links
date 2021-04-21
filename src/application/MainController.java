@@ -284,8 +284,7 @@ public class MainController  extends Service<String> implements Initializable {
 							workCount = 0;
 						}
 
-						//int res = linkedinListMain.getPublicLinkDetails(index);
-						int res = linkedinListMain.getCompanyLinkDetails(index);
+						int res = linkedinListMain.getLinkDetails(index);
 						index++;
 						//totalSalesLink--;
 						if(res == 0) {
@@ -347,12 +346,12 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private Button startBtn;
 
-	MyService runService;
+	ListService listService;
 	@FXML
 	public void startBtnAction(ActionEvent event) {
 		System.out.println("Start Button");
 
-		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		listService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
 			public void handle(WorkerStateEvent event) {
@@ -364,11 +363,11 @@ public class MainController  extends Service<String> implements Initializable {
 		if (startBtn.getText().contains("Pause")) {
 			startBtn.setText("Start");
 			openBrowserBtn.setDisable(false);
-			System.out.println("--------------paused---------------------" + runService.getState().toString());
+			System.out.println("--------------paused---------------------" + listService.getState().toString());
 
-			switch(runService.getState().toString()) {
+			switch(listService.getState().toString()) {
 			case "RUNNING":
-				runService.cancel();
+				listService.cancel();
 				break;
 			}	
 		} else if (startBtn.getText().contains("Start")) {
@@ -376,17 +375,17 @@ public class MainController  extends Service<String> implements Initializable {
 			openBrowserBtn.setDisable(true);
 			textCurrentPage.setText(0 + "");
 			// calling MyService start / cancel /restart based on getState() 
-			System.out.println("--------------started---------------------" + runService.getState().toString());
+			System.out.println("--------------started---------------------" + listService.getState().toString());
 
-			System.out.println(runService.getState().toString());
+			System.out.println(listService.getState().toString());
 			
-			switch(runService.getState().toString()) {
+			switch(listService.getState().toString()) {
 			case "READY":
-				runService.start();
+				listService.start();
 				break;
 			case "CANCELLED":
 			case "SUCCEEDED":
-				runService.restart();
+				listService.restart();
 				break;
 			}
 
@@ -394,7 +393,7 @@ public class MainController  extends Service<String> implements Initializable {
 
 	}
 
-	private class MyService extends Service<String>{
+	private class ListService extends Service<String>{
 
 		@Override
 		protected Task<String> createTask() {
@@ -640,7 +639,7 @@ public class MainController  extends Service<String> implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		listSize = 0;
-		runService = new MyService();
+		listService = new ListService();
 		linkConversionService = new LinkConversionService();
 		scvScanService = new ScvScanService();
 		prefs = Preferences.userRoot().node("db");

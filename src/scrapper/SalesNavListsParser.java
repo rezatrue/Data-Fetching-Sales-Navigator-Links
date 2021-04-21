@@ -26,7 +26,7 @@ public class SalesNavListsParser implements Parser {
 	}
 	
 	
-	public LinkedList<Info> parse(){
+	public LinkedList<Info> parseList(){
 		proList = new LinkedList<Info>();
 		
 		String employeeXpath = "//tbody[@class=\"ember-view\"]/tr[contains(@class,\"table-row\")]";

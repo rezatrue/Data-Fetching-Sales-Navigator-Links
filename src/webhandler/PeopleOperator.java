@@ -25,6 +25,7 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import csvhandler.CsvScanner;
 import csvhandler.PeopleScanner;
+import db.LocalDBHandler;
 import pojo.Company;
 import pojo.People;
 import pojo.WorkType;
@@ -72,7 +73,7 @@ public class PeopleOperator extends FireFoxOperator{
 	public String takeList() {
 		fullPageScroll();
 		//salesPageScroll();
-		int count = parser.parse();
+		int count = parser.parseList();
 		return "data:"+count;  //"data:10" // "error:msg"
 	}
 		
@@ -150,7 +151,10 @@ public class PeopleOperator extends FireFoxOperator{
 	
 /// ----------------------- Convert ---------------------------------- ///	
 	
-	
+	public int getDetailsInfo(int index) {
+		return parser.parseData(index)? 1 : 0;
+
+	}
 
 
 

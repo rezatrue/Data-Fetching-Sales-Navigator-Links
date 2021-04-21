@@ -58,7 +58,7 @@ public class SalesNavigatorParser implements Parser {
 	
 	
 	
-	public LinkedList<?> parse(){
+	public LinkedList<?> parseList(){
 		
 		proList = new LinkedList<Info>();
 		String employeeXpath = "//ol[@class='search-results__result-list']//li//div[contains(@class,'horizontal-person-entity-lockup')]";
