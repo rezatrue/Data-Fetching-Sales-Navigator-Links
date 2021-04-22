@@ -548,8 +548,8 @@ public class MainController  extends Service<String> implements Initializable {
 		prefs.putInt("unUpdatedListCount", 0);
 		int remainingLimits =  apiClient.updateUseage(num);
 		if(remainingLimits >= 0) {
-			System.out.println("listSize-> "+ listSize);//
-			int count = linkedinListMain.printList(textKeyword.getText(), listSize);
+			System.out.println("listSize-> "+ linkedinListMain.countData());// not using "listSize" variable fro print
+			int count = linkedinListMain.printList(textKeyword.getText(), linkedinListMain.countData());
 			textMessage.setText("New CSV file created with " + count + " entity.");
 		}
 		// this will create problem if picked data limits accessed by 1 , that's why return code modified
@@ -560,7 +560,7 @@ public class MainController  extends Service<String> implements Initializable {
 			int printlistSize = listSize + remainingLimits;
 			System.out.println(printlistSize + " : -PT");
 			if(printlistSize > 0) {
-				int count = linkedinListMain.printList(textKeyword.getText(), printlistSize);
+				int count = linkedinListMain.printList(textKeyword.getText(), linkedinListMain.countData() + remainingLimits);
 				textMessage.setText("New CSV with " + count + " entity has been created. Pls upgrade package for full list");
 			}else {
 				textMessage.setText("Out of Limits !! Please upgrade your package");

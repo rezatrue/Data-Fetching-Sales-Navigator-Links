@@ -144,7 +144,7 @@ public class DbCompany implements LocalDBHandler{
 	
 	public Company selectAtIndex(int num) {
 		Company company = null;
-		String sql = "SELECT Linkedin_Company_URL FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
+		String sql = "SELECT * FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
 		if(conn == null)
         	connect();
 		
