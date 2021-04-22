@@ -142,8 +142,8 @@ public class DbCompany implements LocalDBHandler{
 		return count;
 	}
 	
-	public String selectAtIndex(int num) {
-		String salesLink = "";
+	public Company selectAtIndex(int num) {
+		Company company = null;
 		String sql = "SELECT Linkedin_Company_URL FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
 		if(conn == null)
         	connect();
@@ -157,8 +157,17 @@ public class DbCompany implements LocalDBHandler{
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
-					salesLink =  rs.getString("Linkedin_Company_URL");
-				    System.out.println(salesLink);
+				    System.out.println(rs.getString("Linkedin_Company_URL"));
+				    company = new Company(
+		                       rs.getString("Linkedin_Company_URL"),
+		                       rs.getString("Company_Name"), 
+		                       rs.getString("Headquarters"),
+		                       rs.getString("Website"), 
+		                       rs.getString("Founded"),
+		                       rs.getString("Company_Size"), 
+		                       rs.getString("Industry"),
+		                       rs.getString("Company_Type")
+					);
 				}
 			} catch (SQLException e) {
 				System.out.println("5"+e.getMessage());
@@ -173,7 +182,7 @@ public class DbCompany implements LocalDBHandler{
 			}
 			
         }
-		return salesLink;
+		return company;
 	}
 	public LinkedList<Company> selectRows(int num){
 		LinkedList<Company> list  = new LinkedList<>();
@@ -269,7 +278,7 @@ public class DbCompany implements LocalDBHandler{
 
 	}
 	
-	public boolean update(Object obj, String salesLink) {
+	public boolean update(Object obj, String comLink) {
 		
 		// not updating all cell as there are data available
 		
@@ -289,7 +298,7 @@ public class DbCompany implements LocalDBHandler{
 				pstmt.setString(2, com.getComWebsite());
 				pstmt.setString(3, com.getComFounded());
 				pstmt.setString(4, com.getComType());
-				pstmt.setString(5, salesLink);
+				pstmt.setString(5, comLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());

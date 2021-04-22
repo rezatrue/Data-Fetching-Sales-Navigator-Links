@@ -17,6 +17,7 @@ import pojo.SearchType;
 import pojo.WorkType;
 import pojo.Company;
 import webhandler.AccountOperator;
+import webhandler.CompaniesOperator;
 import webhandler.FireFoxOperator;
 import webhandler.PeopleOperator;
 
@@ -39,6 +40,8 @@ public class LinkedinListMain {
 	private int setWorkType() {
 		if(taskType == SearchType.PEOPLESEARCH)
 			fireFoxOperator = new PeopleOperator();
+		if(taskType == SearchType.COMPANIESSEARCH)
+			fireFoxOperator = new CompaniesOperator();
 		if(taskType == SearchType.ACCOUNTSEARCH) 
 			fireFoxOperator = new AccountOperator();
 		fireFoxOperator.setWorkType(this.workMode);
@@ -123,6 +126,8 @@ public class LinkedinListMain {
 			csvGenerator = new CompanyCsv();
 		if(taskType == SearchType.PEOPLESEARCH)
 			csvGenerator = new PeopleCsv();
+		if(taskType == SearchType.COMPANIESSEARCH)
+			csvGenerator = new CompanyCsv();
 		int number = csvGenerator.listtoCsv(keyword, renum);
 		return number;
 	}

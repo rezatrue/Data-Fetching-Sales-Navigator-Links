@@ -105,7 +105,7 @@ public class PeopleList implements Parser {
 	}
 
 	@Override
-	public boolean parseData() {
+	public boolean parseData(int index) {
 		// TODO Auto-generated method stub
 		return false;
 	}
