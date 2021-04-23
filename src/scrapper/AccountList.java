@@ -20,13 +20,13 @@ import pojo.Company;
 import pojo.People;
 import webhandler.FireFoxOperator;
 
-public class CompanyList implements Parser {
+public class AccountList implements Parser {
 
 	public String baseUrl = "https://www.linkedin.com/";	
 	private LinkedList<Company> companyList = null;
 	DbCompany localDb;
 	
-	public CompanyList() {
+	public AccountList() {
 		localDb = new DbCompany();
 	}
 	
@@ -58,9 +58,12 @@ public class CompanyList implements Parser {
 	public int parseList(){
 		
 		companyList = new LinkedList<>();
-		String companyXpath = "//div[contains(@class,'artdeco-card')]/ul//div[@class='entity-result__item']";
-		String nameXpath = ".//span[contains(@class,'title')]/a";
-		String industryXpath = ".//div[contains(@class,'primary-subtitle')]";
+
+		String companyXpath = "//ol/li[contains(@class,'search-results__result-item')]";
+		String nameXpath = ".//dt[@class='result-lockup__name']/a";
+		String industryXpath = ".//ul[contains(@class,'result-lockup__misc-list')]/li[1]";
+		String sizeXpath = ".//ul[contains(@class,'result-lockup__misc-list')]/li[contains(., 'employee')]";
+		String addressXpath = ".//ul[contains(@class,'result-lockup__misc-list')]/li[3]";
 		try {
 			List<WebElement> lists = FireFoxOperator.driver.findElements(By.xpath(companyXpath));
 			Iterator<WebElement> it = lists.iterator();
@@ -73,7 +76,7 @@ public class CompanyList implements Parser {
 				String URL = "";
 				try {
 					name = companyElement.findElement(By.xpath(nameXpath)).getText();
-					name = name.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " ").trim();
+					//name = name.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " ").trim();
 					System.out.println("Name : " + name);
 					URL = companyElement.findElement(By.xpath(nameXpath)).getAttribute("href");
 					
@@ -83,10 +86,19 @@ public class CompanyList implements Parser {
 						try {
 							industry = companyElement.findElement(By.xpath(industryXpath)).getText();
 						} catch (Exception e) {	e.printStackTrace();}
-
+				String size = "";
+				try {
+					size = companyElement.findElement(By.xpath(sizeXpath)).getText();
+				} catch (Exception e) {	e.printStackTrace();}
+				String address = "";
+				try {
+					address = companyElement.findElement(By.xpath(addressXpath)).getText();
+				} catch (Exception e) {	e.printStackTrace();}
 				company.setComName(name);
 				company.setComUrl(URL);
 				company.setComIndustry(industry);
+				company.setComSize(size);
+				company.setComHeadquarters(address);
 				companyList.add(company);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
@@ -95,7 +107,7 @@ public class CompanyList implements Parser {
 
 	@Override
 	public boolean parseData(int index) {
-		// TODO right now we don't need it in Comapny list
+		// TODO right now we don't need it in Account list
 		return false;
 	}
 

@@ -26,7 +26,6 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 import pojo.Company;
 import pojo.WorkType;
 import scrapper.Parser;
-import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 
@@ -169,7 +168,7 @@ public abstract class FireFoxOperator {
 		return false;
 	}
 
-	protected boolean isElementPresent(By by) {
+	public static boolean isElementPresent(By by) {
 		try {
 			driver.findElement(by);
 			return true;
@@ -257,8 +256,10 @@ public abstract class FireFoxOperator {
 			jse.executeScript("scroll(0, 1950);");
 			Thread.sleep(500);
 			jse.executeScript("scroll(0, 2450);");
-			Thread.sleep(1000);
+			Thread.sleep(500);
 			jse.executeScript("scroll(0, 2950);");
+			Thread.sleep(700);
+			jse.executeScript("scroll(0, 3450);");
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -387,154 +388,8 @@ public abstract class FireFoxOperator {
 
 	}
 
-//	String infoBtnCssSelector = "#topcard > div.module-footer > ul > li > button";
-//	String infoBtnCssSelector1 = ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)";
-//
-//	public String getPublicLink(String salesProLink) {
-//		driver.get(salesProLink);
-//		if (!findAndClick(infoBtnCssSelector))
-//			return salesProLink;
-//		try {
-//			WebElement element = driver.findElement(By.cssSelector(infoBtnCssSelector1));
-//			return element.getText();
-//		} catch (Exception e) {
-//		}
-//
-//		return salesProLink;
-//	}
 	
-	
-	public Info getPublicLinkDetails(String salesProLink) {
-		
-		if(isLoginPage()) linkedinLogin();
-		
-		linkOpener(salesProLink);
-		
-		Info info = generalInfo(salesProLink);
-		
-		if (isLinkedinMember()) {
-			try {
-			System.out.println("isLinkedinMember handleing ");
-			String txtMatch = "https://www.linkedin.com/in/";
-			String[] data = getGoogleResult(info.getCurrentJobTitle(), info.getCurrentCompany());
-			System.out.println("isLinkedinMember handleing 0 " + data[0]);
-			if(data[0].contains("Not Found")) return info;
-			if(data[0].contains(txtMatch)) {
-					System.out.println("isLinkedinMember handleing 1 " + "txtMatch");
-					info.setLink(data[0]);
-					info.setFirstName(data[1]);
-					info.setSecondName(data[2]);
-				}
-			}catch (Exception e){
-				System.out.println("isLinkedinMember handleing error ");
-				e.printStackTrace();
-			}
-		}else {
-			String buttonClick = "//button[contains(@class,\"right-actions-overflow-menu-trigger\")]";
-			if(findAndClick(buttonClick)) {
-				try {
-					System.out.println("inhere 11");
-					String urltxt = findUrlInSourcePage();
-					System.out.println("urltxt : "+ urltxt);
-					info.setLink(urltxt);	
-				} catch (Exception e) {
-				}
-			}
-		}
-		System.out.println("return -->>");
-		return info;
-	}
 
-	
-	public Company getCompanyLinkDetails(String salesComLink) {
-		
-		Company com = new Company();
-		
-		if(isLoginPage()) linkedinLogin();
-		
-		driver.get(salesComLink);
-		/*
-		By titleBy = By.xpath("//div[contains(@class,'basic-info')]//div[contains(@class,'title')][1]");
-		By subtitleBy = By.xpath("//div[contains(@class,'basic-info')]//div[contains(@class,'subtitle')]/div");
-
-		try {
-			String name = driver.findElement(titleBy).getText();
-			com.setComName(name);
-		} catch (Exception e1) {}
-		
-		try {
-			String txt = driver.findElement(subtitleBy).getText().replaceAll("\\s+", " ");
-			System.out.println(txt);
-			String industry = txt.subSequence(0, txt.indexOf("·")).toString().trim();
-			com.setComIndustry(industry);
-			System.out.println(industry + " : industry");
-			String comSize = txt.substring(txt.indexOf("·")+1, txt.length()).trim();
-			com.setComSize(comSize);
-			System.out.println(comSize + " : comSize");
-		} catch (Exception e1) {}
-		*/
-		String dropDownbtn = "//div[contains(@class,'account-actions')]/div[2]/button";
-		if(findAndClick(dropDownbtn)) {
-			try {
-				String urltxt = findComUrlInSourcePage();
-				System.out.println("url_com_txt : "+ urltxt);
-				if(urltxt.contains("linkedin.com/company/")) com.setComUrl(urltxt);
-			} catch (Exception e) {	}
-		}
-		
-		By moreInfoBy = By.xpath("//button[contains(.,'read more')]");
-		try {driver.findElement(moreInfoBy).click();} 
-		catch (Exception e) { 
-			//NoSuchElementException 	
-			return com;
-		}
-		
-		By websiteBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Website')]]/a[1]");
-		By typeBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Type')]][1]");
-		By foundedBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Founded')]][1]");
-		
-		try {
-		driver.switchTo().activeElement(); //.findElement(By.xpath("//div[@role='dialog']"))
-		WebElement elm = driver.findElement(foundedBy);
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);",elm);
-		} catch (Exception e1) {}
-		
-		try {
-			String website = driver.findElement(websiteBy).getText();
-			com.setComWebsite(website);
-			System.out.println(website);
-		} catch (Exception e1) {}
-		
-		try {
-			String type = driver.findElement(typeBy).getText();
-			com.setComType(type);
-			System.out.println(type);
-		} catch (Exception e1) {}
-		
-		try {
-			String founded = driver.findElement(foundedBy).getText();
-			com.setComFounded(founded);
-			System.out.println(founded);
-		} catch (Exception e1) {}
-		
-		/*
-		By headquartersBy = By.xpath("//dd[preceding-sibling::dt[contains(.,'Headquarters')]][1]");
-		try {
-			String headquarters = driver.findElement(headquartersBy).getText();
-			com.setComHeadquarters(headquarters);
-			System.out.println(headquarters);
-		} catch (Exception e1) {}
-		*/
-		
-		By closeBY = By.xpath("//button[contains(@class,'ember-panel__dismiss')]");
-		try {driver.findElement(closeBY).click();} catch (Exception e1) {}
-		driver.switchTo().activeElement();
-		
-		System.out.println("--done--");
-		return com;
-	}
-	
-	
 	public String findUrlInSourcePage() {
 		String txtMatch = "https://www.linkedin.com/in/";
 		String source = getSourseCode();
@@ -749,95 +604,7 @@ public abstract class FireFoxOperator {
 		return false;
 	}
 	
-	public Info generalInfo(String link) {
-		
-		Info info = new Info();
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
-		}
-		
-		
-		By fullNameBy = By.xpath("//div[contains(@class,\"profile-topcard-person-entity__content\")]//span[contains(@class,\"profile-topcard-person-entity__name\")]");
-		By locationBy = By.xpath("//div[@class=\"profile-topcard-person-entity__content min-width inline-block\"]/dl/dd[contains(@class,\"mt4\")]/div[contains(@class,\"profile-topcard__location-data\")]");
-		By titleBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span[1]");
-		By companyBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/a");
-		By company1By = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span[2]");
-		
-		try {
-			String name = driver.findElement(fullNameBy).getText().trim();
-			if(!name.contains("LinkedIn Member")) {
-				String fname[];
-				if(name.contains(",")) {
-					fname = name.substring(0, name.indexOf(",")).split(" ");
-					info.setFirstName(fname[0]);
-					info.setSecondName(fname[(fname.length -1)]);
-				}else {
-					fname = name.split(" ");
-					info.setFirstName(fname[0]);
-					info.setSecondName(fname[(fname.length -1)]);
-				}
-				
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			String loacation = driver.findElement(locationBy).getText().replaceAll("[\\t\\n\\r]", " ");
-			info.setLocation(loacation);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
 
-		try {
-			String title = driver.findElement(titleBy).getText();
-			info.setCurrentJobTitle(title);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		try {
-			String company = driver.findElement(companyBy).getText();
-			info.setCurrentCompany(company);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			try {
-			String company = driver.findElement(company1By).getText();
-			info.setCurrentCompany(company);
-			} catch (Exception ee) {}
-		}
-		
-		/*
-		String company = info.getCurrentCompany();
-		String title = info.getCurrentJobTitle();
-		
-		By titComYearBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span");
-		By titComBy = By.xpath("//dd[contains(@class,\"profile-topcard__current-positions\")]/div/div[1]/span/span");
-			
-		try {
-			String titComYear = driver.findElement(titComYearBy).getText();
-			
-			List<WebElement> element = driver.findElements(titComBy);
-			
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		
-		if(company == null || company.length() < 1) {
-			
-		}
-		
-		if(title == null || title.length() < 1 ) {
-			
-		}
-		*/
-		
-		return info;
-	}
 	
 	protected boolean findAndClick(String selector) {
 		try {

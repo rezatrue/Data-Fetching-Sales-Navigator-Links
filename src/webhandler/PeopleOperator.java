@@ -32,7 +32,6 @@ import pojo.WorkType;
 import scrapper.Parser;
 import scrapper.PeopleConvert;
 import scrapper.PeopleList;
-import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 

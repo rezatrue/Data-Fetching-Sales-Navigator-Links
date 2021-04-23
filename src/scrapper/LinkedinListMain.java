@@ -122,12 +122,14 @@ public class LinkedinListMain {
 	}
 	
 	public int printList(String keyword, int renum) {
-		if(taskType == SearchType.ACCOUNTSEARCH)
-			csvGenerator = new CompanyCsv();
+		
 		if(taskType == SearchType.PEOPLESEARCH)
 			csvGenerator = new PeopleCsv();
 		if(taskType == SearchType.COMPANIESSEARCH)
 			csvGenerator = new CompanyCsv();
+		if(taskType == SearchType.ACCOUNTSEARCH)
+			csvGenerator = new CompanyCsv();
+		
 		int number = csvGenerator.listtoCsv(keyword, renum);
 		return number;
 	}
@@ -135,45 +137,7 @@ public class LinkedinListMain {
 	public String userAuthCheck(String user, String password) {
 		return dbHandler.userAuth(user, password);
 	}
-/*
-	private LinkedList<Info> upLoadedList = null;
 
-	public String scanCSV(String filePath) {
-		upLoadedList = new LinkedList<>();
-		CSV_Scanner csv_Scanner = new CSV_Scanner();
-		if (filePath.endsWith(".csv")) {
-			upLoadedList = csv_Scanner.dataScan(filePath);
-			return "listsize " + upLoadedList.size();
-		} else
-			return "ERROR !!! : It's not a CSV file";
 
-		// possible errors: file is not properly formated
-		// wrong file
-		// null file / no data
-	}
-*/	
-	//.....
-	public int readCsvFile(String filepath) {
-		if(this.taskType == SearchType.PEOPLESEARCH)
-			return fireFoxOperator.scanCsv(filepath);
-		//CSV_Scanner csv_Scanner = new CSV_Scanner();
-		
-//		list = csv_Scanner.dataScan(filepath);
-//		return list.size();
-		//return addToDb(csv_Scanner.dataScan(filepath));
-		return 0;
-	}
-
-	
-	/*
-	public int numberOfSalesLink() {
-		//converted = 0;
-		int totalSalesLink = 0;
-		for (Info info : list) {
-			totalSalesLink += info.getLink().contains(salesLinkTemp)? 1 : 0;
-		}
-		return totalSalesLink;
-	}
-	*/
 	
 }

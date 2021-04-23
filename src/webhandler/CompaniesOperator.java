@@ -35,7 +35,6 @@ import scrapper.CompanyList;
 import scrapper.Parser;
 import scrapper.PeopleConvert;
 import scrapper.PeopleList;
-import scrapper.SalesNavAccountsParser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
 
@@ -117,11 +116,11 @@ public class CompaniesOperator extends FireFoxOperator{
 		By prevPageSelectorBy = By.xpath("//button[contains(@class,'button--previous')]");
 		if(isElementPresent(prevPageSelectorBy) && driver.findElement(prevPageSelectorBy).isEnabled()) {
 			responsepage = switchingPage(prevPageSelectorBy);
-		}	
-		
+		}			
 		return responsepage;
-
 	}
+	
+
 	@Override
 	public int switchingPage(By by) {
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
