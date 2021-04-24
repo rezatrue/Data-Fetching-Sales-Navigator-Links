@@ -131,8 +131,8 @@ public class MainController  extends Service<String> implements Initializable {
 	//@FXML
 	//private PasswordField pfPassword;
 	private int converted = 0;
-	//private int totalSalesLink = 0;
 	private int listSize = 0;
+	private int dbCount = 0;
 	
 	ScvScanService scvScanService;
 	@FXML
@@ -142,7 +142,8 @@ public class MainController  extends Service<String> implements Initializable {
 		String takatype = linkedinListMain.getTaskType();
 		if (clearDataNotification(takatype)) {
 			linkedinListMain.clearList();
-			textDbData.setText(0+"");
+			dbCount = 0;
+			textDbData.setText(dbCount+"");
 			textMessage.setText("All "+ takatype +" data have been deleted");
 		}else {
 			textMessage.setText(takatype + " Data remains in Database");
@@ -369,6 +370,9 @@ public class MainController  extends Service<String> implements Initializable {
 			case "RUNNING":
 				listService.cancel();
 				break;
+			case "FAILED":
+				listService.reset();
+				break;	
 			}	
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
@@ -383,11 +387,16 @@ public class MainController  extends Service<String> implements Initializable {
 			case "READY":
 				listService.start();
 				break;
+			case "FAILED":
+				listService.reset();
+				listService.restart();
+				break;
 			case "CANCELLED":
 			case "SUCCEEDED":
 				listService.restart();
 				break;
 			}
+					
 
 		}
 
@@ -422,6 +431,7 @@ public class MainController  extends Service<String> implements Initializable {
 									newadded = Integer.parseInt(msg);
 								listSize += newadded;
 								textListSize.setText( listSize + "");
+								textDbData.setText(dbCount+newadded+ "");
 								currentPage = linkedinListMain.openNextPage(); 
 								textCurrentPage.setText(currentPage + "");
 								if (autoSelected && currentPage <= endPage) {
@@ -660,7 +670,7 @@ public class MainController  extends Service<String> implements Initializable {
 		textPassword.setText(prefs.get("linkedinPassword", ""));
 
 		linkedinListMain = new LinkedinListMain();
-		int dbCount = linkedinListMain.setTaskType(SearchType.PEOPLESEARCH);
+		dbCount = linkedinListMain.setTaskType(SearchType.PEOPLESEARCH);
 		textDbData.setText(dbCount+"");
 
 		String msg = authenticateUser();
@@ -797,7 +807,7 @@ public class MainController  extends Service<String> implements Initializable {
 			type = SearchType.ACCOUNTSEARCH; 
 			}
 		
-		int dbCount = linkedinListMain.setTaskType(type);
+		dbCount = linkedinListMain.setTaskType(type);
 		textDbData.setText(dbCount+"");
 		
 	}
