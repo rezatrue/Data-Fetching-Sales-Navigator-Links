@@ -8,7 +8,7 @@ public class DBTester {
 	public static void main(String[] args) {
 		
 		LocalDBHandler dbHandler = new DbLead();
-		System.out.println(dbHandler.countRecords());
+		System.out.println(dbHandler.createNewTable());
 		//dbHandler.createNewTable();
 		/*
 		People people = new People("https://www.linkedin.com/in/akila-akter-473605b5", "first_name", "second_name", "email", "phone", "location", "industry", "currentJobTitle", "currentCompany", "companySize");

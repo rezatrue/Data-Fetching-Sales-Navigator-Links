@@ -47,19 +47,15 @@ public class LeadCsv implements CsvGenerator{
 			writer.append(",");
 			writer.append("Last_Name");
 			writer.append(",");
-			writer.append("Email_ID");
+			writer.append("Address");
 			writer.append(",");
-			writer.append("Contact_Number");
-			writer.append(",");
-			writer.append("Location");
-			writer.append(",");
-			writer.append("Industry");
+			writer.append("Service_Age");
 			writer.append(",");
 			writer.append("Designation");
 			writer.append(",");
 			writer.append("Company_Name");
 			writer.append(",");
-			writer.append("Company_Size");
+			writer.append("Company_Profile");
 			writer.append(",");
 			writer.append("\n");
 
@@ -71,34 +67,28 @@ public class LeadCsv implements CsvGenerator{
 					System.out.println(" --data -- "+ 
 							lead.getLink() + " getLink " + 
 							lead.getFirstName() + " getFirstName " + 
-							lead.getSecondName() + " getSecondName " + 
-							lead.getEmail() + " getEmail " + 
-							lead.getPhone() + " getPhone " + 
-							lead.getLocation() + " getLocation " + 
-							lead.getIndustry() + " getIndustry " + 
+							lead.getLastName() + " getLastName " + 
+							lead.getAddress() + " getAddress " + 
+							lead.getServiceAge() + " getServiceAge " + 
 							lead.getCurrentJobTitle() + " getCurrentJobTitle " + 
 							lead.getCurrentCompany() + " getCurrentCompany " + 
-							lead.getCompanySize() + " getCompanySize " );
+							lead.getCompanyProfile() + " getCompanyProfile " );
 
 					writer.append(commaSkiping(lead.getLink()));
 					writer.append(",");
 					writer.append(commaSkiping(lead.getFirstName()));
 					writer.append(",");
-					writer.append(commaSkiping(lead.getSecondName()));
+					writer.append(commaSkiping(lead.getLastName()));
 					writer.append(",");
-					writer.append(commaSkiping(lead.getEmail()));
+					writer.append(commaSkiping(lead.getAddress()));
 					writer.append(",");
-					writer.append(commaSkiping(lead.getPhone()));
-					writer.append(",");
-					writer.append(commaSkiping(lead.getLocation()));
-					writer.append(",");
-					writer.append(commaSkiping(lead.getIndustry()));
+					writer.append(commaSkiping(lead.getServiceAge()));
 					writer.append(",");
 					writer.append(commaSkiping(lead.getCurrentJobTitle()));
 					writer.append(",");
 					writer.append(commaSkiping(lead.getCurrentCompany()));
 					writer.append(",");
-					writer.append(commaSkiping("["+lead.getCompanySize()+"]"));
+					writer.append(commaSkiping(lead.getCompanyProfile()));
 					writer.append("\n");
 					count++;
 				}

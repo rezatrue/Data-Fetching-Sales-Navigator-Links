@@ -133,8 +133,9 @@ public class LeadOperator extends FireFoxOperator{
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		try {
 			driver.findElement(by).click();
-			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-			//fullPageScroll();
+			System.out.println("---Page Switched-----");
+			//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			fullPageScroll();
 			//salesPageScroll();
 			
 		} catch (NoSuchElementException e) {
@@ -159,9 +160,9 @@ public class LeadOperator extends FireFoxOperator{
 			jse.executeScript("scroll(0, 2950);");
 			Thread.sleep(1000);
 			jse.executeScript("scroll(0, 3450);");
-			Thread.sleep(500);
-			jse.executeScript("scroll(0, 4000);");
-			Thread.sleep(1000);
+			Thread.sleep(700);
+			jse.executeScript("scroll(0, 4200);");
+			Thread.sleep(1200);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

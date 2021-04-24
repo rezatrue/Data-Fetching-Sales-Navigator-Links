@@ -119,12 +119,12 @@ public class LeadList implements Parser {
 				
 				lead.setLink(URL);
 				lead.setFirstName(fname);
-				lead.setSecondName(lname);
-				lead.setLocation(address);
+				lead.setLastName(lname);
+				lead.setAddress(address);
 				lead.setCurrentJobTitle(jobTitle);
 				lead.setCurrentCompany(companyName);
-				lead.setCompanySize(companyProfileUrl);
-				lead.setIndustry(duration);
+				lead.setCompanyProfile(companyProfileUrl);
+				lead.setServiceAge(duration);
 				leadList.add(lead);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }

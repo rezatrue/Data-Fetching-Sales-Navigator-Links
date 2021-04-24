@@ -1,23 +1,20 @@
 package pojo;
 
 public class Lead {
-	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany,companySize;
+	private String link, firstName, lastName, address, serviceAge, currentJobTitle, currentCompany,companyProfile;
 	public Lead() {
 	}
-	public Lead(String link, String first_name, String second_name, String email,
-			String phone, String location, String industry,
-			String currentJobTitle, String currentCompany,String companySize) {
+	public Lead(String link, String firstName, String lastName, String address, String serviceAge,
+			String currentJobTitle, String currentCompany, String companyProfile) {
 		super();
 		this.link = link;
-		this.first_name = first_name;
-		this.second_name = second_name;
-		this.email = email;
-		this.phone = phone;
-		this.location = location;
-		this.industry = industry;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.serviceAge = serviceAge;
 		this.currentJobTitle = currentJobTitle;
 		this.currentCompany = currentCompany;
-		this.companySize = companySize;
+		this.companyProfile = companyProfile;
 	}
 	public String getLink() {
 		return link;
@@ -26,40 +23,28 @@ public class Lead {
 		this.link = link;
 	}
 	public String getFirstName() {
-		return first_name;
+		return firstName;
 	}
-	public void setFirstName(String first_name) {
-		this.first_name = first_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public String getSecondName() {
-		return second_name;
+	public String getLastName() {
+		return lastName;
 	}
-	public void setSecondName(String second_name) {
-		this.second_name = second_name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
-	public String getEmail() {
-		return email;
+	public String getAddress() {
+		return address;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setAddress(String address) {
+		this.address = address;
 	}
-	public String getPhone() {
-		return phone;
+	public String getServiceAge() {
+		return serviceAge;
 	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	public String getLocation() {
-		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	public String getIndustry() {
-		return industry;
-	}
-	public void setIndustry(String industry) {
-		this.industry = industry;
+	public void setServiceAge(String serviceAge) {
+		this.serviceAge = serviceAge;
 	}
 	public String getCurrentJobTitle() {
 		return currentJobTitle;
@@ -73,12 +58,13 @@ public class Lead {
 	public void setCurrentCompany(String currentCompany) {
 		this.currentCompany = currentCompany;
 	}
-	public String getCompanySize() {
-		return companySize;
+	public String getCompanyProfile() {
+		return companyProfile;
 	}
-	public void setCompanySize(String companySize) {
-		this.companySize = companySize;
+	public void setCompanyProfile(String companyProfile) {
+		this.companyProfile = companyProfile;
 	}
+	
 	
 	
 	

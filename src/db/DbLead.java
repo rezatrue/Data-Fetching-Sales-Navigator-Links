@@ -44,6 +44,7 @@ public class DbLead implements LocalDBHandler{
 	            System.out.println("10"+ex.getMessage());
 	        }
 	}
+
 	public boolean dropTable() {
 		boolean status = true;
 		// Drop table if previous information exist
@@ -82,13 +83,11 @@ public class DbLead implements LocalDBHandler{
                 + "	Linkedin_Profile_URL text PRIMARY KEY,"
                 + "	First_Name text,"
                 + "	Last_Name text,"
-                + "	Email_ID text,"
-                + "	Contact_Number text,"
-                + "	Location text,"
-                + "	Industry text,"
+                + "	Address text,"
+                + "	Service_Age text,"
                 + "	Designation text,"
                 + "	Company_Name text,"
-                + "	Company_Size text"
+                + "	Company_Profile text"
                 + ");";
         
         if(conn==null)
@@ -162,13 +161,11 @@ public class DbLead implements LocalDBHandler{
 		                       rs.getString("Linkedin_Profile_URL"),
 		                       rs.getString("First_Name"), 
 		                       rs.getString("Last_Name"),
-		                       rs.getString("Email_ID"), 
-		                       rs.getString("Contact_Number"),
-		                       rs.getString("Location"), 
-		                       rs.getString("Industry"),
+		                       rs.getString("Address"), 
+		                       rs.getString("Service_Age"),
 		                       rs.getString("Designation"),
 		                       rs.getString("Company_Name"),
-		                       rs.getString("Company_Size")
+		                       rs.getString("Company_Profile")
 					);
 				}
 			} catch (SQLException e) {
@@ -206,13 +203,11 @@ public class DbLead implements LocalDBHandler{
 				                       rs.getString("Linkedin_Profile_URL"),
 				                       rs.getString("First_Name"), 
 				                       rs.getString("Last_Name"),
-				                       rs.getString("Email_ID"), 
-				                       rs.getString("Contact_Number"),
-				                       rs.getString("Location"), 
-				                       rs.getString("Industry"),
+				                       rs.getString("Address"), 
+				                       rs.getString("Service_Age"),
 				                       rs.getString("Designation"),
 				                       rs.getString("Company_Name"),
-				                       rs.getString("Company_Size")
+				                       rs.getString("Company_Profile")
 							);
 					list.add(lead);
 					
@@ -220,13 +215,11 @@ public class DbLead implements LocalDBHandler{
 				                       rs.getString("Linkedin_Profile_URL") + "\t" +
 				                       rs.getString("First_Name") +  "\t" + 
 				                       rs.getString("Last_Name") + "\t" +
-				                       rs.getString("Email_ID") +  "\t" + 
-				                       rs.getString("Contact_Number") + "\t" +
-				                       rs.getString("Location") +  "\t" + 
-				                       rs.getString("Industry") + "\t" +
+				                       rs.getString("Address") +  "\t" + 
+				                       rs.getString("Service_Age") + "\t" +
 				                       rs.getString("Designation") +  "\t" + 
 				                       rs.getString("Company_Name") + "\t" +
-				                       rs.getString("Company_Size"));
+				                       rs.getString("Company_Profile"));
 				}
 			} catch (SQLException e) {
 				System.out.println("5"+e.getMessage());
@@ -248,9 +241,9 @@ public class DbLead implements LocalDBHandler{
 		Lead lead = (Lead)obj;
 		String sql = "INSERT INTO " 
 					+ TABLE_NAME 
-					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
-					+ " Location, Industry, Designation, Company_Name, Company_Size) "
-					+ " VALUES(?,?,?,?,?,?,?,?,?,?)";
+					+ " (Linkedin_Profile_URL, First_Name, Last_Name,"
+					+ " Address, Service_Age, Designation, Company_Name, Company_Profile) "
+					+ " VALUES(?,?,?,?,?,?,?,?)";
 		
 		PreparedStatement pstmt = null;
         if(conn == null)
@@ -260,14 +253,12 @@ public class DbLead implements LocalDBHandler{
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, lead.getLink());
 				pstmt.setString(2, lead.getFirstName());
-				pstmt.setString(3, lead.getSecondName());
-				pstmt.setString(4, lead.getEmail());
-				pstmt.setString(5, lead.getPhone());
-				pstmt.setString(6, lead.getLocation());
-				pstmt.setString(7, lead.getIndustry());
-				pstmt.setString(8, lead.getCurrentJobTitle());
-				pstmt.setString(9, lead.getCurrentCompany());
-				pstmt.setString(10, lead.getCompanySize());
+				pstmt.setString(3, lead.getLastName());
+				pstmt.setString(4, lead.getAddress());
+				pstmt.setString(5, lead.getServiceAge());
+				pstmt.setString(6, lead.getCurrentJobTitle());
+				pstmt.setString(7, lead.getCurrentCompany());
+				pstmt.setString(8, lead.getCompanyProfile());
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
@@ -288,8 +279,8 @@ public class DbLead implements LocalDBHandler{
 		Lead lead = (Lead) obj;
 		String sql = "UPDATE " 
 					+ TABLE_NAME 
-					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, Email_ID = ?, Contact_Number = ?,"
-					+ " Location = ?, Industry = ?, Designation = ?, Company_Name = ?, Company_Size = ? "
+					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, "
+					+ " Address = ?, Service_Age = ?, Designation = ?, Company_Name = ?, Company_Profile = ? "
 					+ " WHERE Linkedin_Profile_URL = ?";
 		
 		PreparedStatement pstmt = null;
@@ -300,15 +291,13 @@ public class DbLead implements LocalDBHandler{
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, lead.getLink());
 				pstmt.setString(2, lead.getFirstName());
-				pstmt.setString(3, lead.getSecondName());
-				pstmt.setString(4, lead.getEmail());
-				pstmt.setString(5, lead.getPhone());
-				pstmt.setString(6, lead.getLocation());
-				pstmt.setString(7, lead.getIndustry());
-				pstmt.setString(8, lead.getCurrentJobTitle());
-				pstmt.setString(9, lead.getCurrentCompany());
-				pstmt.setString(10, lead.getCompanySize());
-				pstmt.setString(11, salesLink);
+				pstmt.setString(3, lead.getLastName());
+				pstmt.setString(4, lead.getAddress());
+				pstmt.setString(5, lead.getServiceAge());
+				pstmt.setString(6, lead.getCurrentJobTitle());
+				pstmt.setString(7, lead.getCurrentCompany());
+				pstmt.setString(8, lead.getCompanyProfile());
+				pstmt.setString(9, salesLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
