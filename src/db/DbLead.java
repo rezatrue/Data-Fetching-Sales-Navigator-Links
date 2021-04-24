@@ -12,18 +12,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-import pojo.Company;
+import pojo.Lead;
 
-public class DbCompany implements LocalDBHandler{
+
+public class DbLead implements LocalDBHandler{
 	
-	private String TABLE_NAME = "company";
+	private String TABLE_NAME = "lead";
 	private Connection conn = null;
 
-	public DbCompany() {
-
+	public DbLead() {
 	}
-	
-	
+		
 	public void connect() {
         try {
             String url = "jdbc:sqlite:sqlite/db/" + DB_NAME;
@@ -45,7 +44,6 @@ public class DbCompany implements LocalDBHandler{
 	            System.out.println("10"+ex.getMessage());
 	        }
 	}
-
 	public boolean dropTable() {
 		boolean status = true;
 		// Drop table if previous information exist
@@ -77,18 +75,20 @@ public class DbCompany implements LocalDBHandler{
 	
 	public boolean createNewTable() {
 		// Drop table if previous information exist
-		if(!dropTable()) return false;
-		
+		if(!dropTable())
+			return false;
         // SQL statement for creating a new table
         String sqlTCreate = "CREATE TABLE IF NOT EXISTS "+ TABLE_NAME + " ("
-                + "	Linkedin_Company_URL text PRIMARY KEY,"
-                + "	Company_Name text,"
-                + "	Headquarters text,"
-                + "	Website text,"
-                + "	Founded text,"
-                + "	Company_Size text,"
+                + "	Linkedin_Profile_URL text PRIMARY KEY,"
+                + "	First_Name text,"
+                + "	Last_Name text,"
+                + "	Email_ID text,"
+                + "	Contact_Number text,"
+                + "	Location text,"
                 + "	Industry text,"
-                + "	Company_Type text"
+                + "	Designation text,"
+                + "	Company_Name text,"
+                + "	Company_Size text"
                 + ");";
         
         if(conn==null)
@@ -142,8 +142,8 @@ public class DbCompany implements LocalDBHandler{
 		return count;
 	}
 	
-	public Company selectAtIndex(int num) {
-		Company company = null;
+	public Lead selectAtIndex(int num) {
+		Lead lead = null;
 		String sql = "SELECT * FROM " + TABLE_NAME + " LIMIT 1 OFFSET " + num;
 		if(conn == null)
         	connect();
@@ -157,16 +157,18 @@ public class DbCompany implements LocalDBHandler{
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
-				    System.out.println(rs.getString("Linkedin_Company_URL"));
-				    company = new Company(
-		                       rs.getString("Linkedin_Company_URL"),
-		                       rs.getString("Company_Name"), 
-		                       rs.getString("Headquarters"),
-		                       rs.getString("Website"), 
-		                       rs.getString("Founded"),
-		                       rs.getString("Company_Size"), 
+					System.out.println(rs.getString("Linkedin_Profile_URL"));
+					lead = new Lead(
+		                       rs.getString("Linkedin_Profile_URL"),
+		                       rs.getString("First_Name"), 
+		                       rs.getString("Last_Name"),
+		                       rs.getString("Email_ID"), 
+		                       rs.getString("Contact_Number"),
+		                       rs.getString("Location"), 
 		                       rs.getString("Industry"),
-		                       rs.getString("Company_Type")
+		                       rs.getString("Designation"),
+		                       rs.getString("Company_Name"),
+		                       rs.getString("Company_Size")
 					);
 				}
 			} catch (SQLException e) {
@@ -182,10 +184,10 @@ public class DbCompany implements LocalDBHandler{
 			}
 			
         }
-		return company;
+		return lead;
 	}
-	public LinkedList<Company> selectRows(int num){
-		LinkedList<Company> list  = new LinkedList<>();
+	public LinkedList<Lead> selectRows(int num){
+		LinkedList<Lead> list  = new LinkedList<>();
 		
         String sql = "SELECT * FROM " + TABLE_NAME + " LIMIT " + num;
         if(conn == null)
@@ -200,27 +202,31 @@ public class DbCompany implements LocalDBHandler{
 				rs    = stmt.executeQuery(sql);
 				// loop through the result set
 				while (rs.next()) {
-					Company com = new Company(
-				                       rs.getString("Linkedin_Company_URL"),
-				                       rs.getString("Company_Name"), 
-				                       rs.getString("Headquarters"),
-				                       rs.getString("Website"), 
-				                       rs.getString("Founded"),
-				                       rs.getString("Company_Size"), 
+					Lead lead = new Lead(
+				                       rs.getString("Linkedin_Profile_URL"),
+				                       rs.getString("First_Name"), 
+				                       rs.getString("Last_Name"),
+				                       rs.getString("Email_ID"), 
+				                       rs.getString("Contact_Number"),
+				                       rs.getString("Location"), 
 				                       rs.getString("Industry"),
-				                       rs.getString("Company_Type")
+				                       rs.getString("Designation"),
+				                       rs.getString("Company_Name"),
+				                       rs.getString("Company_Size")
 							);
-					list.add(com);
+					list.add(lead);
 					
 				    System.out.println( 
-				                       rs.getString("Linkedin_Company_URL") + "\t" +
-				                       rs.getString("Company_Name") +  "\t" + 
-				                       rs.getString("Headquarters") + "\t" +
-				                       rs.getString("Website") +  "\t" + 
-				                       rs.getString("Founded") + "\t" +
-				                       rs.getString("Company_Size") +  "\t" + 
+				                       rs.getString("Linkedin_Profile_URL") + "\t" +
+				                       rs.getString("First_Name") +  "\t" + 
+				                       rs.getString("Last_Name") + "\t" +
+				                       rs.getString("Email_ID") +  "\t" + 
+				                       rs.getString("Contact_Number") + "\t" +
+				                       rs.getString("Location") +  "\t" + 
 				                       rs.getString("Industry") + "\t" +
-				                       rs.getString("Company_Type") );
+				                       rs.getString("Designation") +  "\t" + 
+				                       rs.getString("Company_Name") + "\t" +
+				                       rs.getString("Company_Size"));
 				}
 			} catch (SQLException e) {
 				System.out.println("5"+e.getMessage());
@@ -239,13 +245,12 @@ public class DbCompany implements LocalDBHandler{
 	}
 
 	public boolean insert(Object obj) {
-		
-		Company com = (Company)obj;
+		Lead lead = (Lead)obj;
 		String sql = "INSERT INTO " 
 					+ TABLE_NAME 
-					+ " (Linkedin_Company_URL, Company_Name, Headquarters, Website, Founded,"
-					+ " Company_Size, Industry, Company_Type) "
-					+ " VALUES(?,?,?,?,?,?,?,?)";
+					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
+					+ " Location, Industry, Designation, Company_Name, Company_Size) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?)";
 		
 		PreparedStatement pstmt = null;
         if(conn == null)
@@ -253,14 +258,16 @@ public class DbCompany implements LocalDBHandler{
         if(conn != null) {
 	        try {
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, com.getComUrl());
-				pstmt.setString(2, com.getComName());
-				pstmt.setString(3, com.getComHeadquarters());
-				pstmt.setString(4, com.getComWebsite());
-				pstmt.setString(5, com.getComFounded());
-				pstmt.setString(6, com.getComSize());
-				pstmt.setString(7, com.getComIndustry());
-				pstmt.setString(8, com.getComType());
+				pstmt.setString(1, lead.getLink());
+				pstmt.setString(2, lead.getFirstName());
+				pstmt.setString(3, lead.getSecondName());
+				pstmt.setString(4, lead.getEmail());
+				pstmt.setString(5, lead.getPhone());
+				pstmt.setString(6, lead.getLocation());
+				pstmt.setString(7, lead.getIndustry());
+				pstmt.setString(8, lead.getCurrentJobTitle());
+				pstmt.setString(9, lead.getCurrentCompany());
+				pstmt.setString(10, lead.getCompanySize());
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
@@ -275,18 +282,15 @@ public class DbCompany implements LocalDBHandler{
 			}
         }
         return true;
-
 	}
 	
-	public boolean update(Object obj, String comLink) {
-		
-		// not updating all cell as there are data available
-		
-		Company com = (Company)obj;
+	public boolean update(Object obj, String salesLink) {
+		Lead lead = (Lead) obj;
 		String sql = "UPDATE " 
 					+ TABLE_NAME 
-					+ " SET Linkedin_Company_URL = ?, Website = ?, Founded = ?, Company_Type = ? "
-					+ " WHERE Linkedin_Company_URL = ?";
+					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, Email_ID = ?, Contact_Number = ?,"
+					+ " Location = ?, Industry = ?, Designation = ?, Company_Name = ?, Company_Size = ? "
+					+ " WHERE Linkedin_Profile_URL = ?";
 		
 		PreparedStatement pstmt = null;
         if(conn == null)
@@ -294,11 +298,17 @@ public class DbCompany implements LocalDBHandler{
         if(conn != null) {
 	        try {
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, com.getComUrl());
-				pstmt.setString(2, com.getComWebsite());
-				pstmt.setString(3, com.getComFounded());
-				pstmt.setString(4, com.getComType());
-				pstmt.setString(5, comLink);
+				pstmt.setString(1, lead.getLink());
+				pstmt.setString(2, lead.getFirstName());
+				pstmt.setString(3, lead.getSecondName());
+				pstmt.setString(4, lead.getEmail());
+				pstmt.setString(5, lead.getPhone());
+				pstmt.setString(6, lead.getLocation());
+				pstmt.setString(7, lead.getIndustry());
+				pstmt.setString(8, lead.getCurrentJobTitle());
+				pstmt.setString(9, lead.getCurrentCompany());
+				pstmt.setString(10, lead.getCompanySize());
+				pstmt.setString(11, salesLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
@@ -313,6 +323,8 @@ public class DbCompany implements LocalDBHandler{
         }
         return true;
 	}
+
+
 
 	
 }

@@ -31,11 +31,11 @@ public class CompanyScanner extends CsvScanner{
 			if (scanner.hasNext()) {
 				List<String> line = parseLine(scanner.nextLine());
 
-				if ("Linkedin_Profile_URL" != line.get(0).toString() || "First_Name" != line.get(1).toString()
-						|| "Last_Name" != line.get(2).toString() || "Email_ID" != line.get(3).toString()
-						|| "Contact_Number" != line.get(4).toString() || "Location" != line.get(5).toString()
-						|| "Industry" != line.get(6).toString() || "Designation" != line.get(7).toString()
-						|| "Company_Name" != line.get(8).toString() || "Company_Size" != line.get(9).toString()) {
+				
+				if ("Linkedin_Company_URL" != line.get(0).toString() || "Company_Name" != line.get(1).toString()
+						|| "Headquarters" != line.get(2).toString() || "Website" != line.get(3).toString()
+						|| "Founded" != line.get(4).toString() || "Company_Size" != line.get(5).toString()
+						|| "Industry" != line.get(6).toString() || "Company_Type" != line.get(7).toString()) {
 					System.out.println("WRONG FILE");
 					rightFormat = true;
 				}
@@ -50,9 +50,9 @@ public class CompanyScanner extends CsvScanner{
 					company = new Company(removingQuotes(line.get(0)), removingQuotes(line.get(1)), removingQuotes(line.get(2)), removingQuotes(line.get(3)),
 							removingQuotes(line.get(4)), removingQuotes(line.get(5)), removingQuotes(line.get(6)), removingQuotes(line.get(7)));
 					list.add(company);
-					System.out.println("[Linkedin_Company_URL= " + line.get(0) + ", Name= " + line.get(1)
-							+ " , Last_Name=" + line.get(2) + ", Email_ID= " + line.get(3) + ", Contact_Number= "
-							+ line.get(4) + " , Location=" + line.get(5) + ", Industry= " + line.get(6) + ", Designation= "
+					System.out.println("[Linkedin_Company_URL= " + line.get(0) + ", Company_Name= " + line.get(1)
+							+ " , Headquarters=" + line.get(2) + ", Website= " + line.get(3) + ", Founded= "
+							+ line.get(4) + " , Company_Size=" + line.get(5) + ", Industry= " + line.get(6) + ", Company_Type= "
 							+ line.get(7) + "]");
 				}
 			}
