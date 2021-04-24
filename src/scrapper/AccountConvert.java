@@ -75,20 +75,22 @@ public class AccountConvert implements Parser {
 			salesUrl = company.getComUrl();
 			if(salesUrl.contains(publicComLinkTemp)) return false;
 			FireFoxOperator.driver.get(salesUrl);
+			
 		}
 		
 		By dropDownbtnBy = By.xpath("//div[contains(@class,'account-actions')]/div[2]/button");
-		//if(findAndClick(dropDownbtn)) {
-		if(FireFoxOperator.isElementPresent(dropDownbtnBy)) {	
+		
+		if(FireFoxOperator.waitUntillVisible(dropDownbtnBy)) {	
 			try {
 				FireFoxOperator.driver.findElement(dropDownbtnBy).click();
 				String urltxt = findComUrlInSourcePage();
 				System.out.println("url_com_txt : "+ urltxt);
 				if(urltxt.contains(publicComLinkTemp)) company.setComUrl(urltxt);
-			} catch (Exception e) {	}
-		}
+			} catch (Exception e) {	return false; }
+		}else 
+			return false;
 		//button[contains(.,'read more') or contains(.,'more details')]	
-		By moreInfoBy = By.xpath("//button[contains(.,'read more')]");
+		By moreInfoBy = By.xpath("//button[contains(.,'read more') or contains(.,'more details')]");
 		try {FireFoxOperator.driver.findElement(moreInfoBy).click();} 
 		catch (Exception e) { 
 			//NoSuchElementException 	

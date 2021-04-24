@@ -82,7 +82,7 @@ public class AccountOperator extends FireFoxOperator{
 		parser.deleteAllData();
 		return 0;
 	}
-	
+	  
 	@Override
 	public int getTotalCounts() {
 		return parser.getTotalCounts();

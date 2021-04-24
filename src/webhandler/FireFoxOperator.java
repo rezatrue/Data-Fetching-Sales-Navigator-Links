@@ -112,7 +112,7 @@ public abstract class FireFoxOperator {
 	}
 
 	
-	public boolean waitUntillVisible(By by) {
+	public static boolean waitUntillVisible(By by) {
 		
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, 60);
@@ -608,7 +608,6 @@ public abstract class FireFoxOperator {
 	
 	protected boolean findAndClick(String selector) {
 		try {
-			//By by = By.cssSelector(selector);
 			By by = By.xpath(selector);
 			WebDriverWait wait = new WebDriverWait(driver, 60);
 			wait.until(ExpectedConditions.visibilityOfElementLocated(by));
