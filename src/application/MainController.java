@@ -134,7 +134,7 @@ public class MainController  extends Service<String> implements Initializable {
 	private int listSize = 0;
 	private int dbCount = 0;
 	
-	ScvScanService scvScanService;
+	
 	@FXML
 	private void browseBtnAction(ActionEvent event) {
 		System.out.println("Browse Button");
@@ -148,67 +148,41 @@ public class MainController  extends Service<String> implements Initializable {
 		}else {
 			textMessage.setText(takatype + " Data remains in Database");
 		}
-			
-		scvScanService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			
-			@Override
-			public void handle(WorkerStateEvent event) {
-				// TODO Auto-generated method stub
-				System.out.println("Done : " + event.getSource().getValue()) ;
-			}
-		});
 		
-		System.out.println("service Status : " + scvScanService.getState());
+		//stackoverflow.com/questions/25491732/how-do-i-open-the-javafx-filechooser-from-a-controller-class/25491787
+		FileChooser fileChooser = new FileChooser();
 		
-		String statustxt = scvScanService.getState().toString();
-		if(statustxt == "READY") scvScanService.start();
-		if(statustxt == "SUCCEEDED" || statustxt == "CANCELLED") scvScanService.reset();
-		if(statustxt == "FAILED") { scvScanService.reset(); scvScanService.restart(); }
-	
-		if(scvScanService.getState().toString() == "RUNNING") ; //scvScanService.cancel();
-		if(scvScanService.getState().toString() == "FAILED") scvScanService.reset();
+		fileChooser.getExtensionFilters().addAll(
+			     new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+			);
 		
-	}
-	
-	private class ScvScanService extends Service<String>{
-
-		@Override
-		protected Task<String> createTask() {
-			//stackoverflow.com/questions/25491732/how-do-i-open-the-javafx-filechooser-from-a-controller-class/25491787
-			FileChooser fileChooser = new FileChooser();
-			
-			fileChooser.getExtensionFilters().addAll(
-				     new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-				);
-			
-	        File file = fileChooser.showOpenDialog(new Stage());
-	        
-	        if(file != null) {
-	        	String filepath = file.getAbsolutePath();
-	    		if(filepath.endsWith(".csv")) {
-	    			int number = linkedinListMain.readCsvFile(filepath); // new 
-	    			//list = csvFileHandeler.read(filepath);
-	    			//list.size() == 0
-	    			if(number == 0) {
-	    				btnRun.setDisable(true);
-	    				filepath = "";
-	    				textMessage.setText("File is not in proper format");
-	    			}else if(number > 0) {
-	    				listSize = number;
-	    				btnRun.setDisable(false);
-	    				textMessage.setText("List size : "+ listSize);
-	    				textListSize.setText(listSize+"");
-	    				tfLimits.setText(number+"");
-	    			}
-	    		}
-	    		tfSelectedFilePath.setText(filepath);
-	    		//totalSalesLink = linkedinListMain.numberOfSalesLink();
-	        	//tfLimits.setText(totalSalesLink+"");
-	        }
-			return null;
-		}
+        File file = fileChooser.showOpenDialog(new Stage());
+        
+        if(file != null) {
+        	String filepath = file.getAbsolutePath();
+    		if(filepath.endsWith(".csv")) {
+    			int number = linkedinListMain.readCsvFile(filepath); // new 
+    			//list = csvFileHandeler.read(filepath);
+    			//list.size() == 0
+    			if(number == 0) {
+    				btnRun.setDisable(true);
+    				filepath = "";
+    				textMessage.setText("File is not in proper format");
+    			}else if(number > 0) {
+    				listSize = number;
+    				btnRun.setDisable(false);
+    				textMessage.setText("List size : "+ listSize);
+    				textListSize.setText(listSize+"");
+    				tfLimits.setText(number+"");
+    			}
+    		}
+    		tfSelectedFilePath.setText(filepath);
+    		//totalSalesLink = linkedinListMain.numberOfSalesLink();
+        	//tfLimits.setText(totalSalesLink+"");
+        }
 		
 	}
+	
 	
 	LinkConversionService linkConversionService;
 	@FXML
@@ -433,8 +407,8 @@ public class MainController  extends Service<String> implements Initializable {
 								textListSize.setText( listSize + "");
 								textDbData.setText(dbCount+newadded+ "");
 								currentPage = linkedinListMain.openNextPage(); 
-								textCurrentPage.setText(currentPage + "");
-								if (autoSelected && currentPage <= endPage) {
+								if(currentPage > 0)textCurrentPage.setText(currentPage + "");
+								if (currentPage > 0 && autoSelected && currentPage <= endPage) {
 									textMessage.setText("Processing page " + currentPage);
 								} else {
 									run = false;
@@ -651,7 +625,6 @@ public class MainController  extends Service<String> implements Initializable {
 		listSize = 0;
 		listService = new ListService();
 		linkConversionService = new LinkConversionService();
-		scvScanService = new ScvScanService();
 		prefs = Preferences.userRoot().node("db");
 		signInBtn.setDisable(true);
 		openBrowserBtn.setDisable(true);

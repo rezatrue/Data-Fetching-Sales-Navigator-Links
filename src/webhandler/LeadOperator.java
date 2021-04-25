@@ -27,6 +27,7 @@ import csvhandler.CompanyScanner;
 import csvhandler.CsvScanner;
 import csvhandler.LeadScanner;
 import pojo.Company;
+import pojo.SearchType;
 import pojo.WorkType;
 import scrapper.AccountConvert;
 import scrapper.AccountList;
@@ -37,6 +38,7 @@ import scrapper.LeadList;
 import scrapper.Parser;
 import scrapper.SalesNavListsParser;
 import scrapper.SalesNavigatorParser;
+import sun.security.pkcs11.Secmod.ModuleType;
 
 public class LeadOperator extends FireFoxOperator{
 
@@ -70,7 +72,7 @@ public class LeadOperator extends FireFoxOperator{
 	@Override
 	public String checkPageStatus() {
 		By pageElementBy = By.xpath("//a[contains(.,'"+ type +"') and contains(@class,'active')]");
-		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
+		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! Wrong page, You are not in: "+ SearchType.LEADSEARCH.toString();
 	}
 	@Override
 	public String takeList() {

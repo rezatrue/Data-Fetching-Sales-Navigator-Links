@@ -144,6 +144,8 @@ public class LinkedinListMain {
 		return dbHandler.userAuth(user, password);
 	}
 
-
+	public int readCsvFile(String filepath) {
+			return fireFoxOperator.scanCsv(filepath);
+	}
 	
 }

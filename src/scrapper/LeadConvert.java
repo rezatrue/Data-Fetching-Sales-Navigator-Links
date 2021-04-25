@@ -102,7 +102,16 @@ public class LeadConvert implements Parser {
 
 	@Override
 	public int writeToDb(LinkedList<?> list) {
-		return 0;
+		LinkedList<Lead> leadList = (LinkedList<Lead>) list;
+		int count = 0;
+		Iterator<Lead> it = leadList.iterator();
+		localDb = new DbLead();
+			while(it.hasNext()) {
+				Lead lead = (Lead) it.next();
+				if(localDb.insert(lead)) count++;
+			}
+		return count;
+
 	}
 
 
