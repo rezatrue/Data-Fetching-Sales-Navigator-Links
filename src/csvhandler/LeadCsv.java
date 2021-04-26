@@ -39,7 +39,7 @@ public class LeadCsv implements CsvGenerator{
 
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter("Linkedin_" + keyword + "_list_" + fileName + ".csv");
+			writer = new FileWriter("Lin_Lead_" + keyword + "_list_" + fileName + ".csv");
 
 			writer.append("Linkedin_Profile_URL");
 			writer.append(",");
