@@ -7,23 +7,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import db.DbLead;
 import pojo.Lead;
 
 public class LeadScanner extends CsvScanner{
 
-
+	private DbLead db = null;
 	public LeadScanner() {
 		super();
+		db = new DbLead();
 	}
 	
 	
 	private LinkedList<Lead> list = null;
 
 	public LinkedList<Lead> dataScan(String filePath) {
+		return list;
+	}
+	
+	public int transferDataCsvToDb(String filePath) {
 		location = filePath.substring(0, filePath.lastIndexOf("\\")+1);
-		list = new LinkedList<>();
 		Lead lead = null;
 		Scanner scanner = null;
+		int insertCount = 0;
 		try {
 			scanner = new Scanner(new File(filePath));
 			boolean rightFormat = false;
@@ -47,7 +53,7 @@ public class LeadScanner extends CsvScanner{
 					List<String> line = parseLine(scanner.nextLine());
 					lead = new Lead(removingQuotes(line.get(0)), removingQuotes(line.get(1)), removingQuotes(line.get(2)), removingQuotes(line.get(3)),
 							removingQuotes(line.get(4)), removingQuotes(line.get(5)), removingQuotes(line.get(6)), removingQuotes(line.get(7)) );
-					list.add(lead);
+					insertCount += db.insert(lead) ? 1 : 0;
 					System.out.println("[Linkedin_Profile_URL= " + line.get(0) + ", First_Name= " + line.get(1)
 							+ " , Last_Name=" + line.get(2) + " , Address=" + line.get(3) + ", Service_Age= " + line.get(4) + ", Designation= "
 							+ line.get(5) + " , Company_Name=" + line.get(6) + ", Company_Profile= " + line.get(7) + "]");
@@ -60,7 +66,7 @@ public class LeadScanner extends CsvScanner{
 		}
 		
 		scanner.close();
-		return list;
+		return insertCount;
 	}
 
 }

@@ -60,9 +60,10 @@ public class LeadOperator extends FireFoxOperator{
 	
 	@Override
 	public int scanCsv(String path) {
-		LinkedList<?> list = scanner.dataScan(path);
-		System.out.println("list -- "+ list.size());
-		return parser.writeToDb(list);
+//		LinkedList<?> list = scanner.dataScan(path);
+//		System.out.println("list -- "+ list.size());
+//		return parser.writeToDb(list);
+		return scanner.transferDataCsvToDb(path);
 	}
 	
 	/// ----------------------- List ---------------------------------- ///

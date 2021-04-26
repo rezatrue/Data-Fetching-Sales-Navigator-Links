@@ -21,6 +21,7 @@ public class CsvScanner {
 	public int transferDataCsvToDb(String filePath) {
 		return 0;
 	}
+	
 	// Quotes "" creates problem when file load second time
 	// we need to remove those
 	protected String removingQuotes(String text) {
