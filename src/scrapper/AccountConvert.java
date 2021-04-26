@@ -83,13 +83,13 @@ public class AccountConvert implements Parser {
 				FireFoxOperator.driver.findElement(dropDownbtnBy).click();
 				String urltxt = findComUrlInSourcePage();
 				System.out.println("url_com_txt : "+ urltxt);
-				System.out.println(FireFoxOperator.driver.findElement(By.xpath("//div[@class='artdeco-dropdown__content-inner']")));
 				if(urltxt.contains(publicComLinkTemp)) account.setComUrl(urltxt);
 			} catch (Exception e) {	return false; }
 		}else 
 			return false;
 		//button[contains(.,'read more') or contains(.,'more details')]	
-		By moreInfoBy = By.xpath("//button[contains(.,'read more') or contains(.,'more details')]");
+		By moreInfoBy = By.xpath("//div[@class='artdeco-dropdown__content-inner']/ul/li[3]/div[contains(.,'more details')]");
+		//By moreInfoBy = By.xpath("//button[contains(.,'read more') or contains(.,'more details')]");
 		try {FireFoxOperator.driver.findElement(moreInfoBy).click();} 
 		catch (Exception e) { 
 			//NoSuchElementException 	

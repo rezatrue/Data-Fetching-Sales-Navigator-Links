@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import application.MainController;
 import csvhandler.CsvScanner;
 import csvhandler.LeadCsv;
+import csvhandler.AccountCsv;
 import csvhandler.CompanyCsv;
 import csvhandler.CsvGenerator;
 import csvhandler.PeopleCsv;
@@ -134,7 +135,7 @@ public class LinkedinListMain {
 		if(taskType == SearchType.LEADSEARCH)
 			csvGenerator = new LeadCsv();
 		if(taskType == SearchType.ACCOUNTSEARCH)
-			csvGenerator = new CompanyCsv();
+			csvGenerator = new AccountCsv();
 		
 		int number = csvGenerator.listtoCsv(keyword, renum);
 		return number;
