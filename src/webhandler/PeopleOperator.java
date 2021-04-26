@@ -32,8 +32,7 @@ import pojo.WorkType;
 import scrapper.Parser;
 import scrapper.PeopleConvert;
 import scrapper.PeopleList;
-import scrapper.SalesNavListsParser;
-import scrapper.SalesNavigatorParser;
+
 
 public class PeopleOperator extends FireFoxOperator{
 	

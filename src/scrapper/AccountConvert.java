@@ -15,19 +15,17 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
 import application.MainController;
-import db.DbCompany;
-import db.DbPeople;
-import pojo.Company;
-import pojo.People;
+import db.DbAccount;
+import pojo.Account;
 import webhandler.FireFoxOperator;
 
 public class AccountConvert implements Parser {
 
 	public String baseUrl = "https://www.linkedin.com/";	
-	DbCompany localDb;
+	DbAccount localDb;
 	
 	public AccountConvert() {
-		localDb = new DbCompany();
+		localDb = new DbAccount();
 	}
 	
 	@Override
@@ -41,10 +39,10 @@ public class AccountConvert implements Parser {
 		return 0;
 	}
 	
-	private boolean writeToDb(Company com, String selesUrl) {				
+	private boolean writeToDb(Account acc, String selesUrl) {				
 		//int num = MainController.prefs.getInt("unUpdatedListCount", 0);
 		//MainController.prefs.putInt("unUpdatedListCount", (num + count));
-		return localDb.update(com, selesUrl);
+		return localDb.update(acc, selesUrl);
 	}
 	
 	private String findComUrlInSourcePage() {
@@ -68,11 +66,11 @@ public class AccountConvert implements Parser {
 	@Override
 	public boolean parseData(int index) {
 		
-		Company company = localDb.selectAtIndex(index);
+		Account account = localDb.selectAtIndex(index);
 		String salesUrl = "";
-		if(company == null) return false;
+		if(account == null) return false;
 		else {
-			salesUrl = company.getComUrl();
+			salesUrl = account.getComUrl();
 			if(salesUrl.contains(publicComLinkTemp)) return false;
 			FireFoxOperator.driver.get(salesUrl);
 			
@@ -85,7 +83,8 @@ public class AccountConvert implements Parser {
 				FireFoxOperator.driver.findElement(dropDownbtnBy).click();
 				String urltxt = findComUrlInSourcePage();
 				System.out.println("url_com_txt : "+ urltxt);
-				if(urltxt.contains(publicComLinkTemp)) company.setComUrl(urltxt);
+				System.out.println(FireFoxOperator.driver.findElement(By.xpath("//div[@class='artdeco-dropdown__content-inner']")));
+				if(urltxt.contains(publicComLinkTemp)) account.setComUrl(urltxt);
 			} catch (Exception e) {	return false; }
 		}else 
 			return false;
@@ -109,19 +108,19 @@ public class AccountConvert implements Parser {
 		
 		try {
 			String website = FireFoxOperator.driver.findElement(websiteBy).getText();
-			company.setComWebsite(website);
+			account.setComWebsite(website);
 			System.out.println(website);
 		} catch (Exception e1) {}
 		
 		try {
 			String type = FireFoxOperator.driver.findElement(typeBy).getText();
-			company.setComType(type);
+			account.setComType(type);
 			System.out.println(type);
 		} catch (Exception e1) {}
 		
 		try {
 			String founded = FireFoxOperator.driver.findElement(foundedBy).getText();
-			company.setComFounded(founded);
+			account.setComFounded(founded);
 			System.out.println(founded);
 		} catch (Exception e1) {}
 
@@ -129,7 +128,7 @@ public class AccountConvert implements Parser {
 		try {FireFoxOperator.driver.findElement(closeBY).click();} catch (Exception e1) {}
 		FireFoxOperator.driver.switchTo().activeElement();
 		
-		return writeToDb(company, salesUrl);
+		return writeToDb(account, salesUrl);
 	}
 	
 	@Override
@@ -139,7 +138,15 @@ public class AccountConvert implements Parser {
 
 	@Override
 	public int writeToDb(LinkedList<?> list) {
-		return 0;
+		LinkedList<Account> leadList = (LinkedList<Account>) list;
+		int count = 0;
+		Iterator<Account> it = leadList.iterator();
+		localDb = new DbAccount();
+			while(it.hasNext()) {
+				Account acc = (Account) it.next();
+				if(localDb.insert(acc)) count++;
+			}
+		return count;
 	}
 
 

@@ -35,8 +35,7 @@ import scrapper.CompanyList;
 import scrapper.Parser;
 import scrapper.PeopleConvert;
 import scrapper.PeopleList;
-import scrapper.SalesNavListsParser;
-import scrapper.SalesNavigatorParser;
+
 
 public class CompaniesOperator extends FireFoxOperator{
 	

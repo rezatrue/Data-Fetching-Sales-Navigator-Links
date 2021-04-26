@@ -7,7 +7,7 @@ public class DBTester {
 
 	public static void main(String[] args) {
 		
-		LocalDBHandler dbHandler = new DbLead();
+		LocalDBHandler dbHandler = new DbAccount();
 		System.out.println(dbHandler.createNewTable());
 		//dbHandler.createNewTable();
 		/*

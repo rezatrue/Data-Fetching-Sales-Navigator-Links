@@ -36,8 +36,6 @@ import scrapper.CompanyList;
 import scrapper.LeadConvert;
 import scrapper.LeadList;
 import scrapper.Parser;
-import scrapper.SalesNavListsParser;
-import scrapper.SalesNavigatorParser;
 import sun.security.pkcs11.Secmod.ModuleType;
 
 public class LeadOperator extends FireFoxOperator{

@@ -14,20 +14,19 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
 import application.MainController;
-import db.DbCompany;
-import db.DbPeople;
-import pojo.Company;
+import db.DbAccount;
+import pojo.Account;
 import pojo.People;
 import webhandler.FireFoxOperator;
 
 public class AccountList implements Parser {
 
 	public String baseUrl = "https://www.linkedin.com/";	
-	private LinkedList<Company> companyList = null;
-	DbCompany localDb;
+	private LinkedList<Account> accountList = null;
+	DbAccount localDb;
 	
 	public AccountList() {
-		localDb = new DbCompany();
+		localDb = new DbAccount();
 	}
 	
 	@Override
@@ -42,13 +41,13 @@ public class AccountList implements Parser {
 	}
 	@Override
 	public int writeToDb(LinkedList<?> list) {
-		LinkedList<Company> companyList = (LinkedList<Company>) list;
+		LinkedList<Account> accountList = (LinkedList<Account>) list;
 		int count = 0;
-		Iterator<Company> it = companyList.iterator();
-		localDb = new DbCompany();
+		Iterator<Account> it = accountList.iterator();
+		localDb = new DbAccount();
 			while(it.hasNext()) {
-				Company company = (Company) it.next();
-				if(localDb.insert(company)) count++;
+				Account account = (Account) it.next();
+				if(localDb.insert(account)) count++;
 			}
 		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
 		MainController.prefs.putInt("unUpdatedListCount", (num + count));
@@ -57,7 +56,7 @@ public class AccountList implements Parser {
 	@Override
 	public int parseList(){
 		
-		companyList = new LinkedList<>();
+		accountList = new LinkedList<>();
 
 		String companyXpath = "//ol/li[contains(@class,'search-results__result-item')]";
 		String nameXpath = ".//dt[@class='result-lockup__name']/a";
@@ -70,39 +69,39 @@ public class AccountList implements Parser {
 			System.out.println(lists.size() + " : SIZE");
 			while(it.hasNext()) {
 				System.out.println("IN" + " : SIZE");
-				Company company = new Company();
-				WebElement companyElement = it.next();
+				Account account = new Account();
+				WebElement accountElement = it.next();
 				String name = "";
 				String URL = "";
 				try {
-					name = companyElement.findElement(By.xpath(nameXpath)).getText();
+					name = accountElement.findElement(By.xpath(nameXpath)).getText();
 					//name = name.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " ").trim();
 					System.out.println("Name : " + name);
-					URL = companyElement.findElement(By.xpath(nameXpath)).getAttribute("href");
+					URL = accountElement.findElement(By.xpath(nameXpath)).getAttribute("href");
 					
 				} catch (Exception e) {	e.printStackTrace();}
 				
 				String industry = "";
 						try {
-							industry = companyElement.findElement(By.xpath(industryXpath)).getText();
+							industry = accountElement.findElement(By.xpath(industryXpath)).getText();
 						} catch (Exception e) {	e.printStackTrace();}
 				String size = "";
 				try {
-					size = companyElement.findElement(By.xpath(sizeXpath)).getText();
+					size = accountElement.findElement(By.xpath(sizeXpath)).getText();
 				} catch (Exception e) {	e.printStackTrace();}
 				String address = "";
 				try {
-					address = companyElement.findElement(By.xpath(addressXpath)).getText();
+					address = accountElement.findElement(By.xpath(addressXpath)).getText();
 				} catch (Exception e) {	e.printStackTrace();}
-				company.setComName(name);
-				company.setComUrl(URL);
-				company.setComIndustry(industry);
-				company.setComSize(size);
-				company.setComHeadquarters(address);
-				companyList.add(company);
+				account.setComName(name);
+				account.setComUrl(URL);
+				account.setComIndustry(industry);
+				account.setComSize(size);
+				account.setComHeadquarters(address);
+				accountList.add(account);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }
-		return writeToDb(companyList);
+		return writeToDb(accountList);
 	}
 
 	@Override

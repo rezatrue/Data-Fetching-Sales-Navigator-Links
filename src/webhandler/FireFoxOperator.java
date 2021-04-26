@@ -26,8 +26,7 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 import pojo.Company;
 import pojo.WorkType;
 import scrapper.Parser;
-import scrapper.SalesNavListsParser;
-import scrapper.SalesNavigatorParser;
+
 
 public abstract class FireFoxOperator {
 
@@ -198,6 +197,7 @@ public abstract class FireFoxOperator {
 
 	public boolean closeBrowser() {
 		driver.quit();
+		driver = null;
 		return true;
 	}
 

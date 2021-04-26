@@ -23,17 +23,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
-import csvhandler.CompanyScanner;
+import csvhandler.AccountScanner;
 import csvhandler.CsvScanner;
 import pojo.Company;
+import pojo.SearchType;
 import pojo.WorkType;
 import scrapper.AccountConvert;
 import scrapper.AccountList;
 import scrapper.CompanyConvert;
 import scrapper.CompanyList;
 import scrapper.Parser;
-import scrapper.SalesNavListsParser;
-import scrapper.SalesNavigatorParser;
 
 public class AccountOperator extends FireFoxOperator{
 
@@ -43,7 +42,7 @@ public class AccountOperator extends FireFoxOperator{
 	
 	public AccountOperator() {
 		parser = new AccountList();
-		scanner = new CompanyScanner();
+		scanner = new AccountScanner();
 	}
 	
 	@Override
@@ -57,9 +56,10 @@ public class AccountOperator extends FireFoxOperator{
 	
 	@Override
 	public int scanCsv(String path) {
-		LinkedList<?> list = scanner.dataScan(path);
-		System.out.println("list -- "+ list.size());
-		return parser.writeToDb(list);
+//		LinkedList<?> list = scanner.dataScan(path);
+//		System.out.println("list -- "+ list.size());
+//		return parser.writeToDb(list);
+		return scanner.transferDataCsvToDb(path);
 	}
 	
 	/// ----------------------- List ---------------------------------- ///
@@ -67,7 +67,7 @@ public class AccountOperator extends FireFoxOperator{
 	@Override
 	public String checkPageStatus() {
 		By pageElementBy = By.xpath("//a[contains(.,'"+ type +"') and contains(@class,'active')]");
-		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! You are in wrong page";
+		return isElementPresent(pageElementBy) ? "error:false" : "error: OPPS! Wrong page, Not in " + SearchType.ACCOUNTSEARCH.toString();
 	}
 	@Override
 	public String takeList() {
@@ -153,8 +153,8 @@ public class AccountOperator extends FireFoxOperator{
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		try {
 			driver.findElement(by).click();
-			driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-			//fullPageScroll();
+			//driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+			fullPageScroll();
 			//salesPageScroll();
 			
 		} catch (NoSuchElementException e) {
