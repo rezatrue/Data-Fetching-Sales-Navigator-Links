@@ -648,7 +648,7 @@ public class MainController  extends Service<String> implements Initializable {
 
 		String msg = authenticateUser();
 
-		//msg = "welcome test";
+		msg = "welcome test"; // bypass
 		textMessage.setText(msg);
 		if (msg.toLowerCase().contains("welcome"))
 			openBrowserBtn.setDisable(false);

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.prefs.Preferences;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ApiClient {
@@ -89,9 +90,15 @@ public class ApiClient {
 		} catch (IOException e) {
 			return e.getMessage();
 		}
-		
+		System.out.println(responseString);
 		// extracting data from response 
-		JSONObject obj = new JSONObject(responseString);
+		JSONObject obj;
+		try {
+			obj = new JSONObject(responseString);
+		} catch (JSONException e) {
+			// Server errors 
+			return e.getMessage();
+		}
 	    String res = obj.getString("response");
 	    System.out.println(res);
 

@@ -297,7 +297,7 @@ public abstract class FireFoxOperator {
 	}
 
 	public int openNextPage() {
-		System.out.println(" <- openNextPage clicked");
+		System.out.println(" -- openNextPage clicked");
 		int responsepage = 0;
 		String newnextPageSelectorDisabled = "//button[contains(@class, 'artdeco-pagination__button--next')][contains(@class, 'artdeco-button--disabled')][child::span[contains(., 'Next')]]";
 		String salesNavnextPageSelectorDisabled = "//button[contains(@class,'search-results__pagination-next-button')][contains(@disabled)][child::span[contains(., 'Next')]]";

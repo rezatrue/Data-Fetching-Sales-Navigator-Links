@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 import application.MainController;
 import csvhandler.CsvScanner;
+import csvhandler.JobCsv;
 import csvhandler.LeadCsv;
 import csvhandler.AccountCsv;
 import csvhandler.CompanyCsv;
@@ -21,6 +22,7 @@ import pojo.Company;
 import webhandler.AccountOperator;
 import webhandler.CompaniesOperator;
 import webhandler.FireFoxOperator;
+import webhandler.JobOperator;
 import webhandler.LeadOperator;
 import webhandler.PeopleOperator;
 
@@ -45,6 +47,8 @@ public class LinkedinListMain {
 			fireFoxOperator = new PeopleOperator();
 		if(taskType == SearchType.COMPANIESSEARCH)
 			fireFoxOperator = new CompaniesOperator();
+		if(taskType == SearchType.JOBSEARCH)
+			fireFoxOperator = new JobOperator();
 		if(taskType == SearchType.LEADSEARCH) 
 			fireFoxOperator = new LeadOperator();
 		if(taskType == SearchType.ACCOUNTSEARCH) 
@@ -132,6 +136,8 @@ public class LinkedinListMain {
 			csvGenerator = new PeopleCsv();
 		if(taskType == SearchType.COMPANIESSEARCH)
 			csvGenerator = new CompanyCsv();
+		if(taskType == SearchType.JOBSEARCH)
+			csvGenerator = new JobCsv();
 		if(taskType == SearchType.LEADSEARCH)
 			csvGenerator = new LeadCsv();
 		if(taskType == SearchType.ACCOUNTSEARCH)
