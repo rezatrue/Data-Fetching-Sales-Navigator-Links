@@ -65,19 +65,6 @@ public class JobList implements Parser {
 		By companyLinkXpathBy = By.xpath(".//div[contains(@class,'content')]/div[contains(@class,'title')][2]/a");
 		By locationXpathBy = By.xpath(".//div[contains(@class,'content')]/div[3]");
 		
-		int countElement = 0;
-		boolean continueLooping = true;
-		do {
-		List<WebElement> lists = FireFoxOperator.driver.findElements(listXpathBy);
-		System.out.println( "SIZE: " + lists.size());
-		if(countElement < lists.size()) {
-			countElement = lists.size();
-			FireFoxOperator.scrollUpToWebElement(By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li["+countElement+"]"));
-		}
-		if(countElement >= lists.size()) continueLooping = false;
-		}while(continueLooping);
-		
-
 		try {
 			List<WebElement> lists = FireFoxOperator.driver.findElements(listXpathBy);
 			Iterator<WebElement> it = lists.iterator();

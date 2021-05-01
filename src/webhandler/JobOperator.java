@@ -70,8 +70,24 @@ public class JobOperator extends FireFoxOperator{
 	
 	@Override
 	public String takeList() {
+		
+		By listXpathBy = By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li/div");
+		
+		int countElement = 0;
+		boolean continueLooping = true;
+		do {
+		List<WebElement> lists = FireFoxOperator.driver.findElements(listXpathBy);
+		System.out.println( "current size: " + lists.size());
+		if(countElement < lists.size()) {
+			countElement = lists.size();
+			FireFoxOperator.scrollUpToWebElement(By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li["+countElement+"]"));
+		}else
+			continueLooping = false;
+		}while(continueLooping);
+		
 		int count = parser.parseList();
 		return "data:"+count;  //"data:10" // "error:msg"
+		
 	}
 		
 	@Override

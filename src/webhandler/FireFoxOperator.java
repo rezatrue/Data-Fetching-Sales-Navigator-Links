@@ -225,7 +225,7 @@ public abstract class FireFoxOperator {
 	public static void scrollUpToWebElement(By by) {
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
 		jse.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(by));
-		try{Thread.sleep(3000);}catch(InterruptedException e) {;}
+		try{Thread.sleep(1000);}catch(InterruptedException e) {System.out.println(e.getMessage());}
 	}
 	
 	public static void fullPageScroll() {

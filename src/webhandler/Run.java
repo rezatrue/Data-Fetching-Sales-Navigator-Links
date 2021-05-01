@@ -53,7 +53,7 @@ public class Run {
 		runfirefox();
 		driver.get("file:///F:/development/Job_list/1.html");
 		
-		By listXpathBy = By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li");
+		By listXpathBy = By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li/div");
 		By jobTitleXpathBy = By.xpath(".//div[contains(@class,'content')]/div[contains(@class,'title')][1]");
 		
 		int countElement = 0;
