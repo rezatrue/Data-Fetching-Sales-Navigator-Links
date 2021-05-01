@@ -325,7 +325,7 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	public void startBtnAction(ActionEvent event) {
 		System.out.println("Start Button");
-
+		textMessage.setText("Start Listing . . . ");
 		listService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
@@ -563,9 +563,10 @@ public class MainController  extends Service<String> implements Initializable {
 		String takatype = linkedinListMain.getTaskType();
 		if (clearDataNotification(takatype)) {
 			linkedinListMain.clearList();
-			textDbData.setText(0+"");
-			textListSize.setText(0+"");
+			dbCount = 0;
 			listSize = 0;
+			textDbData.setText(dbCount+"");
+			textListSize.setText(listSize+"");
 			textMessage.setText("All "+ takatype +" data have been deleted");
 		}else {
 			textMessage.setText(takatype + " Data remains in Database");
@@ -647,8 +648,8 @@ public class MainController  extends Service<String> implements Initializable {
 		textDbData.setText(dbCount+"");
 
 		String msg = authenticateUser();
-
 		msg = "welcome test"; // bypass
+		
 		textMessage.setText(msg);
 		if (msg.toLowerCase().contains("welcome"))
 			openBrowserBtn.setDisable(false);

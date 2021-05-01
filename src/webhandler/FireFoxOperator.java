@@ -218,10 +218,16 @@ public abstract class FireFoxOperator {
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());;
 		}
-		System.out.println(currentPageNumber() + " <- currentPageNumber");
+		System.out.println(currentPageNumber() + " -- currentPageNumber");
 		return currentPageNumber();
 	}
 
+	public static void scrollUpToWebElement(By by) {
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		jse.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(by));
+		try{Thread.sleep(3000);}catch(InterruptedException e) {;}
+	}
+	
 	public static void fullPageScroll() {
 		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
 		JavascriptExecutor jse = (JavascriptExecutor) driver;

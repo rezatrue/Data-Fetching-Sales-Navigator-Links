@@ -1,7 +1,7 @@
-/webhandler/
-/scrapper/
-/csvhandler/
 /api/
 /application/
+/csvhandler/
 /db/
 /pojo/
+/scrapper/
+/webhandler/

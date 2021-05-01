@@ -70,9 +70,6 @@ public class JobOperator extends FireFoxOperator{
 	
 	@Override
 	public String takeList() {
-		fullPageScroll();
-		//salesPageScroll();
-		
 		int count = parser.parseList();
 		return "data:"+count;  //"data:10" // "error:msg"
 	}
@@ -88,10 +85,12 @@ public class JobOperator extends FireFoxOperator{
 	}
 	
 	public int currentPageNumber() {
-		String currentSelector = "//button[contains(@aria-label,'current page')]/span[1]"; 
+		System.out.println(" <<-- currentPageNumber -->>");
+		By currentSelectorBy = By.xpath("//button[contains(@aria-label,'current page')]/span[1]"); 
 		WebElement element;
-		if (isElementPresent(By.xpath(currentSelector))) {
-			element = driver.findElement(By.xpath(currentSelector));
+		if (isElementPresent(currentSelectorBy)) {
+			//FireFoxOperator.scrollUpToWebElement(currentSelectorBy);
+			element = driver.findElement(currentSelectorBy);
 			return Integer.parseInt(element.getText());
 		} else
 			return -1;
@@ -99,7 +98,7 @@ public class JobOperator extends FireFoxOperator{
 
 	public int openNextPage() {
 		//button[contains(@class,'button--next')]
-		System.out.println(" <<- openNextPage clicked");
+		System.out.println(" <<-- openNextPage clicked");
 		int responsepage = 0;
 		
 		int currentPage = currentPageNumber();
@@ -107,12 +106,15 @@ public class JobOperator extends FireFoxOperator{
 		
 		int nextPageNumber = currentPage + 1;
 		System.out.println(nextPageNumber);
-		By nextPageSelectorBy = By.xpath("//li/button/span[contains(.,'"+ nextPageNumber +"')]");
+		By nextPageSelectorBy = By.xpath("//li/button[contains(.,'"+ nextPageNumber +"')]");
 		
 		//By nextPageSelectorBy = By.xpath("//li[preceding-sibling::li/button/span[contains(.,'+ currentPage +')]][1]/button/span[1]");
-		if(isElementPresent(nextPageSelectorBy) && driver.findElement(nextPageSelectorBy).isEnabled()) {
+		if(isElementPresent(nextPageSelectorBy)) {
 			responsepage = switchingPage(nextPageSelectorBy);
-		}			
+		}else {
+			responsepage = switchingPage(By.xpath("//li[preceding-sibling::li/button[contains(.,'"+currentPage+"')]]/button[contains(.,'…')]"));
+		}
+		
 		return responsepage;
 
 	}
@@ -125,10 +127,13 @@ public class JobOperator extends FireFoxOperator{
 		
 		int prevtPageNumber = currentPage - 1;
 		System.out.println(prevtPageNumber);
-		By prevPageSelectorBy = By.xpath("//li/button/span[contains(.,'"+ prevtPageNumber +"')]");
-		if(isElementPresent(prevPageSelectorBy) && driver.findElement(prevPageSelectorBy).isEnabled()) {
+		By prevPageSelectorBy = By.xpath("//li/button[contains(.,'"+ prevtPageNumber +"')]");
+		if(isElementPresent(prevPageSelectorBy)) {
 			responsepage = switchingPage(prevPageSelectorBy);
-		}	
+		}else {
+			responsepage = switchingPage(By.xpath("//li[following-sibling::li/button[contains(.,'1')]]/button[contains(.,'…')]"));
+		}
+		
 
 		return responsepage;
 
@@ -137,9 +142,8 @@ public class JobOperator extends FireFoxOperator{
 	public int switchingPage(By by) {
 		// driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		try {
-			driver.findElement(by).click();
-			fullPageScroll();
-			
+			FireFoxOperator.scrollUpToWebElement(by);
+			driver.findElement(by).click();			
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());;
 		}

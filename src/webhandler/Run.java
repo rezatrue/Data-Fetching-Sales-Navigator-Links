@@ -1,5 +1,8 @@
 package webhandler;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -39,13 +42,47 @@ public class Run {
 		csv.listtoCsv("Test", 20);
 	}
 	
-	
-	
+		
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("Hello:");
+		System.out.println("Hello: Tester");
+		takeFullList();
+	}
+	
+	public static void takeFullList() {
+		runfirefox();
+		driver.get("file:///F:/development/Job_list/1.html");
 		
-		//testOneSection();
+		By listXpathBy = By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li");
+		By jobTitleXpathBy = By.xpath(".//div[contains(@class,'content')]/div[contains(@class,'title')][1]");
+		
+		int countElement = 0;
+		do {
+		List<WebElement> lists = driver.findElements(listXpathBy);
+		System.out.println( "SIZE: " + lists.size());
+		if(countElement < lists.size()) {
+			countElement += 7; //lists.size();
+			scrollUpToWebElement(By.xpath("//ul[contains(@class,'jobs-search-results__list')]/li["+countElement+"]"));
+		}
+		if(countElement >= lists.size()) break;
+		}while(true);
+		
+		
+		List<WebElement> lists = driver.findElements(listXpathBy);
+		Iterator<WebElement> it = lists.iterator();
+		while(it.hasNext()) {
+			WebElement we = it.next();
+			System.out.println(we.findElement(jobTitleXpathBy).getText());
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	public static void clearWhiteSpace() {
 		PeopleOperator operator = new PeopleOperator();
 		operator.browserLauncher();
 		operator.openUrl("file:///F:/development/People_list/Terry-Antony.html");
@@ -56,39 +93,7 @@ public class Run {
 		
 		System.out.println(jobTitle.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " "));
 		}catch (Exception e1) {;}
-		
-		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/eset.html");
-		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/ergo.html");
-		//fireFoxOperator.getCompanyLinkDetails("file:///C:/Users/JAVA_USER/Desktop/com_lin/HRejterzy.html");
-		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/424770");
-		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28967");
-		//fireFoxOperator.getCompanyLinkDetails("https://www.linkedin.com/sales/company/28652475");
-		
-		//alertTest();
-		
-		//runfirefoxDefaultProfile();
-		// openNavLink();
-		//linkedinLogin("ebrahimthex@gmail.com", "$RFV4rfv");
-		/*
-		 * driver.get(
-		 * "https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"
-		 * ); // fullPageScroll();
-		 * findAndClick("#topcard > div.module-footer > ul > li > button");
-		 * WebElement element = driver.findElement(By.cssSelector(
-		 * ".more-info-tray > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)"
-		 * ));
-		 */
-		
-		//System.out.println(getPublicLink(
-			//	"https://www.linkedin.com/sales/profile/78593635,q_0a,NAME_SEARCH?moduleKey=peopleSearchResults"));
-		// System.out.println(element.getText());
-	
-	
-	
 	}
-	
-	
-
 	
 	public static void alertTest() {
 		
@@ -143,6 +148,14 @@ public class Run {
 		return pageSource;
 	}
 
+	
+	
+	public static void scrollUpToWebElement(By by) {
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		jse.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(by));
+		try{Thread.sleep(7000);}catch(Exception e) {}
+	}
+	
 	public static void fullPageScroll() {
 		// https://stackoverflow.com/questions/42982950/how-to-scroll-down-the-page-till-bottomend-page-in-the-selenium-webdriver
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
@@ -179,8 +192,16 @@ public class Run {
 				"Geckodriver\\v0.21.0-win64\\geckodriver.exe");
 
 		driver = new FirefoxDriver(capabilities);
-		driver.get("https://www.linkedin.com/");
+	
+	}
+	
+	protected static void runfirefox() {
 
+		System.setProperty("webdriver.gecko.driver",
+				"Geckodriver\\v0.21.0-win64\\geckodriver.exe");
+
+		driver = new FirefoxDriver();
+	
 	}
 
 	private static void openGooleSearch() {
