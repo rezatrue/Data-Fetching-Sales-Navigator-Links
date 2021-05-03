@@ -24,12 +24,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
 
 import csvhandler.CsvScanner;
-import csvhandler.PeopleScanner;
+import csvhandler.JobScanner;
 import db.LocalDBHandler;
 import pojo.Company;
 import pojo.People;
 import pojo.SearchType;
 import pojo.WorkType;
+import scrapper.JobConvert;
 import scrapper.JobList;
 import scrapper.Parser;
 import scrapper.PeopleConvert;
@@ -44,14 +45,14 @@ public class JobOperator extends FireFoxOperator{
 	
 	public JobOperator() {
 		parser = new JobList();
-		scanner = new PeopleScanner();//
+		scanner = new JobScanner();
 	}
 	
 	public void setWorkType(WorkType mode) {
 		if(mode == WorkType.LIST)
 			parser = new JobList();
 		if(mode == WorkType.CONVERT)
-			parser = new PeopleConvert();//
+			parser = new JobConvert();
 	}
 	
 	public int scanCsv(String path) {

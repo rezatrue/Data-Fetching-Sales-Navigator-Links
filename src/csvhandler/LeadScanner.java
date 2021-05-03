@@ -39,7 +39,7 @@ public class LeadScanner extends CsvScanner{
 				if ("Linkedin_Profile_URL" != line.get(0).toString() || "First_Name" != line.get(1).toString()
 						|| "Last_Name" != line.get(2).toString() || "Address" != line.get(3).toString()
 						|| "Service_Age" != line.get(4).toString() || "Designation" != line.get(5).toString()
-						|| "Company_Name" != line.get(5).toString() || "Company_Profile" != line.get(7).toString()) {
+						|| "Company_Name" != line.get(6).toString() || "Company_Profile" != line.get(7).toString()) {
 					System.out.println("WRONG FILE");
 					rightFormat = true;
 				}

@@ -1,7 +1,7 @@
 package pojo;
 
 public class People {
-	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany,companySize;
+	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany, companySize;
 	public People() {
 	}
 	public People(String link, String first_name, String second_name, String email,
