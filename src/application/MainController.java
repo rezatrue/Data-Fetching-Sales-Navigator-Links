@@ -50,9 +50,7 @@ public class MainController  extends Service<String> implements Initializable {
 	@FXML
 	private TextField textMessage;
 	@FXML
-	private TextField textUserId, textDbData;
-	@FXML
-	private PasswordField textPassword;
+	private TextField textDbData;
 	@FXML
 	private TextField textKeyword;
 	@FXML
@@ -498,18 +496,7 @@ public class MainController  extends Service<String> implements Initializable {
 
 	@FXML
 	public void signInBtnAction(ActionEvent event) {
-		System.out.println("Sign in");
-		String userId = textUserId.getText();
-		String password = textPassword.getText();
-		//String keyword = textKeyword.getText();
-		
-		String prefUser = prefs.get("linkedinUser", "");
-		String prefpass = prefs.get("linkedinPassword", "");
-		
-		if(userId != prefUser) 
-			prefs.put("linkedinUser", userId);
-		if (password == prefpass)
-			prefs.put("linkedinPassword", password);
+		System.out.println("Button: Sign in");
 		
 		if(linkedinListMain.login())
 			textMessage.setText("Successfully Sign in");
@@ -640,15 +627,14 @@ public class MainController  extends Service<String> implements Initializable {
 		taskChoiceBox.setValue(taskChoiceBoxItems[0]);
 		taskChoiceBox.setOnAction(e -> taskChoiceBoxSetup(taskChoiceBox));
 
-		textUserId.setText(prefs.get("linkedinUser", ""));
-		textPassword.setText(prefs.get("linkedinPassword", ""));
+
 
 		linkedinListMain = new LinkedinListMain();
 		dbCount = linkedinListMain.setTaskType(SearchType.PEOPLESEARCH);
 		textDbData.setText(dbCount+"");
 
 		String msg = authenticateUser();
-		msg = "welcome test"; // bypass
+		//msg = "welcome test";
 		
 		textMessage.setText(msg);
 		if (msg.toLowerCase().contains("welcome"))

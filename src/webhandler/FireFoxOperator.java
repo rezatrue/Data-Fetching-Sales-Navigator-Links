@@ -90,12 +90,12 @@ public abstract class FireFoxOperator {
 	public boolean isLoginPage() {
 
 		By profileImageBy = By.xpath("//img[contains(@class,'app-header-item-content__entity-image')]");
-		
+
 		try {
 			driver.findElement(profileImageBy).getText();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 		By salesProfileImageBy = By.xpath("//img[contains(@class,'global-nav__me-photo')]");
@@ -104,7 +104,7 @@ public abstract class FireFoxOperator {
 			driver.findElement(salesProfileImageBy).getText();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 		return false;
@@ -161,7 +161,9 @@ public abstract class FireFoxOperator {
 		} catch (NoSuchElementException nsee) {
 			nsee.printStackTrace();
 		}
-		
+		// wait before check if log in
+		By profileImageBy = By.xpath("//img[contains(@class,'app-header-item-content__entity-image')]");
+		waitUntillVisible(profileImageBy);
 		if(isLoginPage()) return true;
 		
 		return false;
