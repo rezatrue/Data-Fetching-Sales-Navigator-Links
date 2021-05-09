@@ -1,22 +1,10 @@
 package scrapper;
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-
-import application.MainController;
 import db.DbPeople;
-import pojo.Company;
 import pojo.People;
 import webhandler.FireFoxOperator;
 
@@ -73,7 +61,7 @@ public class PeopleConvert implements Parser {
 			By jobTitleBy = By.xpath(".//h3");
 			try {String jobTitle = experienceWE.findElement(jobTitleBy).getText().trim();
 			// need to replace new line tab & white spaces
-			people.setCurrentJobTitle(jobTitle.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " "));
+			people.setCurrentJobTitle(cleanWhiteSpace(jobTitle));
 			}catch (Exception e1) {;}
 			
 			By conpamyBy = By.xpath(".//p[contains(@class,'pv-entity__secondary-title')]");
@@ -159,7 +147,9 @@ public class PeopleConvert implements Parser {
 	}
 
 
-
+	private String cleanWhiteSpace(String txt) {
+		return txt.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " ").trim();
+	}
 
 	
 	

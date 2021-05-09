@@ -161,9 +161,7 @@ public abstract class FireFoxOperator {
 		} catch (NoSuchElementException nsee) {
 			nsee.printStackTrace();
 		}
-		// wait before check if log in
-		By profileImageBy = By.xpath("//img[contains(@class,'app-header-item-content__entity-image')]");
-		waitUntillVisible(profileImageBy);
+		
 		if(isLoginPage()) return true;
 		
 		return false;

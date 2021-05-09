@@ -61,12 +61,12 @@ public class JobCsv implements CsvGenerator{
 				while (it.hasNext()) {
 					Job job = it.next();
 					System.out.println(" --data -- "+ 
-							job.getJobLink() + " jobLink " + 
-							job.getJobTitle() + " jobTitle " + 
-							job.getCompany() + " company " + 
-							job.getCompanyLink() + " link " + 
-							job.getLocation() + " location " + 
-							job.getJobDescription() + " description ");
+							" jobLink " + job.getJobLink() + 
+							" jobTitle " + job.getJobTitle() + 
+							" company " + job.getCompany() + 
+							" Com link " + job.getCompanyLink() + 
+							" location " + job.getLocation() + 
+							" description "+ job.getJobDescription() );
 
 					writer.append(commaSkiping(job.getJobLink()));
 					writer.append(",");

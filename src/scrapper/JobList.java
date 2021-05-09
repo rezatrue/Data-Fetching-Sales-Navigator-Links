@@ -76,7 +76,7 @@ public class JobList implements Parser {
 				String jobLink = "";
 				String jobTitle = "";
 				try {
-					jobTitle = jobElement.findElement(jobTitleXpathBy).getText();
+					jobTitle = cleanWhiteSpace(jobElement.findElement(jobTitleXpathBy).getText());
 					jobLink = jobElement.findElement(jobLinkXpathBy).getAttribute("href");
 					System.out.println("job Title: " + jobTitle);
 					System.out.println("job Link: " + jobLink);
@@ -84,14 +84,14 @@ public class JobList implements Parser {
 				String company = "";
 				String companyLink = "";
 				try {
-					company = jobElement.findElement(companyXpathBy).getText();
+					company = cleanWhiteSpace(jobElement.findElement(companyXpathBy).getText());
 					companyLink = jobElement.findElement(companyLinkXpathBy).getAttribute("href");
 					System.out.println("Company: " + company);
 					System.out.println("Link: " + companyLink);
 				} catch (Exception e) {	e.printStackTrace();}
 				String location = "";
 				try {
-					location = jobElement.findElement(locationXpathBy).getText();
+					location = cleanWhiteSpace(jobElement.findElement(locationXpathBy).getText());
 					System.out.println("location: " + location);
 				} catch (Exception e) {	e.printStackTrace();}
 				job.setJobLink(jobLink);
@@ -113,7 +113,9 @@ public class JobList implements Parser {
 		return false;
 	}
 
-
+	private String cleanWhiteSpace(String txt) {
+		return txt.replaceAll("[\\r\\n|\\r|\\n|\\s|\\t]", " ").trim();
+	}
 	
 	
 }
