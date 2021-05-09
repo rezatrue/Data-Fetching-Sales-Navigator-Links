@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import application.MainController;
 import db.DbPeople;
 import pojo.People;
 import webhandler.FireFoxOperator;
@@ -29,8 +31,8 @@ public class PeopleConvert implements Parser {
 	}
 	
 	private boolean writeToDb(Object obj) {				
-		//int num = MainController.prefs.getInt("unUpdatedListCount", 0);
-		//MainController.prefs.putInt("unUpdatedListCount", (num + count));
+		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
+		MainController.prefs.putInt("unUpdatedListCount", (num + 1));
 		return localDb.update(obj, ((People) obj).getLink());
 	}
 	
@@ -66,15 +68,15 @@ public class PeopleConvert implements Parser {
 			
 			By conpamyBy = By.xpath(".//p[contains(@class,'pv-entity__secondary-title')]");
 			try {String conpamy = experienceWE.findElement(conpamyBy).getText().trim();
-			
+			people.setCurrentCompany(conpamy);
 			}catch (Exception e1) {;}
 			By serviceRangeBy = By.xpath(".//h4[contains(@class,'pv-entity__date-range')]/span[2]");
 			try {String serviceRange = experienceWE.findElement(serviceRangeBy).getText().trim();
-			
+			people.setServiceRange(serviceRange);
 			}catch (Exception e1) {;}
 			By companyLocationBy = By.xpath(".//h4[contains(@class,'pv-entity__location')]/span[2]");
 			try {String companyLocation = experienceWE.findElement(companyLocationBy).getText().trim();
-			
+			people.setCompanyLocation(companyLocation);
 			}catch (Exception e1) {;}
 		}
 		
@@ -93,19 +95,19 @@ public class PeopleConvert implements Parser {
 		if(educationWE!=null) {
 			By instituteBy = By.xpath("./h3");
 			try {String institute = educationWE.findElement(instituteBy).getText().trim();
-			
+			people.setInstitute(institute);
 			}catch (Exception e1) {;}
 			By degreeNameBy = By.xpath("./p[contains(@class,'degree-name')]/span[2]");
 			try {String degreeName = educationWE.findElement(degreeNameBy).getText().trim();
-			
+			people.setDegreeName(degreeName);
 			}catch (Exception e1) {;}
 			By fosBy = By.xpath("./p[contains(@class,'fos')]/span[2]");
 			try {String fos = educationWE.findElement(fosBy).getText().trim();
-			
+			people.setFos(fos);
 			}catch (Exception e1) {;}
 			By datesBy = By.xpath("./following-sibling::p[contains(@class,'dates')]/span[2]");
 			try {String dates = educationWE.findElement(datesBy).getText().trim();
-			
+			people.setDates(dates);
 			}catch (Exception e1) {;}
 		}
 		

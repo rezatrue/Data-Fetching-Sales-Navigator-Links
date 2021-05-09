@@ -32,9 +32,11 @@ public class PeopleScanner extends CsvScanner{
 
 				if ("Linkedin_Profile_URL" != line.get(0).toString() || "First_Name" != line.get(1).toString()
 						|| "Last_Name" != line.get(2).toString() || "Email_ID" != line.get(3).toString()
-						|| "Contact_Number" != line.get(4).toString() || "Location" != line.get(5).toString()
-						|| "Industry" != line.get(6).toString() || "Designation" != line.get(7).toString()
-						|| "Company_Name" != line.get(8).toString() || "Company_Size" != line.get(9).toString()) {
+						|| "Address" != line.get(4).toString() || "Designation" != line.get(5).toString()
+						|| "Service_Range" != line.get(6).toString() || "Company" != line.get(7).toString()
+						|| "Location" != line.get(8).toString() || "Degree_Name" != line.get(9).toString()
+						|| "FOS" != line.get(10).toString() || "Institute" != line.get(11).toString()
+						|| "Dates" != line.get(12).toString()) {
 					System.out.println("WRONG FILE");
 					rightFormat = true;
 				}
@@ -48,12 +50,11 @@ public class PeopleScanner extends CsvScanner{
 					List<String> line = parseLine(scanner.nextLine());
 					people = new People(removingQuotes(line.get(0)), removingQuotes(line.get(1)), removingQuotes(line.get(2)), removingQuotes(line.get(3)),
 							removingQuotes(line.get(4)), removingQuotes(line.get(5)), removingQuotes(line.get(6)), removingQuotes(line.get(7)), 
-							removingQuotes(line.get(8)), removingQuotes(line.get(9)));
+							removingQuotes(line.get(8)), removingQuotes(line.get(9)), removingQuotes(line.get(10)), removingQuotes(line.get(11)),
+							removingQuotes(line.get(12)));
 					list.add(people);
 					System.out.println("[Linkedin_Profile_URL= " + line.get(0) + ", First_Name= " + line.get(1)
-							+ " , Last_Name=" + line.get(2) + ", Email_ID= " + line.get(3) + ", Contact_Number= "
-							+ line.get(4) + " , Location=" + line.get(5) + ", Industry= " + line.get(6) + ", Designation= "
-							+ line.get(7) + " , Company_Name=" + line.get(8) + ", Company_Size= " + line.get(9) + "]");
+							+ " , Last_Name=" + line.get(2)+ "]");
 	
 				}
 			}

@@ -15,12 +15,12 @@ import java.util.LinkedList;
 import pojo.People;
 
 
-public class DbPeople implements LocalDBHandler{
+public class DbPeople2 implements LocalDBHandler{
 	
 	private String TABLE_NAME = "people";
 	private Connection conn = null;
 
-	public DbPeople() {
+	public DbPeople2() {
 	}
 		
 	public void connect() {
@@ -83,15 +83,12 @@ public class DbPeople implements LocalDBHandler{
                 + "	First_Name text,"
                 + "	Last_Name text,"
                 + "	Email_ID text,"
-                + "	Address text,"
-                + "	Designation text,"
-                + "	Service_Range text,"
-                + "	Company text,"
+                + "	Contact_Number text,"
                 + "	Location text,"
-                + "	Degree_Name text,"
-                + "	FOS text,"
-                + "	Institute text,"
-                + "	Dates text"
+                + "	Industry text,"
+                + "	Designation text,"
+                + "	Company_Name text,"
+                + "	Company_Size text"
                 + ");";
         
         if(conn==null)
@@ -166,15 +163,12 @@ public class DbPeople implements LocalDBHandler{
 		                       rs.getString("First_Name"), 
 		                       rs.getString("Last_Name"),
 		                       rs.getString("Email_ID"), 
-		                       rs.getString("Address"),
-		                       rs.getString("Designation"), 
-		                       rs.getString("Service_Range"),
-		                       rs.getString("Company"),
-		                       rs.getString("Location"),
-		                       rs.getString("Degree_Name"),
-		                       rs.getString("FOS"),
-		                       rs.getString("Institute"),
-		                       rs.getString("Dates")
+		                       rs.getString("Contact_Number"),
+		                       rs.getString("Location"), 
+		                       rs.getString("Industry"),
+		                       rs.getString("Designation"),
+		                       rs.getString("Company_Name"),
+		                       rs.getString("Company_Size")
 					);
 				}
 			} catch (SQLException e) {
@@ -213,23 +207,26 @@ public class DbPeople implements LocalDBHandler{
 				                       rs.getString("First_Name"), 
 				                       rs.getString("Last_Name"),
 				                       rs.getString("Email_ID"), 
-				                       rs.getString("Address"),
-				                       rs.getString("Designation"), 
-				                       rs.getString("Service_Range"),
-				                       rs.getString("Company"),
-				                       rs.getString("Location"),
-				                       rs.getString("Degree_Name"),
-				                       rs.getString("FOS"),
-				                       rs.getString("Institute"),
-				                       rs.getString("Dates")
+				                       rs.getString("Contact_Number"),
+				                       rs.getString("Location"), 
+				                       rs.getString("Industry"),
+				                       rs.getString("Designation"),
+				                       rs.getString("Company_Name"),
+				                       rs.getString("Company_Size")
 							);
 					list.add(people);
 					
 				    System.out.println( 
 				                       rs.getString("Linkedin_Profile_URL") + "\t" +
 				                       rs.getString("First_Name") +  "\t" + 
-				                       rs.getString("Last_Name") 
-				                       );
+				                       rs.getString("Last_Name") + "\t" +
+				                       rs.getString("Email_ID") +  "\t" + 
+				                       rs.getString("Contact_Number") + "\t" +
+				                       rs.getString("Location") +  "\t" + 
+				                       rs.getString("Industry") + "\t" +
+				                       rs.getString("Designation") +  "\t" + 
+				                       rs.getString("Company_Name") + "\t" +
+				                       rs.getString("Company_Size"));
 				}
 			} catch (SQLException e) {
 				System.out.println("5"+e.getMessage());
@@ -251,10 +248,9 @@ public class DbPeople implements LocalDBHandler{
 		People people = (People)obj;
 		String sql = "INSERT INTO " 
 					+ TABLE_NAME 
-					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Address,"
-					+ " Designation, Service_Range, Company, Location,"
-					+ " Degree_Name, FOS, Institute, Dates) "
-					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ " (Linkedin_Profile_URL, First_Name, Last_Name, Email_ID, Contact_Number,"
+					+ " Location, Industry, Designation, Company_Name, Company_Size) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?)";
 		
 		PreparedStatement pstmt = null;
         if(conn == null)
@@ -264,17 +260,14 @@ public class DbPeople implements LocalDBHandler{
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, people.getLink());
 				pstmt.setString(2, people.getFirstName());
-				pstmt.setString(3, people.getLastName());
+				pstmt.setString(3, people.getSecondName());
 				pstmt.setString(4, people.getEmail());
-				pstmt.setString(5, people.getAddress());
-				pstmt.setString(6, people.getCurrentJobTitle());
-				pstmt.setString(7, people.getServiceRange());
-				pstmt.setString(8, people.getCurrentCompany());
-				pstmt.setString(9, people.getCompanyLocation());
-				pstmt.setString(10, people.getDegreeName());
-				pstmt.setString(11, people.getFos());
-				pstmt.setString(12, people.getInstitute());
-				pstmt.setString(13, people.getDates());
+				pstmt.setString(5, people.getPhone());
+				pstmt.setString(6, people.getLocation());
+				pstmt.setString(7, people.getIndustry());
+				pstmt.setString(8, people.getCurrentJobTitle());
+				pstmt.setString(9, people.getCurrentCompany());
+				pstmt.setString(10, people.getCompanySize());
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());
@@ -295,9 +288,8 @@ public class DbPeople implements LocalDBHandler{
 		People people = (People) obj;
 		String sql = "UPDATE " 
 					+ TABLE_NAME 
-					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, Email_ID = ?, Address = ?,"
-					+ " Designation = ?, Service_Range = ?, Company = ?, Location = ?,"
-					+ " Degree_Name = ?, FOS = ?, Institute = ?, Dates = ? "
+					+ " SET Linkedin_Profile_URL = ?, First_Name = ?, Last_Name = ?, Email_ID = ?, Contact_Number = ?,"
+					+ " Location = ?, Industry = ?, Designation = ?, Company_Name = ?, Company_Size = ? "
 					+ " WHERE Linkedin_Profile_URL = ?";
 		
 		PreparedStatement pstmt = null;
@@ -308,18 +300,15 @@ public class DbPeople implements LocalDBHandler{
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, people.getLink());
 				pstmt.setString(2, people.getFirstName());
-				pstmt.setString(3, people.getLastName());
+				pstmt.setString(3, people.getSecondName());
 				pstmt.setString(4, people.getEmail());
-				pstmt.setString(5, people.getAddress());
-				pstmt.setString(6, people.getCurrentJobTitle());
-				pstmt.setString(7, people.getServiceRange());
-				pstmt.setString(8, people.getCurrentCompany());
-				pstmt.setString(9, people.getCompanyLocation());
-				pstmt.setString(10, people.getDegreeName());
-				pstmt.setString(11, people.getFos());
-				pstmt.setString(12, people.getInstitute());
-				pstmt.setString(13, people.getDates());
-				pstmt.setString(14, salesLink);
+				pstmt.setString(5, people.getPhone());
+				pstmt.setString(6, people.getLocation());
+				pstmt.setString(7, people.getIndustry());
+				pstmt.setString(8, people.getCurrentJobTitle());
+				pstmt.setString(9, people.getCurrentCompany());
+				pstmt.setString(10, people.getCompanySize());
+				pstmt.setString(11, salesLink);
 				pstmt.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("3"+e.getMessage());

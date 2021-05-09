@@ -1,84 +1,134 @@
 package pojo;
 
 public class People {
-	private String link, first_name, second_name, email, phone,  location, industry, currentJobTitle, currentCompany, companySize;
+	private String link, firstName, lastName, email, address, currentJobTitle, serviceRange, currentCompany, companyLocation, degreeName, fos, institute, dates;
+	
 	public People() {
 	}
-	public People(String link, String first_name, String second_name, String email,
-			String phone, String location, String industry,
-			String currentJobTitle, String currentCompany,String companySize) {
+
+	public People(String link, String firstName, String lastName, String email, String address,
+			String currentJobTitle, String serviceRange, String currentCompany, String companyLocation,
+			String degreeName, String fos, String institute, String dates) {
 		super();
 		this.link = link;
-		this.first_name = first_name;
-		this.second_name = second_name;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
-		this.phone = phone;
-		this.location = location;
-		this.industry = industry;
+		this.address = address;
 		this.currentJobTitle = currentJobTitle;
+		this.serviceRange = serviceRange;
 		this.currentCompany = currentCompany;
-		this.companySize = companySize;
+		this.companyLocation = companyLocation;
+		this.degreeName = degreeName;
+		this.fos = fos;
+		this.institute = institute;
+		this.dates = dates;
 	}
+
 	public String getLink() {
 		return link;
 	}
+
 	public void setLink(String link) {
 		this.link = link;
 	}
+
 	public String getFirstName() {
-		return first_name;
+		return firstName;
 	}
-	public void setFirstName(String first_name) {
-		this.first_name = first_name;
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public String getSecondName() {
-		return second_name;
+
+	public String getLastName() {
+		return lastName;
 	}
-	public void setSecondName(String second_name) {
-		this.second_name = second_name;
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhone() {
-		return phone;
+
+	public String getAddress() {
+		return address;
 	}
-	public void setPhone(String phone) {
-		this.phone = phone;
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
-	public String getLocation() {
-		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	public String getIndustry() {
-		return industry;
-	}
-	public void setIndustry(String industry) {
-		this.industry = industry;
-	}
+
 	public String getCurrentJobTitle() {
 		return currentJobTitle;
 	}
+
 	public void setCurrentJobTitle(String currentJobTitle) {
 		this.currentJobTitle = currentJobTitle;
 	}
+
+	public String getServiceRange() {
+		return serviceRange;
+	}
+
+	public void setServiceRange(String serviceRange) {
+		this.serviceRange = serviceRange;
+	}
+
 	public String getCurrentCompany() {
 		return currentCompany;
 	}
+
 	public void setCurrentCompany(String currentCompany) {
 		this.currentCompany = currentCompany;
 	}
-	public String getCompanySize() {
-		return companySize;
+
+	public String getCompanyLocation() {
+		return companyLocation;
 	}
-	public void setCompanySize(String companySize) {
-		this.companySize = companySize;
+
+	public void setCompanyLocation(String companyLocation) {
+		this.companyLocation = companyLocation;
 	}
+
+	public String getDegreeName() {
+		return degreeName;
+	}
+
+	public void setDegreeName(String degreeName) {
+		this.degreeName = degreeName;
+	}
+
+	public String getFos() {
+		return fos;
+	}
+
+	public void setFos(String fos) {
+		this.fos = fos;
+	}
+
+	public String getInstitute() {
+		return institute;
+	}
+
+	public void setInstitute(String institute) {
+		this.institute = institute;
+	}
+
+	public String getDates() {
+		return dates;
+	}
+
+	public void setDates(String dates) {
+		this.dates = dates;
+	}
+
 	
 	
 	

@@ -94,10 +94,10 @@ public class PeopleList implements Parser {
 						location = peopleElement.findElement(By.xpath(locationXpath)).getText();
 						} catch (Exception e) {	e.printStackTrace();}
 				people.setFirstName(fname);
-				people.setSecondName(lname);
+				people.setLastName(lname);
 				people.setLink(URL);
 				people.setCurrentJobTitle(title);
-				people.setLocation(location);
+				people.setAddress(location);
 				peopleList.add(people);
 			}
 		} catch (Exception e) {	e.printStackTrace(); }

@@ -41,7 +41,7 @@ public class PeopleCsv implements CsvGenerator{
 
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter("Linkedin_" + keyword + "_list_" + fileName + ".csv");
+			writer = new FileWriter("Lin_peo_" + keyword + "_list_" + fileName + ".csv");
 
 			writer.append("Linkedin_Profile_URL");
 			writer.append(",");
@@ -51,17 +51,23 @@ public class PeopleCsv implements CsvGenerator{
 			writer.append(",");
 			writer.append("Email_ID");
 			writer.append(",");
-			writer.append("Contact_Number");
-			writer.append(",");
-			writer.append("Location");
-			writer.append(",");
-			writer.append("Industry");
+			writer.append("Address");
 			writer.append(",");
 			writer.append("Designation");
 			writer.append(",");
-			writer.append("Company_Name");
+			writer.append("Service_Range");
 			writer.append(",");
-			writer.append("Company_Size");
+			writer.append("Company");
+			writer.append(",");
+			writer.append("Location");
+			writer.append(",");
+			writer.append("Degree_Name");
+			writer.append(",");
+			writer.append("FOS");
+			writer.append(",");
+			writer.append("Institute");
+			writer.append(",");
+			writer.append("Dates");
 			writer.append(",");
 			writer.append("\n");
 
@@ -73,34 +79,33 @@ public class PeopleCsv implements CsvGenerator{
 					System.out.println(" --data -- "+ 
 							info.getLink() + " getLink " + 
 							info.getFirstName() + " getFirstName " + 
-							info.getSecondName() + " getSecondName " + 
-							info.getEmail() + " getEmail " + 
-							info.getPhone() + " getPhone " + 
-							info.getLocation() + " getLocation " + 
-							info.getIndustry() + " getIndustry " + 
-							info.getCurrentJobTitle() + " getCurrentJobTitle " + 
-							info.getCurrentCompany() + " getCurrentCompany " + 
-							info.getCompanySize() + " getCompanySize " );
+							info.getLastName() + " getSecondName ");
 
 					writer.append(commaSkiping(info.getLink()));
 					writer.append(",");
 					writer.append(commaSkiping(info.getFirstName()));
 					writer.append(",");
-					writer.append(commaSkiping(info.getSecondName()));
+					writer.append(commaSkiping(info.getLastName()));
 					writer.append(",");
 					writer.append(commaSkiping(info.getEmail()));
 					writer.append(",");
-					writer.append(commaSkiping(info.getPhone()));
-					writer.append(",");
-					writer.append(commaSkiping(info.getLocation()));
-					writer.append(",");
-					writer.append(commaSkiping(info.getIndustry()));
+					writer.append(commaSkiping(info.getAddress()));
 					writer.append(",");
 					writer.append(commaSkiping(info.getCurrentJobTitle()));
 					writer.append(",");
+					writer.append(commaSkiping(info.getServiceRange()));
+					writer.append(",");
 					writer.append(commaSkiping(info.getCurrentCompany()));
 					writer.append(",");
-					writer.append(commaSkiping("["+info.getCompanySize()+"]"));
+					writer.append(commaSkiping(info.getCompanyLocation()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getDegreeName()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getFos()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getInstitute()));
+					writer.append(",");
+					writer.append(commaSkiping(info.getDates()));
 					writer.append("\n");
 					count++;
 				}
