@@ -42,8 +42,8 @@ public class CompanyConvert implements Parser {
 	}
 	
 	private boolean writeToDb(Company com) {				
-		//int num = MainController.prefs.getInt("unUpdatedListCount", 0);
-		//MainController.prefs.putInt("unUpdatedListCount", (num + count));
+		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
+		MainController.prefs.putInt("unUpdatedListCount", (num + 1));
 		return localDb.update(com, com.getComUrl());
 	}
 	

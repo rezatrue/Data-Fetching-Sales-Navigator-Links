@@ -40,8 +40,8 @@ public class AccountConvert implements Parser {
 	}
 	
 	private boolean writeToDb(Account acc, String selesUrl) {				
-		//int num = MainController.prefs.getInt("unUpdatedListCount", 0);
-		//MainController.prefs.putInt("unUpdatedListCount", (num + count));
+		int num = MainController.prefs.getInt("unUpdatedListCount", 0);
+		MainController.prefs.putInt("unUpdatedListCount", (num + 1));
 		return localDb.update(acc, selesUrl);
 	}
 	

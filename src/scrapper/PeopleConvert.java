@@ -143,9 +143,6 @@ public class PeopleConvert implements Parser {
 			people.setDates(dates);
 			}catch (Exception e1) {;}
 		}
-		
-		
-		
 
 		return writeToDb(people);
 	}
