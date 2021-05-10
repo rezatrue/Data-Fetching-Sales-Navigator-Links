@@ -1,5 +1,6 @@
 package scrapper;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
@@ -46,6 +47,38 @@ public class PeopleConvert implements Parser {
 			FireFoxOperator.fullPageScroll();
 			// need scroll 
 		}
+		
+		
+		//a[child::span[contains(.,'Contact info')]] --- click
+		//close button
+		//div[@id='artdeco-modal-outlet']/div[@aria-hidden="false"]//button[contains(@class,'dismiss')]
+		//button[contains(@class,'dismiss')]
+		//section[child::header[contains(.,'Email')]]/div/a[contains(@href,'mail')]
+		// website sugession can be taken
+		//By contactInfoBy = By.xpath("//a[child::span[contains(.,'Contact info')]]");
+		By contactInfoBy = By.xpath("//a[contains(.,'Contact info')]");
+		try {
+			FireFoxOperator.driver.findElement(contactInfoBy).click();
+			
+			//FireFoxOperator.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			//By mailBy = By.xpath("//section[child::header[contains(.,'Email')]]/div/a[contains(@href,'mail')]");
+			
+			By headingBy = By.xpath("//h2[contains(.,'Contact Info')]");
+			FireFoxOperator.waitUntillVisible(headingBy);
+			By mailBy = By.xpath("//a[contains(@href,'mailto')]");
+			try {String mail = FireFoxOperator.driver.findElement(mailBy).getText().trim();
+			System.out.println(mail);
+			people.setEmail(mail);
+			By dismissPopupBy = By.xpath("//button[contains(@class,'dismiss')]");
+			FireFoxOperator.driver.findElement(dismissPopupBy).click();
+			}catch (Exception e1) {;}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 		
 		//section[@id='experience-section']/ul/li[1]//h3 - title
 		//section[@id='experience-section']/ul/li[1]//p[contains(@class,'pv-entity__secondary-title')] -- company
@@ -112,28 +145,7 @@ public class PeopleConvert implements Parser {
 		}
 		
 		
-		//a[child::span[contains(.,'Contact info')]] --- click
-
-		//close button
-		//div[@id='artdeco-modal-outlet']/div[@aria-hidden="false"]//button[contains(@class,'dismiss')]
-
-		//section[child::header[contains(.,'Email')]]/div/a[contains(@href,'mail')]
-
-		// website sugession can be taken
 		
-		By contactInfoBy = By.xpath("//a[child::span[contains(.,'Contact info')]]");
-		try {
-			FireFoxOperator.driver.findElement(contactInfoBy).click();
-			FireFoxOperator.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-			By mailBy = By.xpath("//section[child::header[contains(.,'Email')]]/div/a[contains(@href,'mail')]");
-			try {String mail = FireFoxOperator.driver.findElement(mailBy).getText().trim();
-			System.out.println(mail);
-			people.setEmail(mail);
-			}catch (Exception e1) {;}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		return writeToDb(people);
 	}
@@ -145,7 +157,15 @@ public class PeopleConvert implements Parser {
 
 	@Override
 	public int writeToDb(LinkedList<?> list) {
-		return 0;
+		LinkedList<People> leadList = (LinkedList<People>) list;
+		int count = 0;
+		Iterator<People> it = leadList.iterator();
+		localDb = new DbPeople();
+			while(it.hasNext()) {
+				People people = (People) it.next();
+				if(localDb.insert(people)) count++;
+			}
+		return count;
 	}
 
 

@@ -84,6 +84,7 @@ public class PeopleList implements Parser {
 				String URL = "";
 						try {
 							URL = peopleElement.findElement(By.xpath(profileXpath)).getAttribute("href");
+							URL = URL.substring(0, URL.indexOf("?"));
 						} catch (Exception e) {	e.printStackTrace();}
 				String title = "";
 						try {
